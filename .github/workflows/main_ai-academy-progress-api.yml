@@ -24,26 +24,21 @@ jobs:
       id-token: write
 
     steps:
-      # 1️⃣ Checkout repository
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2️⃣ Setup Node.js
-      - name: Setup Node.js ${{ env.NODE_VERSION }}
+      - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: ${{ env.NODE_VERSION }}
 
-      # 3️⃣ Install dependencies in the Azure Functions directory
       - name: Install Azure Functions dependencies
         run: npm install
         working-directory: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
 
-      # 4️⃣ Deploy Azure Functions (NO zipping, NO pushd)
       - name: Deploy Azure Functions
         uses: Azure/functions-action@v1
         with:
           app-name: ai-academy-progress-api
           slot-name: Production
           package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
-          
