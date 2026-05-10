@@ -25,15 +25,16 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
 
-      # 3️⃣ Install dependencies (only inside the Functions project)
+      # 3️⃣ Install dependencies (Functions project only)
       - name: Install Azure Functions dependencies
         run: npm install
         working-directory: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
 
-      # 4️⃣ Deploy using publish profile (most reliable approach)
+      # ✅ 4️⃣ Deploy using ZIP DEPLOY (Flex Consumption safe)
       - name: Deploy Azure Functions
         uses: Azure/functions-action@v1
         with:
           app-name: ai-academy-progress-api
           package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
           publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }}
+          scm-do-build-during-deployment: true
