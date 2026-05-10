@@ -9,13 +9,14 @@ on:
 env:
   AZURE_FUNCTIONAPP_PACKAGE_PATH: backend/ai-academy-functions
   NODE_VERSION: '22.x'
+  AZURE_SUBSCRIPTION_ID: ae3f9ad2-8b7d-4a8a-8652-2839e3c84234
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      id-token: write   # REQUIRED for OIDC
+      id-token: write   # Required for OIDC
 
     steps:
       # 1️⃣ Checkout repository
@@ -28,25 +29,28 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
 
-      # 3️⃣ Install dependencies in Azure Functions directory
+      # 3️⃣ Install dependencies (Azure Functions project only)
       - name: Install Azure Functions dependencies
         run: npm install
         working-directory: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
 
-      # 4️⃣ Login to Azure (OIDC)
+      # 4️⃣ Login to Azure using OIDC (NO subscription binding here)
       - name: Login to Azure
         uses: azure/login@v2
         with:
           client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_9C50D43B95CE411DA8D709EB4029FE90 }}
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_F2C1993DE7F64CFDA801B2D7E54BCF0F }}
-          subscription-id: ae3f9ad2-8b7d-4a8a-8652-2839e3c84234
           allow-no-subscriptions: true
 
-      # ✅ TEMPORARY DEBUG — confirms subscription context
-      - name: Verify Azure subscription context
+      # 5️⃣ Explicitly set the Visual Studio subscription
+      - name: Set Azure subscription context
+        run: az account set --subscription $AZURE_SUBSCRIPTION_ID
+
+      # 6️⃣ Verify Azure CLI context (safe & informative)
+      - name: Verify Azure subscription
         run: az account show
 
-      # 5️⃣ Deploy Azure Functions
+      # 7️⃣ Deploy Azure Functions
       - name: Deploy Azure Functions
         uses: Azure/functions-action@v1
         with:
