@@ -1,9 +1,3 @@
-# Docs for the Azure Web Apps Deploy action: https://github.com/azure/functions-action
-# More GitHub Actions for Azure: https://github.com/Azure/actions
-
-# Docs for the Azure Functions Deploy action:
-# https://github.com/Azure/functions-action
-
 name: Build and deploy Azure Functions - ai-academy-progress-api
 
 on:
@@ -39,14 +33,18 @@ jobs:
         run: npm install
         working-directory: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
 
-      # 4️⃣ Login to Azure (THIS WAS MISSING)
-     - name: Login to Azure
-  uses: azure/login@v2
-  with:
-    client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_9C50D43B95CE411DA8D709EB4029FE90 }}
-    tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_F2C1993DE7F64CFDA801B2D7E54BCF0F }}
-    subscription-id: ae3f9ad2-8b7d-4a8a-8652-2839e3c84234
-    allow-no-subscriptions: true
+      # 4️⃣ Login to Azure (OIDC)
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_9C50D43B95CE411DA8D709EB4029FE90 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_F2C1993DE7F64CFDA801B2D7E54BCF0F }}
+          subscription-id: ae3f9ad2-8b7d-4a8a-8652-2839e3c84234
+          allow-no-subscriptions: true
+
+      # ✅ TEMPORARY DEBUG — confirms subscription context
+      - name: Verify Azure subscription context
+        run: az account show
 
       # 5️⃣ Deploy Azure Functions
       - name: Deploy Azure Functions
