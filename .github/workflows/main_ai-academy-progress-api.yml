@@ -16,25 +16,25 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      id-token: write   # Required for OIDC
+      id-token: write
 
     steps:
-      # 1️⃣ Checkout
+      # Checkout code
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2️⃣ Node
+      # Setup Node
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: ${{ env.NODE_VERSION }}
 
-      # 3️⃣ Install deps (Functions project only)
+      # Install dependencies
       - name: Install Azure Functions dependencies
         run: npm install
         working-directory: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
 
-      # 4️⃣ Azure login (OIDC, no CLI subscription binding)
+      # Azure OIDC login (auth only)
       - name: Login to Azure
         uses: azure/login@v2
         with:
@@ -42,10 +42,11 @@ jobs:
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_F2C1993DE7F64CFDA801B2D7E54BCF0F }}
           allow-no-subscriptions: true
 
-      # 5️⃣ Deploy Azure Functions (ARM-based, no az CLI)
+      # ✅ DEPLOY — subscription explicitly provided here
       - name: Deploy Azure Functions
         uses: Azure/functions-action@v1
         with:
           app-name: ai-academy-progress-api
           slot-name: Production
           package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
+          subscription-id: ${{ env.AZURE_SUBSCRIPTION_ID }}
