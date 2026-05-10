@@ -19,22 +19,22 @@ jobs:
       id-token: write   # Required for OIDC
 
     steps:
-      # 1️⃣ Checkout repository
+      # 1️⃣ Checkout
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2️⃣ Setup Node.js
+      # 2️⃣ Node
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: ${{ env.NODE_VERSION }}
 
-      # 3️⃣ Install dependencies (Azure Functions project only)
+      # 3️⃣ Install deps (Functions project only)
       - name: Install Azure Functions dependencies
         run: npm install
         working-directory: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
 
-      # 4️⃣ Login to Azure using OIDC (NO subscription binding here)
+      # 4️⃣ Azure login (OIDC, no CLI subscription binding)
       - name: Login to Azure
         uses: azure/login@v2
         with:
@@ -42,15 +42,7 @@ jobs:
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_F2C1993DE7F64CFDA801B2D7E54BCF0F }}
           allow-no-subscriptions: true
 
-      # 5️⃣ Explicitly set the Visual Studio subscription
-      - name: Set Azure subscription context
-        run: az account set --subscription $AZURE_SUBSCRIPTION_ID
-
-      # 6️⃣ Verify Azure CLI context (safe & informative)
-      - name: Verify Azure subscription
-        run: az account show
-
-      # 7️⃣ Deploy Azure Functions
+      # 5️⃣ Deploy Azure Functions (ARM-based, no az CLI)
       - name: Deploy Azure Functions
         uses: Azure/functions-action@v1
         with:
