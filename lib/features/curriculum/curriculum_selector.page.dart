@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../services/curriculum_registry.dart';
 import '../../services/curriculum_state_service.dart';
@@ -55,7 +55,6 @@ class _CurriculumSelectorPageState extends State<CurriculumSelectorPage> {
     if (subject.isEmpty) subject = null;
     if (topic.isEmpty) topic = null;
 
-    // ✅ VALIDATION (degrade gracefully)
     // Track must exist
     if (track == null || !registry.containsKey(track)) {
       await CurriculumStateService.clearSelection();
@@ -78,7 +77,6 @@ class _CurriculumSelectorPageState extends State<CurriculumSelectorPage> {
     if (program == null ||
         programsMap is! Map<String, dynamic> ||
         !programsMap.containsKey(program)) {
-      // Keep track only; clear deeper levels
       await CurriculumStateService.clearSelection();
 
       setState(() {
@@ -141,7 +139,7 @@ class _CurriculumSelectorPageState extends State<CurriculumSelectorPage> {
       return;
     }
 
-    // ✅ If everything is valid, apply it
+    // Everything is valid
     setState(() {
       selectedTrack = track;
       selectedProgram = program;
@@ -152,7 +150,6 @@ class _CurriculumSelectorPageState extends State<CurriculumSelectorPage> {
   }
 
   void _showInfo(String message) {
-    // Avoid snackbar during initial frame if context is not ready
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -188,15 +185,32 @@ class _CurriculumSelectorPageState extends State<CurriculumSelectorPage> {
     );
   }
 
-  void _goToCourse() {
-    // Course page can read from saved selection later (stable).
-    Get.offAllNamed("/course");
+  /// Converts the selected topic into a route-safe course id.
+  /// If your actual course IDs are different, adjust this method.
+  String _resolveCourseId() {
+    final raw = (selectedTopic ?? 'flutter-ai').trim().toLowerCase();
+    final slug = raw
+        .replaceAll(RegExp(r'[^a-z0-9]+'), '-')
+        .replaceAll(RegExp(r'^-+|-+$'), '');
+
+    if (slug.isEmpty) {
+      return 'flutter-ai';
+    }
+    return slug;
   }
 
-  void _goToChat() {
-    Get.toNamed(
-      "/chat",
-      arguments: {
+  void _goToCourse(BuildContext context) {
+    final courseId = _resolveCourseId();
+
+    // If your course route expects a specific existing courseId,
+    // replace this with the correct mapping later.
+    context.go('/course/$courseId');
+  }
+
+  void _goToChat(BuildContext context) {
+    context.push(
+      '/chat',
+      extra: {
         "track": selectedTrack,
         "program": selectedProgram,
         "subject": selectedSubject,
@@ -248,7 +262,6 @@ class _CurriculumSelectorPageState extends State<CurriculumSelectorPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // ✅ Saved path card (recommended UX)
             if (_loadingSaved)
               const LinearProgressIndicator()
             else if (_hasFullSelection)
@@ -275,7 +288,8 @@ class _CurriculumSelectorPageState extends State<CurriculumSelectorPage> {
                             child: ElevatedButton.icon(
                               onPressed: () async {
                                 await _saveSelection();
-                                _goToCourse(); // ✅ Course-first
+                                if (!mounted) return;
+                                _goToCourse(context);
                               },
                               icon: const Icon(Icons.school),
                               label: const Text("Continue"),
@@ -286,7 +300,8 @@ class _CurriculumSelectorPageState extends State<CurriculumSelectorPage> {
                             child: OutlinedButton.icon(
                               onPressed: () async {
                                 await _saveSelection();
-                                _goToChat(); // optional jump to tutor
+                                if (!mounted) return;
+                                _goToChat(context);
                               },
                               icon: const Icon(Icons.chat),
                               label: const Text("AI Tutor"),
@@ -375,14 +390,14 @@ class _CurriculumSelectorPageState extends State<CurriculumSelectorPage> {
 
             const Spacer(),
 
-            // ✅ Primary CTA: Start Learning → Course page
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: _hasFullSelection
                     ? () async {
                         await _saveSelection();
-                        _goToCourse();
+                        if (!mounted) return;
+                        _goToCourse(context);
                       }
                     : null,
                 child: const Text("Start Learning"),
@@ -391,14 +406,14 @@ class _CurriculumSelectorPageState extends State<CurriculumSelectorPage> {
 
             const SizedBox(height: 10),
 
-            // ✅ Secondary CTA: Jump straight to AI Tutor
             SizedBox(
               width: double.infinity,
               child: OutlinedButton(
                 onPressed: _hasFullSelection
                     ? () async {
                         await _saveSelection();
-                        _goToChat();
+                        if (!mounted) return;
+                        _goToChat(context);
                       }
                     : null,
                 child: const Text("Open AI Tutor"),

@@ -5,69 +5,80 @@ import 'package:go_router/go_router.dart';
 // FEATURE IMPORTS
 // ===============================
 import '../../features/admin/admin_dashboard.page.dart';
+import '../../features/auth/login_page.dart';
+import '../../features/certificates/certificate_verification_page.dart';
 import '../../features/certificates/subject_certificate.page.dart';
+import '../../features/chat/ai_chat.page.dart';
+import '../../features/common/not_found_page.dart';
+import '../../features/courses/ai_notes.page.dart';
 import '../../features/courses/course_detail_page.dart';
 import '../../features/courses/lesson_player.page.dart';
-import '../../features/courses/ai_notes.page.dart';
 import '../../features/courses/video_player.page.dart';
-import '../../features/chat/ai_chat.page.dart';
 import '../../features/curriculum/curriculum_selector.page.dart';
-import '../../features/progress/progress_dashboard.page.dart';
+import '../../features/dashboard/dashboard_page.dart';
 import '../../features/debug/debug_routes.page.dart';
-import '../../features/common/not_found_page.dart';
-import '../../features/auth/login_page.dart';
+import '../../features/home/landing_page.dart';
+import '../../features/progress/progress_dashboard.page.dart';
 
 // ===============================
-// CORE AUTH STATE (ENTRA-READY)
+// CORE AUTH STATE
 // ===============================
 import '../../core/auth/app_auth_state.dart';
 
 // ===============================
-// ✅ FINAL GOROUTER CONFIGURATION
+// APP ROUTER
 // ===============================
 final GoRouter goRouter = GoRouter(
-  initialLocation: '/course/flutter-ai',
+  initialLocation: '/',
 
-  // ===============================
-  // 🔐 AUTH + ROLE REDIRECT LOGIC
-  // ===============================
   redirect: (context, state) {
     final location = state.matchedLocation;
     final isLoggedIn = AppAuthState.isLoggedIn;
     final isLoggingIn = location == '/login';
 
-    // Pages that require authentication
+    // ✅ Protected routes
     final requiresAuth =
-        location.startsWith('/course') || location.startsWith('/admin');
+        location.startsWith('/dashboard') ||
+        location.startsWith('/course') ||
+        location.startsWith('/admin');
 
-    // 🚫 Not logged in → redirect to login, preserve target
+    // 🚫 Not logged in → redirect to login with return target
     if (!isLoggedIn && requiresAuth && !isLoggingIn) {
-      return '/login?from=$location';
+      return '/login?from=${Uri.encodeComponent(location)}';
     }
 
-    // ✅ Logged in but visiting /login → go home
+    // ✅ Logged-in user visiting /login → dashboard
     if (isLoggedIn && isLoggingIn) {
-      return '/course/flutter-ai';
+      return '/dashboard';
     }
 
-    // 🔐 ADMIN ROLE PROTECTION (ENTRA-BASED)
+    // 🔐 Admin route protection
     if (location.startsWith('/admin') && !AppAuthState.isAdmin) {
-      return '/course/flutter-ai';
+      return '/dashboard';
     }
 
     return null;
   },
 
-  // ===============================
-  // 🧭 404 HANDLER
-  // ===============================
-  errorBuilder: (context, state) {
-    return const NotFoundPage();
-  },
+  errorBuilder: (context, state) => const NotFoundPage(),
 
   routes: [
     // -------------------------------
-    // LOGIN
+    // Public landing page
+    // -------------------------------
+    GoRoute(
+      path: '/',
+      redirect: (context, state) {
+        if (AppAuthState.isLoggedIn) {
+          return '/dashboard';
+        }
+        return null;
+      },
+      builder: (context, state) => const LandingPage(),
+    ),
+
+    // -------------------------------
+    // Login
     // -------------------------------
     GoRoute(
       path: '/login',
@@ -78,7 +89,36 @@ final GoRouter goRouter = GoRouter(
     ),
 
     // -------------------------------
-    // COURSES (WITH DEEP LINKS)
+    // OAuth callback
+    // -------------------------------
+    GoRoute(
+      path: '/oauth/callback',
+      builder: (context, state) => const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      ),
+    ),
+
+    // -------------------------------
+    // Dashboard
+    // -------------------------------
+    GoRoute(
+      path: '/dashboard',
+      builder: (context, state) => const DashboardPage(),
+    ),
+
+    // -------------------------------
+    // ✅ Public certificate verification
+    // -------------------------------
+    GoRoute(
+      path: '/verify/:certificateId',
+      builder: (context, state) {
+        final certificateId = state.pathParameters['certificateId']!;
+        return CertificateVerificationPage(certificateId: certificateId);
+      },
+    ),
+
+    // -------------------------------
+    // Courses
     // -------------------------------
     GoRoute(
       path: '/course/:courseId',
@@ -102,38 +142,35 @@ final GoRouter goRouter = GoRouter(
     ),
 
     // -------------------------------
-    // NOTES / VIDEO
+    // Notes / Video
     // -------------------------------
     GoRoute(
       path: '/notes',
       builder: (context, state) => const AINotesPage(),
     ),
-
     GoRoute(
       path: '/video',
       builder: (context, state) => const VideoPlayerPage(),
     ),
 
     // -------------------------------
-    // CHAT / CURRICULUM / PROGRESS
+    // Chat / Curriculum / Progress
     // -------------------------------
     GoRoute(
       path: '/chat',
       builder: (context, state) => const AIChatPage(),
     ),
-
     GoRoute(
       path: '/curriculum',
       builder: (context, state) => const CurriculumSelectorPage(),
     ),
-
     GoRoute(
       path: '/progress',
       builder: (context, state) => const ProgressDashboardPage(),
     ),
 
     // -------------------------------
-    // CERTIFICATE
+    // Certificate page
     // -------------------------------
     GoRoute(
       path: '/certificate',
@@ -141,7 +178,7 @@ final GoRouter goRouter = GoRouter(
     ),
 
     // -------------------------------
-    // ADMIN (AUTH + ROLE GUARDED)
+    // Admin
     // -------------------------------
     GoRoute(
       path: '/admin',
@@ -149,7 +186,7 @@ final GoRouter goRouter = GoRouter(
     ),
 
     // -------------------------------
-    // DEBUG
+    // Debug
     // -------------------------------
     GoRoute(
       path: '/debug',

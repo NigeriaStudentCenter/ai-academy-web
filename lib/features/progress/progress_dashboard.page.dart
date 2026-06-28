@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../services/curriculum_state_service.dart';
 import 'package:ai_academy/services/curriculum_progress_service.dart';
@@ -70,9 +70,36 @@ class _ProgressDashboardPageState extends State<ProgressDashboardPage> {
     });
   }
 
+  /// Converts a label into a route-safe slug.
+  /// Adjust this later if your real course IDs are mapped differently.
+  String _slugify(String value) {
+    final slug = value
+        .trim()
+        .toLowerCase()
+        .replaceAll(RegExp(r'[^a-z0-9]+'), '-')
+        .replaceAll(RegExp(r'^-+|-+$'), '');
+
+    return slug.isEmpty ? 'flutter-ai' : slug;
+  }
+
+  /// Best-effort course route from saved curriculum.
+  /// Falls back to flutter-ai if we cannot resolve something safer yet.
+  String _resolveCourseId() {
+    if (nextTopic != null && nextTopic!.trim().isNotEmpty) {
+      return _slugify(nextTopic!);
+    }
+
+    final subject = (curriculum?["subject"] ?? "").toString();
+    if (subject.trim().isNotEmpty) {
+      return _slugify(subject);
+    }
+
+    return 'flutter-ai';
+  }
+
   @override
   Widget build(BuildContext context) {
-    // ✅ Option 1 UX: Empty state + CTA buttons (no auto redirect)
+    // Empty state + CTA buttons
     if (curriculum == null) {
       return Scaffold(
         appBar: AppBar(
@@ -103,7 +130,7 @@ class _ProgressDashboardPageState extends State<ProgressDashboardPage> {
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton.icon(
-                      onPressed: () => Get.offAllNamed("/curriculum"),
+                      onPressed: () => context.go("/curriculum"),
                       icon: const Icon(Icons.map),
                       label: const Text("Choose learning path"),
                     ),
@@ -112,7 +139,7 @@ class _ProgressDashboardPageState extends State<ProgressDashboardPage> {
                   SizedBox(
                     width: double.infinity,
                     child: OutlinedButton.icon(
-                      onPressed: () => Get.offAllNamed("/course"),
+                      onPressed: () => context.go("/course/flutter-ai"),
                       icon: const Icon(Icons.school),
                       label: const Text("Back to Course"),
                     ),
@@ -183,9 +210,9 @@ class _ProgressDashboardPageState extends State<ProgressDashboardPage> {
                         width: double.infinity,
                         child: ElevatedButton(
                           onPressed: () {
-                            Get.toNamed(
+                            context.push(
                               "/chat",
-                              arguments: {
+                              extra: {
                                 "track": track,
                                 "program": program,
                                 "subject": subject,
@@ -194,6 +221,17 @@ class _ProgressDashboardPageState extends State<ProgressDashboardPage> {
                             );
                           },
                           child: const Text("Continue Learning"),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      SizedBox(
+                        width: double.infinity,
+                        child: OutlinedButton(
+                          onPressed: () {
+                            final courseId = _resolveCourseId();
+                            context.go('/course/$courseId');
+                          },
+                          child: const Text("Open Related Course"),
                         ),
                       ),
                     ],
