@@ -20,8 +20,10 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.example.ai_academy"
+        // Store identity — also the scheme of the Entra redirect
+        // org.bsoedu.aiacademy://oauthredirect used by flutter_appauth.
+        applicationId = "org.bsoedu.aiacademy"
+        manifestPlaceholders["appAuthRedirectScheme"] = "org.bsoedu.aiacademy"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion

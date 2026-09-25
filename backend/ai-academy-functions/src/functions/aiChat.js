@@ -1,5 +1,6 @@
 const { app } = require("@azure/functions");
 const { DefaultAzureCredential } = require("@azure/identity");
+const { requireUser } = require("../lib/auth");
 
 // Hosted replacement for ai-backend/server.js: proxies the Flutter AI Tutor
 // to the Foundry agent application using the Function App's managed identity,
@@ -13,7 +14,7 @@ const credential = new DefaultAzureCredential();
 app.http("aiChat", {
   methods: ["POST"],
   authLevel: "anonymous",
-  handler: async (request, context) => {
+  handler: requireUser(async (request, context) => {
     if (!FOUNDRY_OPENAI_BASE) {
       context.error("FOUNDRY_OPENAI_BASE is not configured");
       return { status: 500, jsonBody: { error: "AI tutor is not configured." } };
@@ -76,5 +77,5 @@ app.http("aiChat", {
       context.error("aiChat proxy error", err);
       return { status: 500, jsonBody: { error: "AI tutor proxy error." } };
     }
-  },
+  }),
 });

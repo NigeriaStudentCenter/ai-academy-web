@@ -1,76 +1,47 @@
 const { app } = require("@azure/functions");
-const { TableClient } = require("@azure/data-tables");
+const { requireUser } = require("../lib/auth");
+const { getCourseForUser } = require("../lib/courses");
+const progress = require("../lib/progress");
 
+// POST { courseId, lessonId } — marks one lesson complete. Completion and
+// certificates are computed here, never trusted from the client.
 app.http("saveProgress", {
   methods: ["POST"],
   authLevel: "anonymous",
-  handler: async (request, context) => {
-    const userId = request.headers.get("x-ms-client-principal-id");
+  handler: requireUser(async (request, context, user) => {
+    let body;
+    try {
+      body = await request.json();
+    } catch {
+      body = null;
+    }
+    const courseId = typeof body?.courseId === "string" ? body.courseId : "";
+    const lessonId = typeof body?.lessonId === "string" ? body.lessonId : "";
 
-    if (!userId) {
-      return { status: 401 };
+    const course = getCourseForUser(user, courseId);
+    if (!course) {
+      return { status: 404, jsonBody: { message: "Course not found." } };
+    }
+    const lessonIds = course.lessons.map((l) => l.lessonId);
+    if (!lessonIds.includes(lessonId)) {
+      return { status: 400, jsonBody: { message: "Unknown lessonId for this course." } };
     }
 
-    const body = await request.json();
-    const { courseId, completion, learnerName } = body || {};
+    const done = new Set(await progress.getProgress(user.userId, courseId));
+    done.add(lessonId);
+    const completedLessons = lessonIds.filter((id) => done.has(id));
+    const completion = completedLessons.length / lessonIds.length;
 
-    if (!courseId || completion === undefined) {
-      return {
-        status: 400,
-        jsonBody: { message: "courseId and completion are required." },
-      };
-    }
+    await progress.saveProgress(user.userId, courseId, completedLessons, completion);
 
-    const progressTable = TableClient.fromConnectionString(
-      process.env.AzureWebJobsStorage,
-      "LearnerProgress"
-    );
-
-    await progressTable.upsertEntity({
-      partitionKey: userId,
-      rowKey: courseId,
-      completion,
-      updatedAt: new Date().toISOString(),
-    });
-
-    // Auto-issue certificate when completion reaches 100%
-    if (completion >= 1.0) {
-      const certificateTable = TableClient.fromConnectionString(
-        process.env.AzureWebJobsStorage,
-        "LearnerCertificates"
-      );
-
-      // Check if this learner already has a certificate for this course
-      const existingCertificates = [];
-      for await (const entity of certificateTable.listEntities({
-        queryOptions: {
-          filter: `PartitionKey eq '${userId}' and courseId eq '${courseId}'`,
-        },
-      })) {
-        existingCertificates.push(entity);
-      }
-
-      if (existingCertificates.length === 0) {
-        const certificateId = `CERT-${Date.now()}-${courseId}`;
-
-        await certificateTable.createEntity({
-          partitionKey: userId,
-          rowKey: certificateId,
-          certificateId,
-          learnerName: learnerName || "Learner",
-          courseId,
-          courseTitle: courseId.replace(/-/g, " ").toUpperCase(),
-          issuedAt: new Date().toISOString(),
-          authorityName: "Dr. John Aikeremiokha",
-          authorityTitle: "Director of Learning, AI Academy",
-        });
-      }
+    let certificateId = null;
+    if (completion >= 1 && course.certificateEligible) {
+      certificateId = (await progress.issueCertificate(user, course)).certificateId;
     }
 
     return {
       status: 200,
-      jsonBody: { message: "Progress saved successfully." },
+      jsonBody: { courseId, completedLessons, completion, certificateId },
     };
-  },
+  }),
 });
-``

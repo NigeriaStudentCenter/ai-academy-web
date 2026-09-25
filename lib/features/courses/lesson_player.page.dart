@@ -64,13 +64,22 @@ class _LessonPlayerPageState extends State<LessonPlayerPage> {
   }
 
   Future<void> _markComplete() async {
-    await CourseApiService.markLessonComplete(
-        widget.courseId, widget.lessonId);
-    if (!mounted) return;
-    setState(() => completed = true);
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Lesson marked as complete')),
-    );
+    final messenger = ScaffoldMessenger.of(context);
+    try {
+      final certificateId = await CourseApiService.markLessonComplete(
+          widget.courseId, widget.lessonId);
+      if (!mounted) return;
+      setState(() => completed = true);
+      messenger.showSnackBar(SnackBar(
+        content: Text(certificateId != null
+            ? 'Course complete! Your certificate $certificateId has been issued.'
+            : 'Lesson marked as complete'),
+      ));
+    } catch (_) {
+      messenger.showSnackBar(const SnackBar(
+        content: Text('Could not save your progress. Please try again.'),
+      ));
+    }
   }
 
   @override

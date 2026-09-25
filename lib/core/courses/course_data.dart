@@ -40,6 +40,36 @@ class LessonData {
   }
 }
 
+/// Course card data from /api/listCourses (no lesson bodies).
+class CourseSummary {
+  final String courseId;
+  final String title;
+  final String description;
+  final String level;
+  final String estimatedDuration;
+  final int lessonCount;
+
+  const CourseSummary({
+    required this.courseId,
+    required this.title,
+    required this.description,
+    required this.level,
+    required this.estimatedDuration,
+    required this.lessonCount,
+  });
+
+  factory CourseSummary.fromJson(Map<String, dynamic> json) {
+    return CourseSummary(
+      courseId: json['courseId'] as String? ?? '',
+      title: json['title'] as String? ?? '',
+      description: json['description'] as String? ?? '',
+      level: json['level'] as String? ?? '',
+      estimatedDuration: json['estimatedDuration'] as String? ?? '',
+      lessonCount: (json['lessonCount'] as num?)?.toInt() ?? 0,
+    );
+  }
+}
+
 class CourseData {
   final String courseId;
   final String title;

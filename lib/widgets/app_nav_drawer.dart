@@ -1,31 +1,33 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart'; // ✅ REQUIRED FOR GoRouter
+
+import '../core/auth/app_auth_state.dart';
+import '../core/auth/entra_auth_service.dart';
 
 class AppNavDrawer extends StatelessWidget {
   const AppNavDrawer({super.key});
 
-  // 🔧 Toggle this during development
-  static const bool showAdmin = true;
-  static const bool showDebug = true;
-
   @override
   Widget build(BuildContext context) {
+    final user = AppAuthState.currentUser;
+
     return Drawer(
       child: SafeArea(
         child: Column(
           children: [
             // ===============================
-            // Drawer Header
+            // Drawer Header (signed-in learner)
             // ===============================
             UserAccountsDrawerHeader(
               decoration: const BoxDecoration(
                 color: Colors.blue,
               ),
-              accountName: const Text(
-                'Dr. John Aikeremiokha',
-                style: TextStyle(fontWeight: FontWeight.bold),
+              accountName: Text(
+                user?.displayName ?? 'AI Academy',
+                style: const TextStyle(fontWeight: FontWeight.bold),
               ),
-              accountEmail: const Text('AI Academy'),
+              accountEmail: Text(user?.email ?? ''),
               currentAccountPicture: const CircleAvatar(
                 backgroundColor: Colors.white,
                 child: Icon(
@@ -53,23 +55,23 @@ class AppNavDrawer extends StatelessWidget {
                   _drawerItem(
                     context,
                     icon: Icons.menu_book,
-                    title: 'Courses',
+                    title: 'My Courses',
                     routeName: '/courses',
                   ),
 
                   _drawerItem(
                     context,
-                    icon: Icons.person,
-                    title: 'Profile',
-                    routeName: '/profile',
+                    icon: Icons.chat,
+                    title: 'AI Tutor',
+                    routeName: '/chat',
                   ),
 
                   const Divider(),
 
                   // ===============================
-                  // Admin (optional)
+                  // Admin (Entra "Admin" app role only)
                   // ===============================
-                  if (showAdmin)
+                  if (AppAuthState.isAdmin)
                     _drawerItem(
                       context,
                       icon: Icons.admin_panel_settings,
@@ -78,15 +80,25 @@ class AppNavDrawer extends StatelessWidget {
                     ),
 
                   // ===============================
-                  // Debug (optional)
+                  // Debug (development builds only)
                   // ===============================
-                  if (showDebug)
+                  if (kDebugMode)
                     _drawerItem(
                       context,
                       icon: Icons.bug_report,
                       title: 'Debug',
                       routeName: '/debug',
                     ),
+
+                  ListTile(
+                    leading: const Icon(Icons.logout),
+                    title: const Text('Sign out'),
+                    onTap: () async {
+                      Navigator.pop(context);
+                      await EntraAuthService.signOut();
+                      if (context.mounted) context.go('/');
+                    },
+                  ),
                 ],
               ),
             ),
@@ -95,8 +107,8 @@ class AppNavDrawer extends StatelessWidget {
             // Footer
             // ===============================
             const Divider(),
-            Padding(
-              padding: const EdgeInsets.all(12.0),
+            const Padding(
+              padding: EdgeInsets.all(12.0),
               child: Text(
                 'AI Academy v1.0.0',
                 style: TextStyle(

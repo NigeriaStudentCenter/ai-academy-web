@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/auth/app_auth_state.dart';
+import '../../core/courses/course_api_service.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/certificates/certificate_service.dart';
 import '../../core/certificates/course_certificate.dart';
+import '../../widgets/app_nav_drawer.dart';
 
 class DashboardPage extends StatelessWidget {
   const DashboardPage({super.key});
@@ -14,8 +17,23 @@ class DashboardPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final user = AppAuthState.currentUser;
+    final name = user?.displayName ?? 'Learner';
+    final initials = name
+        .split(RegExp(r'\s+'))
+        .where((w) => w.isNotEmpty)
+        .take(2)
+        .map((w) => w[0].toUpperCase())
+        .join();
+
     return Scaffold(
       backgroundColor: AppColors.darkGreen,
+      drawer: const AppNavDrawer(),
+      appBar: AppBar(
+        backgroundColor: AppColors.darkGreen,
+        foregroundColor: AppColors.nearWhite,
+        elevation: 0,
+      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(20),
@@ -24,20 +42,26 @@ class DashboardPage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 // =========================
-                // Profile Header
+                // Profile Header (signed-in learner)
                 // =========================
-                const SizedBox(height: 20),
-
-                const CircleAvatar(
+                CircleAvatar(
                   radius: 50,
-                  backgroundImage: AssetImage("assets/images/john_photo.jpg"),
+                  backgroundColor: AppColors.nearWhite,
+                  child: Text(
+                    initials.isEmpty ? '?' : initials,
+                    style: const TextStyle(
+                      color: AppColors.darkGreen,
+                      fontSize: 34,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
 
                 const SizedBox(height: 16),
 
                 Text(
-                  "Dr. JOHN AIKEREMIOKHA",
-                  style: TextStyle(
+                  name,
+                  style: const TextStyle(
                     color: AppColors.nearWhite,
                     fontSize: 22,
                     fontWeight: FontWeight.bold,
@@ -45,52 +69,22 @@ class DashboardPage extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
 
-                Text(
-                  "NIGERIA STUDENT AMBASSADOR",
-                  style: TextStyle(
-                    color: AppColors.nearWhite.withOpacity(0.8),
-                    fontSize: 16,
+                if (user != null)
+                  Text(
+                    user.email,
+                    style: TextStyle(
+                      color: AppColors.nearWhite.withValues(alpha: 0.8),
+                      fontSize: 16,
+                    ),
+                    textAlign: TextAlign.center,
                   ),
-                  textAlign: TextAlign.center,
-                ),
 
                 const SizedBox(height: 30),
 
                 // =========================
-                // Progress Card
+                // Progress Card (from the backend)
                 // =========================
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: AppColors.nearWhite,
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Your Progress",
-                        style: TextStyle(
-                          color: AppColors.darkGreen,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      LinearProgressIndicator(
-                        value: 0.35,
-                        backgroundColor: Colors.grey[300],
-                        color: AppColors.darkGreen,
-                      ),
-                      const SizedBox(height: 10),
-                      Text(
-                        "35% completed",
-                        style: TextStyle(color: AppColors.darkGreen),
-                      ),
-                    ],
-                  ),
-                ),
+                const _ProgressCard(),
 
                 const SizedBox(height: 30),
 
@@ -104,13 +98,13 @@ class DashboardPage extends StatelessWidget {
                 const SizedBox(height: 30),
 
                 // =========================
-                // AI Foundations Course Button
+                // My Courses Button
                 // =========================
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton.icon(
                     onPressed: () {
-                      context.go('/course/ai-foundations');
+                      context.go('/courses');
                     },
                     icon: const Icon(Icons.school),
                     style: ElevatedButton.styleFrom(
@@ -122,36 +116,7 @@ class DashboardPage extends StatelessWidget {
                       ),
                     ),
                     label: const Text(
-                      "Start AI Foundations Course",
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-
-                const SizedBox(height: 20),
-
-                // =========================
-                // View Courses Button
-                // =========================
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      context.go('/course/flutter-ai');
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.nearWhite,
-                      foregroundColor: AppColors.darkGreen,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    child: const Text(
-                      "View All Courses",
+                      "My Courses",
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -194,6 +159,68 @@ class DashboardPage extends StatelessWidget {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// Overall progress across every course the learner can take.
+class _ProgressCard extends StatelessWidget {
+  const _ProgressCard();
+
+  static Future<double> _overallProgress() async {
+    final courses = await CourseApiService.listCourses();
+    var total = 0;
+    var done = 0;
+    for (final course in courses) {
+      total += course.lessonCount;
+      done += (await CourseApiService.completedLessons(course.courseId)).length;
+    }
+    return total == 0 ? 0 : done / total;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: AppColors.nearWhite,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: FutureBuilder<double>(
+        future: _overallProgress(),
+        builder: (context, snapshot) {
+          final value = snapshot.data;
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                "Your Progress",
+                style: TextStyle(
+                  color: AppColors.darkGreen,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 10),
+              LinearProgressIndicator(
+                value: snapshot.hasError ? 0 : value,
+                backgroundColor: Colors.grey[300],
+                color: AppColors.darkGreen,
+              ),
+              const SizedBox(height: 10),
+              Text(
+                snapshot.hasError
+                    ? "Progress is unavailable right now."
+                    : value == null
+                        ? "Loading…"
+                        : "${(value * 100).round()}% completed",
+                style: const TextStyle(color: AppColors.darkGreen),
+              ),
+            ],
+          );
+        },
       ),
     );
   }

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -41,8 +42,12 @@ class LoginPage extends StatelessWidget {
                   try {
                     await EntraAuthService.signIn(redirectTo);
 
+                    // On the web the page has already navigated to Microsoft;
+                    // /oauth/callback finishes sign-in.
+                    if (kIsWeb) return;
+
                     // ✅ Redirect back to intended route
-                    context.go(redirectTo ?? '/course/flutter-ai');
+                    if (context.mounted) context.go(redirectTo ?? '/dashboard');
                   } catch (e) {
                     if (context.mounted) {
                       ScaffoldMessenger.of(context).showSnackBar(

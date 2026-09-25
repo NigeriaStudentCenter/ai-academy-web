@@ -1,11 +1,11 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
+import '../core/api/api_client.dart';
+
 class AITutorService {
-  // ✅ Production: hosted proxy (Azure Function aiChat) that calls the
-  // Foundry AI-Tutor-Agent with a managed identity — no key in the app.
-  static const String _hostedEndpoint =
-      "https://ai-academy-progress-api-bucjc4gtcsenhuhs.swedencentral-01.azurewebsites.net/api/aiChat";
+  // ✅ Production: hosted proxy (Azure Function aiChat, signed-in learners
+  // only) that calls the Foundry AI-Tutor-Agent with a managed identity.
 
   // ✅ Optional override for local development against ai-backend/server.js
   // Example: flutter run --dart-define=BACKEND_URL=http://localhost:3000/ai/chat
@@ -14,17 +14,19 @@ class AITutorService {
 
   /// Used by chat, voice tutor, exam mode
   static Future<String> sendMessage(String prompt) async {
-    final String endpointToUse =
-        _backendOverride.isNotEmpty ? _backendOverride : _hostedEndpoint;
+    final body = jsonEncode({"input": prompt});
+    // Allows for backend cold start (~30s) plus the model response.
+    const timeout = Duration(seconds: 60);
 
-    final response = await http
-        .post(
-          Uri.parse(endpointToUse),
-          headers: const {"Content-Type": "application/json"},
-          body: jsonEncode({"input": prompt}),
-        )
-        // Allows for backend cold start (~30s) plus the model response.
-        .timeout(const Duration(seconds: 60));
+    final response = _backendOverride.isNotEmpty
+        ? await http
+            .post(
+              Uri.parse(_backendOverride),
+              headers: const {"Content-Type": "application/json"},
+              body: body,
+            )
+            .timeout(timeout)
+        : await ApiClient.post('aiChat', body, timeout: timeout);
 
     if (response.statusCode != 200) {
       throw Exception("HTTP ${response.statusCode}: ${response.body}");

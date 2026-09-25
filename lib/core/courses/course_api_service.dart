@@ -1,31 +1,40 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
-import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
 
+import '../api/api_client.dart';
 import 'course_data.dart';
 
-/// Loads courses from the Azure Functions backend (/api/getCourse) and
-/// tracks lesson completion on the device.
+/// Courses and lesson progress from the AI Academy backend. The backend only
+/// returns courses the signed-in learner's audience (teens / professional)
+/// allows, and records progress against their Microsoft account.
 class CourseApiService {
-  static const String _baseUrl =
-      'https://ai-academy-progress-api-bucjc4gtcsenhuhs.swedencentral-01.azurewebsites.net/api';
+  static final Map<String, CourseData> _courseCache = {};
+  static final Map<String, Set<String>> _progressCache = {};
 
-  static final Map<String, CourseData> _cache = {};
+  /// Bumped whenever a lesson is completed so open course pages refresh.
+  static final ValueNotifier<int> completionChanges = ValueNotifier(0);
 
-  /// Returns the course, or null if the backend has no course with this id.
-  /// Throws on network or server errors so callers can show a retry.
+  /// Courses this learner can take.
+  static Future<List<CourseSummary>> listCourses() async {
+    final response = await ApiClient.get('listCourses');
+    if (response.statusCode != 200) {
+      throw Exception('Could not load courses (HTTP ${response.statusCode}).');
+    }
+    final json = jsonDecode(response.body) as Map<String, dynamic>;
+    return (json['courses'] as List? ?? [])
+        .whereType<Map<String, dynamic>>()
+        .map(CourseSummary.fromJson)
+        .toList();
+  }
+
+  /// Returns the course, or null if it doesn't exist or isn't available to
+  /// this learner. Throws on network or server errors so callers can retry.
   static Future<CourseData?> getCourse(String courseId) async {
-    final cached = _cache[courseId];
+    final cached = _courseCache[courseId];
     if (cached != null) return cached;
 
-    final response = await http
-        .get(Uri.parse(
-            '$_baseUrl/getCourse?courseId=${Uri.encodeQueryComponent(courseId)}'))
-        // Generous: the Flex Consumption backend can take ~30s to cold start.
-        .timeout(const Duration(seconds: 45));
-
+    final response = await ApiClient.get('getCourse', {'courseId': courseId});
     if (response.statusCode == 404) return null;
     if (response.statusCode != 200) {
       throw Exception('Could not load course (HTTP ${response.statusCode}).');
@@ -34,30 +43,48 @@ class CourseApiService {
     final course = CourseData.fromJson(
       jsonDecode(response.body) as Map<String, dynamic>,
     );
-    _cache[courseId] = course;
+    _courseCache[courseId] = course;
     return course;
   }
 
-  // ---------------------------------------------------------------------------
-  // Lesson completion (stored locally until backend progress sync is wired up)
-  // ---------------------------------------------------------------------------
-
-  /// Bumped whenever a lesson is completed so open course pages refresh.
-  static final ValueNotifier<int> completionChanges = ValueNotifier(0);
-
-  static String _completionKey(String courseId) =>
-      'course_completed_lessons_$courseId';
-
+  /// Lesson ids this learner has completed in [courseId].
   static Future<Set<String>> completedLessons(String courseId) async {
-    final prefs = await SharedPreferences.getInstance();
-    return (prefs.getStringList(_completionKey(courseId)) ?? []).toSet();
+    final cached = _progressCache[courseId];
+    if (cached != null) return cached;
+
+    final response = await ApiClient.get('getProgress');
+    if (response.statusCode != 200) {
+      throw Exception('Could not load progress (HTTP ${response.statusCode}).');
+    }
+    for (final row in (jsonDecode(response.body) as List)
+        .whereType<Map<String, dynamic>>()) {
+      _progressCache[row['courseId'] as String] =
+          ((row['completedLessons'] as List?) ?? []).cast<String>().toSet();
+    }
+    return _progressCache[courseId] ??= {};
   }
 
-  static Future<void> markLessonComplete(
+  /// Records a completed lesson. Returns a certificate id when this finished
+  /// a certificate-eligible course.
+  static Future<String?> markLessonComplete(
       String courseId, String lessonId) async {
-    final prefs = await SharedPreferences.getInstance();
-    final completed = await completedLessons(courseId)..add(lessonId);
-    await prefs.setStringList(_completionKey(courseId), completed.toList());
+    final response = await ApiClient.post(
+      'saveProgress',
+      jsonEncode({'courseId': courseId, 'lessonId': lessonId}),
+    );
+    if (response.statusCode != 200) {
+      throw Exception('Could not save progress (HTTP ${response.statusCode}).');
+    }
+    final json = jsonDecode(response.body) as Map<String, dynamic>;
+    _progressCache[courseId] =
+        ((json['completedLessons'] as List?) ?? []).cast<String>().toSet();
     completionChanges.value++;
+    return json['certificateId'] as String?;
+  }
+
+  /// Forget cached data (e.g. after signing out).
+  static void clearCache() {
+    _courseCache.clear();
+    _progressCache.clear();
   }
 }
