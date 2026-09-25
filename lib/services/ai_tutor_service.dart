@@ -2,47 +2,25 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class AITutorService {
-  // ✅ Production (direct Foundry) – keep for advanced/testing only
-  // NOTE: api-version value must match what your Foundry endpoint expects.
-  static const String _endpoint =
-      "https://AI-Tutor-Agent.services.ai.azure.com"
-      "/api/projects/aiacademy/applications/AI-Tutor-Agent"
-      "/protocols/openai/responses"
-      "?api-version=v1";
+  // ✅ Production: hosted proxy (Azure Function aiChat) that calls the
+  // Foundry AI-Tutor-Agent with a managed identity — no key in the app.
+  static const String _hostedEndpoint =
+      "https://ai-academy-progress-api-bucjc4gtcsenhuhs.swedencentral-01.azurewebsites.net/api/aiChat";
 
-  // ✅ Development (your local Node proxy) – iPhone Simulator uses localhost
-  static const String _devEndpoint = "http://localhost:3000/ai/chat";
-
-  // ✅ Optional override (for later: real device or hosted backend)
-  // Example: flutter run --dart-define=BACKEND_URL=http://192.168.1.23:3000/ai/chat
+  // ✅ Optional override for local development against ai-backend/server.js
+  // Example: flutter run --dart-define=BACKEND_URL=http://localhost:3000/ai/chat
   static const String _backendOverride =
       String.fromEnvironment("BACKEND_URL");
 
-  static const String _apiKey = String.fromEnvironment("AZURE_AI_API_KEY");
-
   /// Used by chat, voice tutor, exam mode
   static Future<String> sendMessage(String prompt) async {
-    // ✅ Decide which endpoint to call
-    // If an API key is provided, call Foundry directly.
-    // If no API key is provided, call local backend proxy (dev mode),
-    // unless BACKEND_URL is provided.
-    final String endpointToUse = _apiKey.isNotEmpty
-        ? _endpoint
-        : (_backendOverride.isNotEmpty ? _backendOverride : _devEndpoint);
-
-    final Map<String, String> headers = {
-      "Content-Type": "application/json",
-    };
-
-    // ✅ Only attach api-key header when calling Foundry directly
-    if (_apiKey.isNotEmpty) {
-      headers["api-key"] = _apiKey;
-    }
+    final String endpointToUse =
+        _backendOverride.isNotEmpty ? _backendOverride : _hostedEndpoint;
 
     final response = await http
         .post(
           Uri.parse(endpointToUse),
-          headers: headers,
+          headers: const {"Content-Type": "application/json"},
           body: jsonEncode({"input": prompt}),
         )
         .timeout(const Duration(seconds: 30));
