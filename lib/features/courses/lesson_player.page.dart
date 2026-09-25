@@ -146,7 +146,14 @@ class _LessonPlayerPageState extends State<LessonPlayerPage> {
               ],
               const SizedBox(height: 8),
               HtmlWidget(
-                lesson.contentBody,
+                // The reflection question is shown in its own card below,
+                // so drop the inline copy some lessons include.
+                lesson.reflectionQuestion.isEmpty
+                    ? lesson.contentBody
+                    : lesson.contentBody.replaceAll(
+                        RegExp(r'<p>\s*<strong>\s*Reflection question:?\s*</strong>.*?</p>',
+                            caseSensitive: false, dotAll: true),
+                        ''),
                 textStyle: const TextStyle(fontSize: 16, height: 1.5),
               ),
               if (lesson.reflectionQuestion.isNotEmpty) ...[
