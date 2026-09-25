@@ -1,8 +1,10 @@
 // Courses authored as SharePoint pages on the "AI Academy" site.
 // The sync reads published "… Masterclass" pages through Microsoft Graph with
-// the Function App's managed identity (Graph app permission Sites.Selected,
-// read on this one site), converts them with sharepointParser and stores the
-// catalogue as one JSON blob that listCourses/getCourse read.
+// the Function App's managed identity, converts them with sharepointParser and
+// stores the catalogue as one JSON blob that listCourses/getCourse read.
+// Permission: Graph app role Sites.Read.All (granted 2026-09-25; Sites.Selected
+// is also assigned — once a site-level "read" grant for this app exists on the
+// AI Academy site, Sites.Read.All can be removed to narrow access).
 
 const { DefaultAzureCredential } = require("@azure/identity");
 const { BlobServiceClient } = require("@azure/storage-blob");
