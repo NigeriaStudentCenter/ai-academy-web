@@ -6,7 +6,6 @@ import 'package:flutter_tts/flutter_tts.dart';
 
 import 'package:ai_academy/services/ai_tutor_service.dart';
 import 'package:ai_academy/services/adaptive_revision_service.dart';
-import 'package:ai_academy/services/curriculum_state_service.dart';
 import 'package:ai_academy/services/progress_service.dart';
 import 'package:ai_academy/services/topic_completion_service.dart';
 

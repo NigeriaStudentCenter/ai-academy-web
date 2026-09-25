@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 import '../../services/curriculum_state_service.dart';
 import '../../services/curriculum_registry.dart';
