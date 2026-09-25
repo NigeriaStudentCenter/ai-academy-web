@@ -1,7 +1,7 @@
 const { app } = require("@azure/functions");
 const { TableClient } = require("@azure/data-tables");
 
-app.http("getProgress", {
+app.http("getCertificates", {
   methods: ["GET"],
   authLevel: "anonymous",
   handler: async (request, context) => {
@@ -11,19 +11,24 @@ app.http("getProgress", {
       return { status: 401 };
     }
 
-    const tableClient = TableClient.fromConnectionString(
+    const certificateTable = TableClient.fromConnectionString(
       process.env.AzureWebJobsStorage,
-      "LearnerProgress"
+      "LearnerCertificates"
     );
 
     const results = [];
 
-    for await (const entity of tableClient.listEntities({
+    for await (const entity of certificateTable.listEntities({
       queryOptions: { filter: `PartitionKey eq '${userId}'` },
     })) {
       results.push({
-        courseId: entity.rowKey,
-        completion: entity.completion,
+        certificateId: entity.certificateId,
+        learnerName: entity.learnerName,
+        courseId: entity.courseId,
+        courseTitle: entity.courseTitle,
+        issuedAt: entity.issuedAt,
+        authorityName: entity.authorityName,
+        authorityTitle: entity.authorityTitle,
       });
     }
 

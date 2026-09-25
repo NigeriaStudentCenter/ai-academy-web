@@ -332,3 +332,21 @@ app.http("getCourse", {
 
             <p><strong>Key idea:</strong> Using AI well is not only about the tool. It is also about the quality of the question.</p>
 
+          `,
+          completionType: "button",
+          videoAssetId: "",
+          imageAssetId: "",
+          workbookAssetId: "",
+          reflectionQuestion:
+            "What is one prompt you could use for your own learning?",
+          published: true,
+        },
+      ],
+    };
+
+    return {
+      status: 200,
+      jsonBody: course,
+    };
+  },
+});
