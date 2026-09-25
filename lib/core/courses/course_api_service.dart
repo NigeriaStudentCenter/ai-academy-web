@@ -23,7 +23,8 @@ class CourseApiService {
     final response = await http
         .get(Uri.parse(
             '$_baseUrl/getCourse?courseId=${Uri.encodeQueryComponent(courseId)}'))
-        .timeout(const Duration(seconds: 20));
+        // Generous: the Flex Consumption backend can take ~30s to cold start.
+        .timeout(const Duration(seconds: 45));
 
     if (response.statusCode == 404) return null;
     if (response.statusCode != 200) {

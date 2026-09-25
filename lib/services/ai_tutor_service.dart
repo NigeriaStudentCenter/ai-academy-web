@@ -23,7 +23,8 @@ class AITutorService {
           headers: const {"Content-Type": "application/json"},
           body: jsonEncode({"input": prompt}),
         )
-        .timeout(const Duration(seconds: 30));
+        // Allows for backend cold start (~30s) plus the model response.
+        .timeout(const Duration(seconds: 60));
 
     if (response.statusCode != 200) {
       throw Exception("HTTP ${response.statusCode}: ${response.body}");
