@@ -104,6 +104,36 @@ class DashboardPage extends StatelessWidget {
                 const SizedBox(height: 30),
 
                 // =========================
+                // AI Foundations Course Button
+                // =========================
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton.icon(
+                    onPressed: () {
+                      context.go('/course/ai-foundations');
+                    },
+                    icon: const Icon(Icons.school),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.nearWhite,
+                      foregroundColor: AppColors.darkGreen,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    label: const Text(
+                      "Start AI Foundations Course",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 20),
+
+                // =========================
                 // View Courses Button
                 // =========================
                 SizedBox(

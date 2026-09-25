@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/courses/course_api_service.dart';
+import '../../core/courses/course_data.dart';
 import '../../widgets/app_nav_drawer.dart';
+import 'widgets/backend_course_view.dart';
 import '../../services/curriculum_state_service.dart';
 import '../../services/curriculum_registry.dart';
 import '../../services/curriculum_progress_service.dart';
@@ -26,13 +29,48 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
   Set<String> completedTopics = {};
   bool loading = true;
 
+  // Set when the backend serves this courseId (e.g. ai-foundations)
+  CourseData? backendCourse;
+  Set<String> backendCompleted = {};
+
   @override
   void initState() {
     super.initState();
+    CourseApiService.completionChanges.addListener(_refreshBackendCompletion);
     _loadCourse();
   }
 
+  @override
+  void dispose() {
+    CourseApiService.completionChanges
+        .removeListener(_refreshBackendCompletion);
+    super.dispose();
+  }
+
+  Future<void> _refreshBackendCompletion() async {
+    if (backendCourse == null) return;
+    final done = await CourseApiService.completedLessons(widget.courseId);
+    if (!mounted) return;
+    setState(() => backendCompleted = done);
+  }
+
   Future<void> _loadCourse() async {
+    try {
+      final course = await CourseApiService.getCourse(widget.courseId);
+      if (course != null) {
+        final done = await CourseApiService.completedLessons(widget.courseId);
+        if (!mounted) return;
+        setState(() {
+          backendCourse = course;
+          backendCompleted = done;
+          loading = false;
+        });
+        return;
+      }
+    } catch (_) {
+      // Backend unreachable — fall back to the local curriculum view.
+    }
+
     final saved = await CurriculumStateService.loadSelection();
     if (!mounted) return;
 
@@ -81,6 +119,13 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
 
   @override
   Widget build(BuildContext context) {
+    if (backendCourse != null) {
+      return BackendCourseView(
+        course: backendCourse!,
+        completedLessons: backendCompleted,
+      );
+    }
+
     if (!loading && curriculum == null) {
       return Scaffold(
         drawer: const AppNavDrawer(),
