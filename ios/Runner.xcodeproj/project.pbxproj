@@ -481,6 +481,7 @@
 					"@executable_path/Frameworks",
 				);
 				PODS_XCFRAMEWORKS_BUILD_DIR = "Pods-Runner.release.xcconfig";
+				DEVELOPMENT_TEAM = 34W472R2XX;
 				PRODUCT_BUNDLE_IDENTIFIER = org.bsoedu.aiacademy;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
@@ -664,6 +665,7 @@
 					"@executable_path/Frameworks",
 				);
 				PODS_XCFRAMEWORKS_BUILD_DIR = "Pods-Runner.debug.xcconfig";
+				DEVELOPMENT_TEAM = 34W472R2XX;
 				PRODUCT_BUNDLE_IDENTIFIER = org.bsoedu.aiacademy;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
@@ -687,6 +689,7 @@
 					"@executable_path/Frameworks",
 				);
 				PODS_XCFRAMEWORKS_BUILD_DIR = "Pods-Runner.profile.xcconfig";
+				DEVELOPMENT_TEAM = 34W472R2XX;
 				PRODUCT_BUNDLE_IDENTIFIER = org.bsoedu.aiacademy;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";

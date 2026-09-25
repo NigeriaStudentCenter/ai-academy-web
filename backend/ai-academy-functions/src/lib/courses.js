@@ -1,31 +1,45 @@
-// Course catalogue. To add a course, create src/courses/<id>.js with an
-// `audiences` array ("teens" and/or "professional") and list it here.
-const COURSES = [require("../courses/ai-foundations")];
+// Course catalogue: built-in courses (src/courses/*.js, each with an
+// `audiences` array of "teens" and/or "professional") plus courses synced from
+// the SharePoint "AI Academy" site (see sharepointCourses.js).
+const { loadCatalog } = require("./sharepointCourses");
 
-const byId = new Map(COURSES.map((c) => [c.courseId, c]));
+const BUILT_IN = [require("../courses/ai-foundations")];
+
+async function allCourses() {
+  let synced = [];
+  try {
+    synced = (await loadCatalog()).courses || [];
+  } catch {
+    // Storage unavailable — still serve the built-in courses.
+  }
+  const ids = new Set(BUILT_IN.map((c) => c.courseId));
+  return [...BUILT_IN, ...synced.filter((c) => !ids.has(c.courseId))];
+}
 
 function canAccess(user, course) {
   return course.audiences.some((a) => user.audiences.includes(a));
 }
 
 /** The course if it exists and this learner may see it, otherwise null. */
-function getCourseForUser(user, courseId) {
-  const course = byId.get(courseId);
+async function getCourseForUser(user, courseId) {
+  const course = (await allCourses()).find((c) => c.courseId === courseId);
   return course && canAccess(user, course) ? course : null;
 }
 
 /** Summaries (no lesson bodies) of every course this learner may see. */
-function listCoursesForUser(user) {
-  return COURSES.filter((c) => canAccess(user, c)).map((c) => ({
-    courseId: c.courseId,
-    title: c.title,
-    description: c.description,
-    level: c.level,
-    estimatedDuration: c.estimatedDuration,
-    lessonCount: c.lessons.length,
-    certificateEligible: c.certificateEligible,
-    audiences: c.audiences,
-  }));
+async function listCoursesForUser(user) {
+  return (await allCourses())
+    .filter((c) => canAccess(user, c))
+    .map((c) => ({
+      courseId: c.courseId,
+      title: c.title,
+      description: c.description,
+      level: c.level,
+      estimatedDuration: c.estimatedDuration,
+      lessonCount: c.lessons.length,
+      certificateEligible: c.certificateEligible,
+      audiences: c.audiences,
+    }));
 }
 
 module.exports = { getCourseForUser, listCoursesForUser };

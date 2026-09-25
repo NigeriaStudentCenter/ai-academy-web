@@ -18,7 +18,7 @@ app.http("saveProgress", {
     const courseId = typeof body?.courseId === "string" ? body.courseId : "";
     const lessonId = typeof body?.lessonId === "string" ? body.lessonId : "";
 
-    const course = getCourseForUser(user, courseId);
+    const course = await getCourseForUser(user, courseId);
     if (!course) {
       return { status: 404, jsonBody: { message: "Course not found." } };
     }

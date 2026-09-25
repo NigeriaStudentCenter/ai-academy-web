@@ -14,7 +14,7 @@ app.http("listCourses", {
         isAdmin: user.isAdmin,
         audiences: user.audiences,
       },
-      courses: listCoursesForUser(user),
+      courses: await listCoursesForUser(user),
     },
   })),
 });

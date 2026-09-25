@@ -7,7 +7,7 @@ app.http("getCourse", {
   authLevel: "anonymous",
   handler: requireUser(async (request, context, user) => {
     const courseId = request.query.get("courseId") || "";
-    const course = getCourseForUser(user, courseId);
+    const course = await getCourseForUser(user, courseId);
 
     // Same 404 whether the course doesn't exist or isn't for this learner.
     if (!course) {

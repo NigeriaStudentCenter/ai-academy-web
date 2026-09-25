@@ -5,12 +5,13 @@
   "main": "src/functions/*.js",
   "scripts": {
     "start": "func start",
-    "test": "echo \"No tests yet...\""
+    "test": "node --test test/"
   },
   "dependencies": {
     "@azure/data-tables": "^13.3.2",
     "@azure/functions": "^4.0.0",
     "@azure/identity": "^4.13.3",
+    "@azure/storage-blob": "^12.34.0",
     "jose": "^5.10.0"
   },
   "devDependencies": {
