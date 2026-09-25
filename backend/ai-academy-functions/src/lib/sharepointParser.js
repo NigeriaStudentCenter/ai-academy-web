@@ -5,6 +5,10 @@
 const BANNER_TYPE = "cbe7b0a9-3504-44dd-a3a3-0e5cacd07788"; // title area / banner
 const MARKDOWN_TYPE = "1ef5ed11-ce7b-44be-bc5e-4abd55101d16";
 const MODULE_RE = /^MODULE\s+(\d+)\s*[·•:\-–—]\s*(.+)$/i;
+// Courses name these sections differently ("Learning objectives" / "LEARNING
+// GOALS", "Knowledge check" / "CHECKPOINT" — including a "CHECPOINT" typo).
+const OBJECTIVE_HEADING = /^(learning (objectives?|goals?|outcomes?)|objectives?|goals?)$/i;
+const CHECK_HEADING = /^(knowledge check|check ?point|checpoint|check your understanding|reflection)$/i;
 
 /** Mathematical bold letters (𝗕𝗘𝗚𝗜𝗡𝗡𝗘𝗥) → plain text, and tidy whitespace. */
 function plain(text) {
@@ -114,7 +118,10 @@ function textToHtml(innerHtml) {
       !/[.?!:;,"”]$/.test(line) &&
       next !== undefined &&
       !/^[A-Z]\s—/.test(line); // keep "C — Context: …" framework lines as text
-    if (looksLikeHeading) html.push(`<h3>${escapeHtml(line)}</h3>`);
+    if (looksLikeHeading) {
+      const heading = /[a-z]/.test(line) ? line : sentenceCase(line);
+      html.push(`<h3>${escapeHtml(heading)}</h3>`);
+    }
     else html.push(`<p>${escapeHtml(line)}</p>`);
   });
   closeList();
@@ -202,11 +209,11 @@ function parseCoursePage(page, opts) {
       }
       // Objective: text after a "Learning objectives" heading, else first line.
       if (!current.objective) {
-        const idx = lines.findIndex((l) => /^learning objectives?$/i.test(l));
+        const idx = lines.findIndex((l) => OBJECTIVE_HEADING.test(l));
         current.objective = idx >= 0 ? lines[idx + 1] || "" : "";
       }
       // Reflection: the "Knowledge check" questions, if present.
-      const kc = lines.findIndex((l) => /^knowledge check$/i.test(l));
+      const kc = lines.findIndex((l) => CHECK_HEADING.test(l));
       if (kc >= 0 && lines[kc + 1]) current.reflectionQuestion = lines[kc + 1];
 
       current.htmlParts.push(textToHtml(lines.join("<br>")));

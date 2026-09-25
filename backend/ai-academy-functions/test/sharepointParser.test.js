@@ -87,3 +87,20 @@ test("sentence case keeps brand names", () => {
   assert.equal(sentenceCase("NOTEBOOKLM FOUNDATIONS AND INTERFACE"), "NotebookLM foundations and interface");
   assert.equal(sentenceCase("SEARCH, RESEARCH AND VERIFY INFORMATION"), "Search, research and verify information");
 });
+
+test("objective and checkpoint headings vary between courses", () => {
+  const runwayLike = {
+    id: "x", name: "Runway-ML-Masterclass.aspx", title: "Runway ML Masterclass",
+    canvasLayout: { horizontalSections: [section(
+      banner("MODULE 1 · FOUNDATIONS, WORKSPACE AND MODEL DECISIONS"),
+      text("<p>𝟰𝟱 𝗠𝗜𝗡𝗨𝗧𝗘𝗦 · 𝗕𝗘𝗚𝗜𝗡𝗡𝗘𝗥<br>LEARNING GOALS<br>Explain the modern Runway production environment.<br>WHAT RUNWAY DOES<br>Runway combines generative image and video creation.<br>CHECPOINT<br>Which Runway path fits a product teaser?</p>")
+    )] },
+  };
+  const c = parseCoursePage(runwayLike, { audiences: ["professional"] });
+  const [m1] = c.lessons;
+  assert.equal(m1.duration, "45 minutes");
+  assert.equal(m1.objective, "Explain the modern Runway production environment.");
+  assert.equal(m1.reflectionQuestion, "Which Runway path fits a product teaser?");
+  assert.match(m1.contentBody, /<h3>What Runway does<\/h3>/);
+  assert.match(m1.contentBody, /<h3>Learning goals<\/h3>/);
+});
