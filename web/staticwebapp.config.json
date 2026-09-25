@@ -1,0 +1,6 @@
+{
+  "navigationFallback": {
+    "rewrite": "/index.html",
+    "exclude": ["/assets/*", "/canvaskit/*", "/icons/*", "*.{js,json,wasm,png,jpg,jpeg,gif,svg,ico,ttf,otf,woff,woff2,css,map}"]
+  }
+}
