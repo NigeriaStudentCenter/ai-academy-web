@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:go_router/go_router.dart';
 
 // ===============================
@@ -192,9 +193,10 @@ final GoRouter goRouter = GoRouter(
     // -------------------------------
     // Debug
     // -------------------------------
-    GoRoute(
-      path: '/debug',
-      builder: (context, state) => const DebugRoutesPage(),
-    ),
+    if (kDebugMode)
+      GoRoute(
+        path: '/debug',
+        builder: (context, state) => const DebugRoutesPage(),
+      ),
   ],
 );
