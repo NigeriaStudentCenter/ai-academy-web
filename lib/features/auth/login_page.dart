@@ -48,7 +48,8 @@ class LoginPage extends StatelessWidget {
 
                     // ✅ Redirect back to intended route
                     if (context.mounted) context.go(redirectTo ?? '/dashboard');
-                  } catch (e) {
+                  } catch (e, st) {
+                    debugPrint('Sign-in failed: $e\n$st');
                     if (context.mounted) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(

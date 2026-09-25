@@ -18,7 +18,9 @@ class AuthConfig {
       'https://login.microsoftonline.com/$tenantId';
 
   /// Registered as a public-client redirect for the iOS/Android apps.
-  static const String mobileRedirectUri = 'org.bsoedu.aiacademy://oauthredirect';
+  // Trailing slash matters: Entra returns ...://oauthredirect/?code=..., and
+  // AppAuth only resumes when the path matches the request exactly.
+  static const String mobileRedirectUri = 'org.bsoedu.aiacademy://oauthredirect/';
 
   /// Web redirect path (registered as an SPA redirect for each origin).
   static const String webCallbackPath = '/oauth/callback';
