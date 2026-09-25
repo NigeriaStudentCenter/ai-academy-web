@@ -9,6 +9,7 @@
 const { DefaultAzureCredential } = require("@azure/identity");
 const { BlobServiceClient } = require("@azure/storage-blob");
 const { parseCoursePage } = require("./sharepointParser");
+const { fetchHustleCourses } = require("./githubCourses");
 
 const SITE_ID =
   process.env.COURSE_SITE_ID || "cf178de6-35c7-4f02-b558-6c6548d49839"; // bsoed.sharepoint.com/sites/AIAcademy
@@ -93,6 +94,13 @@ async function syncCourses(log = () => {}) {
     }
     courses.push(course);
     log(`Imported "${course.title}" (${course.lessons.length} lessons)`);
+  }
+
+  // 200 AI Hustles (GitHub) — a failure here must not drop the SharePoint courses.
+  try {
+    courses.push(...(await fetchHustleCourses(log)));
+  } catch (err) {
+    log(`Hustles not synced: ${err.message}`);
   }
 
   const catalog = { syncedAt: new Date().toISOString(), courses };
