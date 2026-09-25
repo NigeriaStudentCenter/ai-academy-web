@@ -12,11 +12,11 @@ app.timer("syncCoursesTimer", {
   },
 });
 
-// …or immediately after publishing a change (Admins only).
+// …or immediately after publishing a change: POST /api/syncCourses (Admins only).
+// (Routes under /admin are reserved by the Functions host.)
 app.http("syncCourses", {
   methods: ["POST"],
   authLevel: "anonymous",
-  route: "admin/syncCourses",
   handler: requireUser(async (request, context, user) => {
     if (!user.isAdmin) return { status: 403, jsonBody: { error: "Admins only." } };
     const log = [];
