@@ -65,6 +65,20 @@ async function listCertificates(userId) {
   return listForUser("LearnerCertificates", userId);
 }
 
+/** Looks up a certificate by id across all learners (for public verification). */
+async function findCertificate(certificateId) {
+  try {
+    for await (const entity of table("LearnerCertificates").listEntities({
+      queryOptions: { filter: odata`RowKey eq ${certificateId}` },
+    })) {
+      return entity;
+    }
+  } catch (err) {
+    if (err.statusCode !== 404) throw err;
+  }
+  return null;
+}
+
 /** Issues a certificate once per learner per course; returns the certificate. */
 async function issueCertificate(user, course) {
   const existing = (await listCertificates(user.userId)).find(
@@ -95,5 +109,6 @@ module.exports = {
   getProgress,
   saveProgress,
   listCertificates,
+  findCertificate,
   issueCertificate,
 };
