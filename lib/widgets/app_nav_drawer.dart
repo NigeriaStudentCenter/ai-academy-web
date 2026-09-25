@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart'; // ✅ REQUIRED FOR GoRouter
 
 import '../core/auth/app_auth_state.dart';
 import '../core/auth/entra_auth_service.dart';
+import '../core/theme/app_colors.dart';
 
 class AppNavDrawer extends StatelessWidget {
   const AppNavDrawer({super.key});
@@ -21,7 +22,7 @@ class AppNavDrawer extends StatelessWidget {
             // ===============================
             UserAccountsDrawerHeader(
               decoration: const BoxDecoration(
-                color: Colors.blue,
+                color: AppColors.darkGreen,
               ),
               accountName: Text(
                 user?.displayName ?? 'AI Academy',
@@ -29,11 +30,11 @@ class AppNavDrawer extends StatelessWidget {
               ),
               accountEmail: Text(user?.email ?? ''),
               currentAccountPicture: const CircleAvatar(
-                backgroundColor: Colors.white,
+                backgroundColor: AppColors.nearWhite,
                 child: Icon(
                   Icons.person,
                   size: 40,
-                  color: Colors.blue,
+                  color: AppColors.darkGreen,
                 ),
               ),
             ),

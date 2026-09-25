@@ -80,8 +80,14 @@ screenshot`). Suggested set, in order:
 5. AI Tutor answering a question
 6. Certificate / verification
 
-Use a demo learner account (not a real person's) so no personal data
-appears in public screenshots.
+Captured (demo account "Student Ambassador", status bar 9:41) in
+`docs/app-store/screenshots/ios/`, all 1320 × 2868 — upload in this order:
+
+1. `01_dashboard.png` — name, 40% progress, My Courses, Ask AI Assistant
+2. `03_course.png` — course page, 2 of 5 lessons ticked, Resume learning
+3. `04_lesson.png` — lesson 3 "Risks and responsible use of AI"
+4. `05_ai_tutor.png` — AI Tutor answering "3 quick tips for a good prompt"
+5. `02_my_courses.png` — optional (sparse until there are more courses)
 
 ## 4. App Review information
 

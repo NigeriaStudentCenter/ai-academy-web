@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -303,7 +304,7 @@ $topic
           IconButton(
             tooltip: "Back to Course",
             icon: const Icon(Icons.home),
-            onPressed: () => Get.offAllNamed("/course"),
+            onPressed: () => context.go("/courses"),
           ),
 
           if (notes.isNotEmpty)

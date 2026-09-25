@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
+import 'package:markdown/markdown.dart' as md;
+import 'package:ai_academy/core/theme/app_colors.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
@@ -40,7 +44,6 @@ class _AIChatPageState extends State<AIChatPage> {
     _speech = stt.SpeechToText();
     _tts = FlutterTts();
     _configureTts();
-    _initSpeech();
 
     final args = Get.arguments;
     if (args is Map) {
@@ -93,7 +96,10 @@ class _AIChatPageState extends State<AIChatPage> {
   }
 
   Future<void> _startListening() async {
-    if (_isLoading || !_speechReady) return;
+    if (_isLoading) return;
+    // Request microphone/speech permission in context, on first mic tap.
+    if (!_speechReady) await _initSpeech();
+    if (!_speechReady) return;
 
     await _tts.stop();
     HapticFeedback.lightImpact();
@@ -180,12 +186,17 @@ class _AIChatPageState extends State<AIChatPage> {
       final subject = _curriculum["subject"] ?? "AI";
       final currentTopic = _curriculum["topic"] ?? "AI Basics";
 
-      final nextTopic = await AdaptiveRevisionService.recommendNextTopic(
-        track: track,
-        program: program,
-        subject: subject,
-        currentTopic: currentTopic,
-      );
+      String nextTopic = "the next lesson";
+      try {
+        nextTopic = await AdaptiveRevisionService.recommendNextTopic(
+          track: track,
+          program: program,
+          subject: subject,
+          currentTopic: currentTopic,
+        );
+      } catch (_) {
+        // Not opened from a curriculum topic (e.g. from a course) — fine.
+      }
 
       final prompt = """
 You are an AI tutor guiding learning through a curriculum.
@@ -209,18 +220,18 @@ Ask the learner if they understand before continuing.
       final reply = await AITutorService.sendMessage(prompt);
 
       _addAssistantMessage(reply);
-      await _tts.speak(reply);
+      // Read aloud without Markdown symbols.
+      await _tts.speak(reply.replaceAll(RegExp(r'[*_#`>]+'), ''));
 
       // ✅ FIX: mastery parsing (String → double)
-      final masteryRaw =
-          await ProgressService.getMasteryLevel(currentTopic);
-
-      final mastery =
-          double.tryParse(masteryRaw.toString()) ?? 0.0;
-
-      if (mastery >= 0.8) {
-        _addCompletionPrompt();
-      }
+      try {
+        final masteryRaw =
+            await ProgressService.getMasteryLevel(currentTopic);
+        final mastery = double.tryParse(masteryRaw.toString()) ?? 0.0;
+        if (mastery >= 0.8) {
+          _addCompletionPrompt();
+        }
+      } catch (_) {}
     } catch (e) {
       _addAssistantMessage(
         "Sorry. Something went wrong while contacting the AI Tutor.",
@@ -241,9 +252,9 @@ Ask the learner if they understand before continuing.
         title: const Text("AI Tutor"),
         actions: [
           IconButton(
-            tooltip: "Back to Course",
+            tooltip: "My Courses",
             icon: const Icon(Icons.home),
-            onPressed: () => Get.offAllNamed("/course"),
+            onPressed: () => context.go("/courses"),
           ),
         ],
       ),
@@ -268,7 +279,7 @@ Ask the learner if they understand before continuing.
                         const BoxConstraints(maxWidth: 320),
                     decoration: BoxDecoration(
                       color: m.isUser
-                          ? Colors.blue
+                          ? AppColors.darkGreen
                           : Colors.grey.shade200,
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -276,14 +287,20 @@ Ask the learner if they understand before continuing.
                       crossAxisAlignment:
                           CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          m.text,
-                          style: TextStyle(
-                            color: m.isUser
-                                ? Colors.white
-                                : Colors.black87,
+                        if (m.isUser)
+                          Text(
+                            m.text,
+                            style: const TextStyle(color: Colors.white),
+                          )
+                        else
+                          // The tutor replies in Markdown (bold steps, lists).
+                          HtmlWidget(
+                            md.markdownToHtml(m.text),
+                            textStyle: const TextStyle(
+                              color: Colors.black87,
+                              height: 1.4,
+                            ),
                           ),
-                        ),
                         if (m.isCompletionPrompt)
                           Padding(
                             padding:
@@ -368,6 +385,7 @@ Ask the learner if they understand before continuing.
                       border: OutlineInputBorder(),
                       isDense: true,
                     ),
+                    onChanged: (_) => setState(() {}),
                     onSubmitted: (v) {
                       final text = v.trim();
                       _controller.clear();
@@ -378,8 +396,7 @@ Ask the learner if they understand before continuing.
                 IconButton(
                   icon: Icon(
                     Icons.send,
-                    color:
-                        canSend ? Colors.blue : Colors.grey,
+                    color: canSend ? AppColors.darkGreen : Colors.grey,
                   ),
                   onPressed: canSend
                       ? () {
