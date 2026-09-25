@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 import 'package:go_router/go_router.dart';
 
@@ -164,6 +165,10 @@ class _LessonPlayerPageState extends State<LessonPlayerPage> {
                             caseSensitive: false, dotAll: true),
                         ''),
                 textStyle: const TextStyle(fontSize: 16, height: 1.5),
+                // Prompts (<blockquote>) become copyable prompt cards.
+                customWidgetBuilder: (element) => element.localName == 'blockquote'
+                    ? _PromptCard(text: element.text.trim())
+                    : null,
               ),
               if (lesson.reflectionQuestion.isNotEmpty) ...[
                 const SizedBox(height: 16),
@@ -213,6 +218,65 @@ class _LessonPlayerPageState extends State<LessonPlayerPage> {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// A course prompt learners can copy into ChatGPT, Claude, Gemini or Copilot.
+class _PromptCard extends StatelessWidget {
+  final String text;
+
+  const _PromptCard({required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      decoration: BoxDecoration(
+        color: const Color(0xFFEFF5F1),
+        borderRadius: BorderRadius.circular(12),
+        border: const Border(
+          left: BorderSide(color: Color(0xFFD1A054), width: 4),
+        ),
+      ),
+      padding: const EdgeInsets.fromLTRB(14, 10, 6, 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Icon(Icons.auto_awesome, size: 18, color: Color(0xFF0B3D2E)),
+              const SizedBox(width: 6),
+              const Expanded(
+                child: Text(
+                  'Prompt',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF0B3D2E),
+                  ),
+                ),
+              ),
+              TextButton.icon(
+                onPressed: () async {
+                  await Clipboard.setData(ClipboardData(text: text));
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Prompt copied')),
+                    );
+                  }
+                },
+                icon: const Icon(Icons.copy, size: 16),
+                label: const Text('Copy'),
+              ),
+            ],
+          ),
+          const SizedBox(height: 4),
+          SelectableText(
+            text,
+            style: const TextStyle(fontSize: 15, height: 1.5),
+          ),
+        ],
       ),
     );
   }
