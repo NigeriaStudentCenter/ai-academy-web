@@ -116,6 +116,13 @@ def main():
 
     # Splash: the mark on transparency (background colour set by the splash).
     mark.resize((768, 768), Image.LANCZOS).save(os.path.join(out, "splash_logo.png"))
+
+    # Android 12+ crops the splash icon to a circle ~2/3 of its canvas, so
+    # shrink the mark to fit inside it (otherwise the spark/tassel get cut).
+    a12 = Image.new("RGBA", (N, N), (0, 0, 0, 0))
+    small = mark.resize((int(N * 0.60), int(N * 0.60)), Image.LANCZOS)
+    a12.paste(small, ((N - small.width) // 2, (N - small.height) // 2), small)
+    a12.resize((960, 960), Image.LANCZOS).save(os.path.join(out, "splash_logo_android12.png"))
     print("wrote", os.path.abspath(out))
 
 

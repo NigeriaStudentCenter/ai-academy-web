@@ -14,29 +14,23 @@ dependencies:
   # Core utilities
   http: ^1.2.0
   get: ^4.6.6
-  provider: ^6.1.2
   shared_preferences: ^2.2.3
   cupertino_icons: ^1.0.8
-  google_fonts: ^6.2.1
   go_router: ^14.2.0
 
   # Authentication (Microsoft Entra / OpenID Connect)
 
   # Media & Web
-  webview_flutter: ^4.7.0
   video_player: ^2.8.2
   chewie: ^1.7.4
-  youtube_player_flutter: ^8.1.2
-  flutter_pdfview: ^1.2.7
 
   # Voice features
-  speech_to_text: ^6.6.1
-  flutter_tts: ^3.8.5
+  speech_to_text: ^7.4.0
+  flutter_tts: ^4.2.5
 
   # PDF export
   pdf: ^3.10.8
   printing: ^5.12.0
-  path_provider: ^2.1.3
   flutter_widget_from_html_core: ^0.17.4
   crypto: ^3.0.7
   web: ^1.1.1
@@ -78,5 +72,5 @@ flutter_native_splash:
   image: "assets/brand/splash_logo.png"
   android_12:
     color: "#0B3D2E"
-    image: "assets/brand/splash_logo.png"
+    image: "assets/brand/splash_logo_android12.png"
   web: true

@@ -101,8 +101,10 @@ class _AIChatPageState extends State<AIChatPage> {
     setState(() => _isListening = true);
 
     await _speech.listen(
-      listenMode: stt.ListenMode.confirmation,
-      partialResults: true,
+      listenOptions: stt.SpeechListenOptions(
+        listenMode: stt.ListenMode.confirmation,
+        partialResults: true,
+      ),
       onResult: (result) {
         setState(() {
           _controller.text = result.recognizedWords;
