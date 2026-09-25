@@ -4,6 +4,22 @@ function table(name) {
   return TableClient.fromConnectionString(process.env.AzureWebJobsStorage, name);
 }
 
+/** Collects every entity for a learner; a table that doesn't exist yet
+ * (nobody has saved progress / earned a certificate) counts as empty. */
+async function listForUser(tableName, userId) {
+  const results = [];
+  try {
+    for await (const entity of table(tableName).listEntities({
+      queryOptions: { filter: odata`PartitionKey eq ${userId}` },
+    })) {
+      results.push(entity);
+    }
+  } catch (err) {
+    if (err.statusCode !== 404) throw err;
+  }
+  return results;
+}
+
 function parseLessons(raw) {
   try {
     const list = JSON.parse(raw || "[]");
@@ -15,18 +31,12 @@ function parseLessons(raw) {
 
 /** Progress rows for a learner: [{ courseId, completedLessons, completion, updatedAt }] */
 async function listProgress(userId) {
-  const results = [];
-  for await (const entity of table("LearnerProgress").listEntities({
-    queryOptions: { filter: odata`PartitionKey eq ${userId}` },
-  })) {
-    results.push({
-      courseId: entity.rowKey,
-      completedLessons: parseLessons(entity.completedLessons),
-      completion: entity.completion ?? 0,
-      updatedAt: entity.updatedAt,
-    });
-  }
-  return results;
+  return (await listForUser("LearnerProgress", userId)).map((entity) => ({
+    courseId: entity.rowKey,
+    completedLessons: parseLessons(entity.completedLessons),
+    completion: entity.completion ?? 0,
+    updatedAt: entity.updatedAt,
+  }));
 }
 
 async function getProgress(userId, courseId) {
@@ -52,13 +62,7 @@ async function saveProgress(userId, courseId, completedLessons, completion) {
 }
 
 async function listCertificates(userId) {
-  const results = [];
-  for await (const entity of table("LearnerCertificates").listEntities({
-    queryOptions: { filter: odata`PartitionKey eq ${userId}` },
-  })) {
-    results.push(entity);
-  }
-  return results;
+  return listForUser("LearnerCertificates", userId);
 }
 
 /** Issues a certificate once per learner per course; returns the certificate. */
