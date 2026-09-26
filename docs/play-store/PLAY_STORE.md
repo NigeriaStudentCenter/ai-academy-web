@@ -9,6 +9,7 @@ questionnaires. Keep it in step with the app and with /privacy.html.
 |---|---|
 | App name | AI Academy |
 | Package name | `org.bsoedu.aiacademy` |
+| Developer account | Organisation — B.S.O.E LTD (Companies House 08938266), D-U-N-S 219956952 |
 | Default language | English (United Kingdom) – en-GB |
 | App or game | App |
 | Free or paid | Free (subscriptions to be added later via Play Billing) |
@@ -30,7 +31,10 @@ questionnaires. Keep it in step with the app and with /privacy.html.
 > AI Academy helps learners build real, practical skills with artificial intelligence — at their own pace, on their phone or the web.
 >
 > PRACTICAL AI COURSES
-> Over 40 courses, from AI foundations to ChatGPT, Claude, Copilot, Gemini and NotebookLM masterclasses, AI for administrators, healthcare, legal, data and business roles, AI engineering, and the 200 AI Business Ideas programme. Lessons include videos, copy-ready prompts and hands-on exercises.
+> More than 180 courses, organised into clear categories — from AI foundations to ChatGPT, Claude, Copilot, Gemini and NotebookLM masterclasses, AI for administrators, healthcare, legal, data and business roles, AI engineering, finance, HR, workplace and career skills, and the 200 AI Business Ideas programme. Lessons include videos, copy-ready prompts and hands-on exercises.
+>
+> PERSONAL DEVELOPMENT AND PROFESSIONAL SKILLS
+> Become Extra Ordinary, a 30-day programme with AI reflection partners; Delete Limiting Beliefs, a 12-week programme with an AI Delete Script Studio; and practical Customer Service, Marketing and Event Management courses with AI role-plays — interview a customer persona, calm a difficult customer, pitch a sponsor or handle an event-day crisis.
 >
 > YOUR OWN AI TUTOR
 > Stuck on an idea? Ask the AI Tutor — by typing or by voice. It explains things simply, gives examples and checks your understanding.
