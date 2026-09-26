@@ -18,6 +18,12 @@ const table = (head, rows) =>
   `<table><tr>${head.map((h) => `<th>${h}</th>`).join("")}</tr>${rows
     .map((r) => `<tr>${r.map((c) => `<td>${c}</td>`).join("")}</tr>`)
     .join("")}</table>`;
+const QUIZ_BANDS = [
+  { min: 5, max: 5, title: "Excellent" },
+  { min: 4, max: 4, title: "Strong understanding" },
+  { min: 3, max: 3, title: "Developing" },
+  { min: 0, max: 2, title: "Review today's lesson" },
+];
 const field = (id, label, type = "textarea") => ({ id, label, type });
 const LIFE_AREAS = [
   "Health & Wellbeing", "Career & Work", "Money & Financial Capability", "Relationships", "Learning",
@@ -289,6 +295,7 @@ ${block("exercise", "d10-assignment")}
           "Exercise: Day 10 — AI Future-Life Interview. Interview the learner about their ideal ordinary Tuesday about five years from now across work, learning, relationships, finances, health and wellbeing, creativity, contribution, community, time freedom, environment and experiences. Use what they've already written; ask about gaps and vague parts. Ask exactly ONE question per message. Never assume money, status or fame are priorities, and never tell them what life to want. When two answers seem to conflict (e.g. freedom vs constant work), name the possible contradiction neutrally and ask them to examine it. When they've covered the areas or ask for it, organise their answers under: 1 Future Lifestyle, 2 Work, 3 Relationships, 4 Learning, 5 Wellbeing, 6 Contribution, 7 Priorities, 8 Questions I still need to answer — in their words.",
       },
     ],
+    quizBands: QUIZ_BANDS,
     quiz: [
       q("Why is the Ordinary Tuesday exercise useful?", ["It predicts the future.", "It makes future goals more concrete.", "It guarantees happiness.", "It eliminates uncertainty."],
         1, "An ordinary day turns a headline goal into a lived picture you can compare with today."),
@@ -452,6 +459,7 @@ ${block("exercise", "d11-assignment")}
           "Exercise: Day 11 — Life Wheel planning partner. Using only the learner's scores and notes, reflect back: areas that appear strong, areas that may need attention, areas that may influence others (e.g. health affecting energy for everything else), and potential conflicts between priorities. Offer two areas they could explore over 90 days as options with brief reasoning, then ask which two THEY choose and why. Ask about missing scores or explanations rather than guessing. Never rank their life, judge it, diagnose, or tell them how to live.",
       },
     ],
+    quizBands: QUIZ_BANDS,
     quiz: [
       q("The purpose of the Life Wheel is:", ["To judge your worth.", "To compare yourself with others.", "To increase awareness of different life areas.", "To create ten major goals."],
         2, "It's a map, not a scorecard — awareness that helps you decide where to go next."),
@@ -615,6 +623,7 @@ ${block("exercise", "d12-analysis")}
           "Exercise: Day 12 — AI Future Perspective Partner. Analyse the learner's ten-year letter for: values, skills they want to develop, experiences they value, fears or concerns they repeat, actions their future perspective suggests exploring, and questions left unanswered. Structure the answer in three clearly labelled sections — \"What you said\" (quote or closely paraphrase their words), \"What I'm inferring\" (tentative), and \"Questions you may want to explore\". Never treat the imagined future as a prediction and never tell them what to decide. Finish with exactly three reflection questions.",
       },
     ],
+    quizBands: QUIZ_BANDS,
     quiz: [
       q("The Future Letter is primarily designed to:", ["Predict the future.", "Create perspective on present priorities.", "Guarantee future success.", "Eliminate uncertainty."],
         1, "Looking back from the future helps you see what matters enough to act on now."),
