@@ -89,6 +89,8 @@ async function surveyPages() {
   for (const summary of pages) {
     let banners = [];
     let textChars = 0;
+    const partTypes = {};
+    let sample = "";
     try {
       const page = await graph(
         `/sites/${SITE_ID}/pages/${summary.id}/microsoft.graph.sitePage?$expand=canvasLayout`
@@ -99,6 +101,9 @@ async function surveyPages() {
             const title = part.data?.properties?.title;
             if (title && part.webPartType === "cbe7b0a9-3504-44dd-a3a3-0e5cacd07788") banners.push(title.normalize("NFKC"));
             if (part.innerHtml) textChars += part.innerHtml.replace(/<[^>]+>/g, "").length;
+            const kind = part.innerHtml !== undefined ? "text" : part.data?.title || part.webPartType;
+            partTypes[kind] = (partTypes[kind] || 0) + 1;
+            if (!sample && part.innerHtml) sample = part.innerHtml.slice(0, 600);
           }
         }
       }
@@ -113,6 +118,8 @@ async function surveyPages() {
       moduleBanners: banners.filter((b) => /^MODULE\s+\d+/i.test(b)).length,
       banners: banners.slice(0, 12),
       textChars,
+      partTypes,
+      sample,
     });
   }
   return out.sort((a, b) => b.textChars - a.textChars);
