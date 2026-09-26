@@ -33,7 +33,8 @@ app.http("lessonResponses", {
   }),
 });
 
-// POST /api/submitQuiz {courseId, lessonId, answers:[optionIndex…]} → score, answers, explanations
+// POST /api/submitQuiz {courseId, lessonId, quizId?, answers:[optionIndex…]} → score, answers,
+// explanations. No quizId = the lesson's knowledge check; quizId = a scenario question.
 app.http("submitQuiz", {
   methods: ["POST"],
   authLevel: "anonymous",
@@ -41,13 +42,15 @@ app.http("submitQuiz", {
     const body = await readBody(request);
     const course = await getCourseForUser(user, body.courseId || "");
     const lesson = course && act.findLesson(course, body.lessonId);
-    if (!lesson?.quiz?.length) return { status: 404, jsonBody: { error: "Knowledge check not found." } };
-    const answers = Array.isArray(body.answers) ? body.answers.slice(0, lesson.quiz.length) : [];
-    if (answers.length !== lesson.quiz.length || answers.some((a) => !Number.isInteger(a))) {
+    const quizId = typeof body.quizId === "string" && body.quizId ? body.quizId : undefined;
+    const questions = lesson ? act.questionsFor(lesson, quizId) : [];
+    if (!questions.length) return { status: 404, jsonBody: { error: "Knowledge check not found." } };
+    const answers = Array.isArray(body.answers) ? body.answers.slice(0, questions.length) : [];
+    if (answers.length !== questions.length || answers.some((a) => !Number.isInteger(a))) {
       return { status: 400, jsonBody: { error: "Answer every question before submitting." } };
     }
-    const marked = act.markQuiz(lesson, answers);
-    await act.saveQuiz(user.userId, course.courseId, lesson.lessonId, marked);
+    const marked = act.markQuiz(lesson, answers, quizId);
+    await act.saveQuiz(user.userId, course.courseId, lesson.lessonId, marked, quizId);
     return { status: 200, jsonBody: marked };
   }),
 });

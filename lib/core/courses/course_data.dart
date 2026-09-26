@@ -32,6 +32,7 @@ class LessonData {
   final List<LessonExercise> exercises;
   final List<LessonCoach> coaches;
   final List<QuizQuestion> quiz;
+  final List<LessonScenario> scenarios;
   final List<PortfolioItem> portfolio;
 
   const LessonData({
@@ -53,6 +54,7 @@ class LessonData {
     this.exercises = const [],
     this.coaches = const [],
     this.quiz = const [],
+    this.scenarios = const [],
     this.portfolio = const [],
   });
 
@@ -80,6 +82,7 @@ class LessonData {
       exercises: _list(json['exercises'], LessonExercise.fromJson),
       coaches: _list(json['coaches'], LessonCoach.fromJson),
       quiz: _list(json['quiz'], QuizQuestion.fromJson),
+      scenarios: _list(json['scenarios'], LessonScenario.fromJson),
       portfolio: _list(json['portfolio'], PortfolioItem.fromJson),
     );
   }

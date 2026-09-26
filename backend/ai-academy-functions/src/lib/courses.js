@@ -34,6 +34,9 @@ function publicCourse(course) {
     lessons: rest.lessons.map((l) => ({
       ...l,
       quiz: l.quiz ? l.quiz.map(({ question, options }) => ({ question, options })) : undefined,
+      scenarios: l.scenarios
+        ? l.scenarios.map(({ scenarioId, title, question, options }) => ({ scenarioId, title, question, options }))
+        : undefined,
       coaches: l.coaches ? l.coaches.map(({ systemPrompt, ...c }) => c) : undefined,
     })),
   };

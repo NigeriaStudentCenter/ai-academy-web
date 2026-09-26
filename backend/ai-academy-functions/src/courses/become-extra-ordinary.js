@@ -40,7 +40,7 @@ module.exports = {
   audiences: ["professional", "teens"],
   category: "personal-development",
   draft: true,
-  version: "0.1",
+  version: "0.2",
   lessons: [
     // ------------------------------------------------------------------ intro
     {
@@ -623,5 +623,7 @@ ${block("coach", "m1-action-check")}
         { exerciseId: "m1-final-challenge", title: "4. My First Extraordinary Action", lessonId: "m1-review" },
       ],
     },
+    // Module 2 onwards live in their own files.
+    ...require("./become-extra-ordinary-m2"),
   ],
 };

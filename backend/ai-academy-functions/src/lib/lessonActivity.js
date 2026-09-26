@@ -17,6 +17,7 @@ const findLesson = (course, lessonId) => course.lessons.find((l) => l.lessonId =
 
 /** Field ids an exercise accepts: named fields, or table cells "r{row}c{col}". */
 function exerciseFieldIds(exercise) {
+  if (exercise.scale) return scaleStatements(exercise).map((_, i) => `s${i}`);
   if (exercise.table) {
     const ids = [];
     exercise.table.rows.forEach((_, r) => exercise.table.columns.forEach((__, c) => ids.push(`r${r}c${c}`)));
@@ -25,12 +26,23 @@ function exerciseFieldIds(exercise) {
   return (exercise.fields || []).map((f) => f.id);
 }
 
+/** A self-assessment's statements, in order across its groups. */
+function scaleStatements(exercise) {
+  return (exercise.scale?.groups || []).flatMap((g) => g.statements);
+}
+
 /** Keeps only this exercise's fields, as trimmed strings. */
 function cleanValues(exercise, values = {}) {
   const allowed = new Set(exerciseFieldIds(exercise));
   const out = {};
   for (const [k, v] of Object.entries(values || {}).slice(0, MAX_FIELDS * 2)) {
-    if (allowed.has(k) && typeof v === "string") out[k] = v.slice(0, MAX_VALUE);
+    if (!allowed.has(k) || typeof v !== "string") continue;
+    if (exercise.scale) {
+      const n = Number(v);
+      if (Number.isInteger(n) && n >= exercise.scale.min && n <= exercise.scale.max) out[k] = String(n);
+    } else {
+      out[k] = v.slice(0, MAX_VALUE);
+    }
   }
   return out;
 }
@@ -52,22 +64,29 @@ async function saveExercise(userId, courseId, lessonId, exercise, values) {
   return clean;
 }
 
+/** A lesson's knowledge check (no id) or one of its scenario questions. */
+function questionsFor(lesson, quizId) {
+  if (!quizId) return lesson.quiz || [];
+  const s = (lesson.scenarios || []).find((x) => x.scenarioId === quizId);
+  return s ? [s] : [];
+}
+
 /** Marks a knowledge check; returns per-question results with answers. */
-function markQuiz(lesson, answers = []) {
-  const results = (lesson.quiz || []).map((q, i) => {
+function markQuiz(lesson, answers = [], quizId) {
+  const results = questionsFor(lesson, quizId).map((q, i) => {
     const chosen = Number.isInteger(answers[i]) ? answers[i] : null;
     return { chosen, correct: chosen === q.answer, answer: q.answer, explanation: q.explanation || "" };
   });
   return { score: results.filter((r) => r.correct).length, total: results.length, results };
 }
 
-async function saveQuiz(userId, courseId, lessonId, marked) {
+async function saveQuiz(userId, courseId, lessonId, marked, quizId) {
   const t = table();
   await t.createTable().catch(() => {});
   await t.upsertEntity(
     {
       partitionKey: userId,
-      rowKey: `${courseId}|${lessonId}|quiz`,
+      rowKey: `${courseId}|${lessonId}|${quizId ? `quiz:${quizId}` : "quiz"}`,
       kind: "quiz",
       values: JSON.stringify(marked),
       updatedAt: new Date().toISOString(),
@@ -84,14 +103,15 @@ async function courseResponses(userId, courseId) {
       queryOptions: { filter: odata`PartitionKey eq ${userId} and RowKey ge ${courseId + "|"} and RowKey lt ${courseId + "|~"}` },
     })) {
       const [, lessonId, itemId] = e.rowKey.split("|");
-      const lesson = (out[lessonId] ||= { exercises: {}, quiz: null });
+      const lesson = (out[lessonId] ||= { exercises: {}, quiz: null, scenarios: {} });
       let values = {};
       try {
         values = JSON.parse(e.values || "{}");
       } catch {
         /* ignore */
       }
-      if (e.kind === "quiz") lesson.quiz = values;
+      if (e.kind === "quiz" && itemId.startsWith("quiz:")) lesson.scenarios[itemId.slice(5)] = values;
+      else if (e.kind === "quiz") lesson.quiz = values;
       else lesson.exercises[itemId] = values;
     }
   } catch (err) {
@@ -102,6 +122,12 @@ async function courseResponses(userId, courseId) {
 
 /** An exercise's saved answers as readable text (for the AI coach). */
 function exerciseAsText(exercise, values = {}) {
+  if (exercise.scale) {
+    return scaleStatements(exercise)
+      .map((st, i) => (values[`s${i}`] ? `${st} — ${values[`s${i}`]}/${exercise.scale.max}` : ""))
+      .filter(Boolean)
+      .join("\n");
+  }
   if (exercise.table) {
     const lines = [];
     exercise.table.rows.forEach((row, r) => {
@@ -140,6 +166,7 @@ module.exports = {
   cleanValues,
   saveExercise,
   markQuiz,
+  questionsFor,
   saveQuiz,
   courseResponses,
   exerciseAsText,

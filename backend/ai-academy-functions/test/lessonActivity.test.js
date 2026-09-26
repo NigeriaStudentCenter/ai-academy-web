@@ -12,6 +12,8 @@ test("become extra ordinary: every block in the lessons has a matching definitio
       if (kind === "exercise") assert.ok(l.exercises.some((e) => e.exerciseId === id), `${l.lessonId}: exercise ${id}`);
       if (kind === "coach") assert.ok(l.coaches.some((c) => c.coachId === id), `${l.lessonId}: coach ${id}`);
       if (kind === "quiz") assert.equal(l.quiz.length, 5, `${l.lessonId}: quiz`);
+      if (kind === "scenario") assert.ok(l.scenarios.some((x) => x.scenarioId === id), `${l.lessonId}: scenario ${id}`);
+      if (kind === "portfolio") assert.ok(l.portfolio.length, `${l.lessonId}: portfolio`);
     }
   }
   assert.equal(course.draft, true);
@@ -53,4 +55,23 @@ test("coach input: server instructions first, learner turns after; system turns 
   assert.match(input[0].content, /thinking partner/i);
   assert.match(input[0].content, /Day 1/);
   assert.equal(act.coachInput(course.coachRules, coach, []), null);
+});
+
+test("module 2: diagnostic scale, scenarios and true/false checks", () => {
+  const intro = course.lessons.find((l) => l.lessonId === "m2-intro");
+  const diag = intro.exercises[0];
+  assert.equal(act.exerciseFieldIds(diag).length, 15);
+  const clean = act.cleanValues(diag, { s0: "5", s1: "9", s2: "x", s14: "1" });
+  assert.deepEqual(clean, { s0: "5", s14: "1" }); // out-of-range and non-numeric dropped
+  const day4 = course.lessons.find((l) => l.lessonId === "m2-day-4");
+  const scen = act.markQuiz(day4, [2], "d4-amara");
+  assert.equal(scen.score, 1);
+  assert.match(scen.results[0].explanation, /can't yet/);
+  assert.deepEqual(act.questionsFor(day4, "nope"), []);
+  assert.equal(day4.quiz[1].options.join("/"), "True/False");
+  const pub = publicCourse(course).lessons.find((l) => l.lessonId === "m2-day-4");
+  assert.deepEqual(Object.keys(pub.scenarios[0]).sort(), ["options", "question", "scenarioId", "title"]);
+  const lessonIds = course.lessons.map((l) => l.lessonId);
+  assert.equal(new Set(lessonIds).size, lessonIds.length);
+  assert.deepEqual(course.lessons.map((l) => l.lessonOrder), course.lessons.map((_, i) => i + 1));
 });

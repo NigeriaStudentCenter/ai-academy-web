@@ -58,8 +58,10 @@ class _LessonPlayerPageState extends State<LessonPlayerPage> {
       // Courses with exercises: the learner's saved answers and results.
       var savedWork = <String, LessonSaved>{};
       if (loaded != null &&
-          loaded.lessons
-              .any((l) => l.exercises.isNotEmpty || l.quiz.isNotEmpty)) {
+          loaded.lessons.any((l) =>
+              l.exercises.isNotEmpty ||
+              l.quiz.isNotEmpty ||
+              l.scenarios.isNotEmpty)) {
         try {
           savedWork =
               await LessonActivityService.load(widget.courseId, refresh: true);
@@ -142,6 +144,17 @@ class _LessonPlayerPageState extends State<LessonPlayerPage> {
         case 'coach':
           final coach = lesson.coaches.where((c) => c.id == id).firstOrNull;
           if (coach != null) out.add(CoachBlock(ctx: ctx, coach: coach));
+        case 'scenario':
+          final sc = lesson.scenarios.where((x) => x.id == id).firstOrNull;
+          if (sc != null) {
+            out.add(QuizBlock(
+              key: ValueKey('${lesson.lessonId}/scenario/$id'),
+              ctx: ctx,
+              questions: [sc.question],
+              quizId: sc.id,
+              title: sc.title,
+            ));
+          }
         case 'quiz':
           if (lesson.quiz.isNotEmpty) {
             out.add(QuizBlock(

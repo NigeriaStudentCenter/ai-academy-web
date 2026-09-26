@@ -45,6 +45,9 @@ class _ExerciseBlockState extends State<ExerciseBlock> {
 
   List<String> get _ids {
     final e = widget.exercise;
+    if (e.isScale) {
+      return [for (var i = 0; i < e.scale!.statements.length; i++) 's$i'];
+    }
     if (e.isTable) {
       return [
         for (var r = 0; r < e.rows.length; r++)
@@ -143,7 +146,12 @@ class _ExerciseBlockState extends State<ExerciseBlock> {
               Padding(
                   padding: const EdgeInsets.only(top: 6), child: Text(e.intro)),
             const SizedBox(height: 10),
-            if (e.isTable) ..._tableRows(e) else ..._fields(e),
+            if (e.isScale)
+              ..._scale(e)
+            else if (e.isTable)
+              ..._tableRows(e)
+            else
+              ..._fields(e),
             Row(
               children: [
                 Expanded(
@@ -210,6 +218,80 @@ class _ExerciseBlockState extends State<ExerciseBlock> {
         ],
       ];
 
+  /// Self-assessment: tap 1–N for each statement; the total and band update live.
+  List<Widget> _scale(LessonExercise e) {
+    final sc = e.scale!;
+    final widgets = <Widget>[];
+    var index = 0;
+    widgets.add(Wrap(spacing: 10, runSpacing: 4, children: [
+      for (var v = sc.min; v <= sc.max; v++)
+        Text(
+            '$v = ${v - sc.min < sc.labels.length ? sc.labels[v - sc.min] : v}',
+            style: TextStyle(fontSize: 12.5, color: Colors.grey.shade700)),
+    ]));
+    for (final g in sc.groups) {
+      widgets.add(Padding(
+        padding: const EdgeInsets.only(top: 14, bottom: 4),
+        child: Text(g.title,
+            style: const TextStyle(fontWeight: FontWeight.bold, color: _green)),
+      ));
+      for (final st in g.statements) {
+        final id = 's${index++}';
+        final ctrl = _c[id]!;
+        widgets.add(Padding(
+          padding: const EdgeInsets.symmetric(vertical: 6),
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text('$index. $st', style: const TextStyle(height: 1.35)),
+            const SizedBox(height: 6),
+            Wrap(spacing: 6, children: [
+              for (var v = sc.min; v <= sc.max; v++)
+                ChoiceChip(
+                  label: Text('$v'),
+                  selected: ctrl.text == '$v',
+                  showCheckmark: false,
+                  selectedColor: _gold,
+                  labelStyle: TextStyle(
+                      color: ctrl.text == '$v' ? Colors.white : _green,
+                      fontWeight: FontWeight.w600),
+                  onSelected: (_) => setState(() => ctrl.text = '$v'),
+                ),
+            ]),
+          ]),
+        ));
+      }
+    }
+    final scores = [for (final id in _ids) int.tryParse(_c[id]!.text)]
+        .whereType<int>()
+        .toList();
+    final total = scores.fold(0, (a, b) => a + b);
+    final complete = scores.length == _ids.length;
+    final band = complete
+        ? sc.bands.where((b) => total >= b.min && total <= b.max).firstOrNull
+        : null;
+    widgets.add(Container(
+      margin: const EdgeInsets.only(top: 14, bottom: 6),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+          color: const Color(0xFFFFF8E6),
+          borderRadius: BorderRadius.circular(10)),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Text(
+          complete
+              ? 'Your score: $total / ${_ids.length * sc.max}'
+              : 'Answered ${scores.length} of ${_ids.length} — your result appears when all are scored.',
+          style: const TextStyle(fontWeight: FontWeight.bold, color: _green),
+        ),
+        if (band != null) ...[
+          const SizedBox(height: 6),
+          Text(band.title, style: const TextStyle(fontWeight: FontWeight.w600)),
+          Text(band.text, style: const TextStyle(height: 1.4)),
+        ],
+      ]),
+    ));
+    return widgets;
+  }
+
   /// Table exercises: one card per row, one field per column (works on phones).
   List<Widget> _tableRows(LessonExercise e) => [
         for (var r = 0; r < e.rows.length; r++)
@@ -250,7 +332,16 @@ class _ExerciseBlockState extends State<ExerciseBlock> {
 class QuizBlock extends StatefulWidget {
   final LessonContext ctx;
   final List<QuizQuestion> questions;
-  const QuizBlock({super.key, required this.ctx, required this.questions});
+
+  /// Set for a scenario question (one question, its own saved result).
+  final String? quizId;
+  final String? title;
+  const QuizBlock(
+      {super.key,
+      required this.ctx,
+      required this.questions,
+      this.quizId,
+      this.title});
 
   @override
   State<QuizBlock> createState() => _QuizBlockState();
@@ -265,7 +356,9 @@ class _QuizBlockState extends State<QuizBlock> {
   @override
   void initState() {
     super.initState();
-    _result = widget.ctx.saved[widget.ctx.lessonId]?.quiz;
+    final saved = widget.ctx.saved[widget.ctx.lessonId];
+    _result =
+        widget.quizId == null ? saved?.quiz : saved?.scenarios[widget.quizId];
     _chosen = _result != null
         ? _result!.results.map((r) => r.chosen).toList()
         : List<int?>.filled(widget.questions.length, null);
@@ -278,7 +371,8 @@ class _QuizBlockState extends State<QuizBlock> {
     });
     try {
       final r = await LessonActivityService.submitQuiz(widget.ctx.courseId,
-          widget.ctx.lessonId, _chosen.map((c) => c!).toList());
+          widget.ctx.lessonId, _chosen.map((c) => c!).toList(),
+          quizId: widget.quizId);
       if (mounted) setState(() => _result = r);
     } catch (e) {
       if (mounted) {
@@ -306,9 +400,11 @@ class _QuizBlockState extends State<QuizBlock> {
               const SizedBox(width: 6),
               Expanded(
                 child: Text(
-                    r == null
-                        ? 'Knowledge check'
-                        : 'Knowledge check — ${r.score} / ${r.total}',
+                    widget.quizId != null
+                        ? 'Scenario${widget.title != null ? ' — ${widget.title}' : ''}'
+                        : r == null
+                            ? 'Knowledge check'
+                            : 'Knowledge check — ${r.score} / ${r.total}',
                     style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
@@ -316,10 +412,11 @@ class _QuizBlockState extends State<QuizBlock> {
               ),
             ]),
             if (r == null)
-              const Padding(
-                padding: EdgeInsets.only(top: 4),
-                child: Text(
-                    'Answer every question, then submit to see the answers.'),
+              Padding(
+                padding: const EdgeInsets.only(top: 4),
+                child: Text(widget.quizId != null
+                    ? 'Choose the response you think is most useful, then check.'
+                    : 'Answer every question, then submit to see the answers.'),
               ),
             for (var i = 0; i < widget.questions.length; i++) _question(i, r),
             if (_error != null)
@@ -330,7 +427,11 @@ class _QuizBlockState extends State<QuizBlock> {
                     _submitting || _chosen.contains(null) ? null : _submit,
                 style: ElevatedButton.styleFrom(
                     backgroundColor: _green, foregroundColor: Colors.white),
-                child: Text(_submitting ? 'Marking…' : 'Submit answers'),
+                child: Text(_submitting
+                    ? 'Marking…'
+                    : widget.quizId != null
+                        ? 'Check my answer'
+                        : 'Submit answers'),
               )
             else
               TextButton.icon(
@@ -369,7 +470,7 @@ class _QuizBlockState extends State<QuizBlock> {
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Text(
-                '${res.correct ? 'Correct.' : 'The answer is ${String.fromCharCode(65 + res.answer)}.'} ${res.explanation}',
+                '${res.correct ? (widget.quizId != null ? 'Best response.' : 'Correct.') : '${widget.quizId != null ? 'Best response' : 'The answer is'}: ${String.fromCharCode(65 + res.answer)}.'} ${res.explanation}',
                 style: const TextStyle(fontSize: 14, height: 1.4),
               ),
             ),
@@ -580,7 +681,9 @@ class _CoachChatPageState extends State<CoachChatPage> {
                           child: Text(
                             widget.coach.usesAnswers
                                 ? 'Your exercise prompt is ready below, with your saved answers filled in. Check it, edit anything you like, then send. Your thinking partner asks questions — the decisions stay yours.'
-                                : 'Your exercise prompt is ready below. Edit it if you like, then send.',
+                                : widget.coach.promptTemplate.contains('[')
+                                    ? 'Your exercise prompt is ready below. Replace the part in [square brackets] with your own situation, then send.'
+                                    : 'Your exercise prompt is ready below. Edit it if you like, then send.',
                             style: const TextStyle(height: 1.4),
                           ),
                         ),
