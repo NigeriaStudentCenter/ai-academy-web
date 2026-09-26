@@ -93,7 +93,7 @@ module.exports = {
   certificateEligible: true,
   audiences: ["professional"],
   category: "workplace",
-  draft: true,
+  draft: false,
   version: "1.0",
   lessons: [welcome, ...require("./lessons-1"), ...require("./lessons-2"), ...require("./lessons-3")],
 };

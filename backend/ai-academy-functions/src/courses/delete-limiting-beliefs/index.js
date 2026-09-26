@@ -108,7 +108,7 @@ module.exports = {
   certificateEligible: true,
   audiences: ["professional", "teens"],
   category: "personal-development",
-  draft: true,
+  draft: false,
   version: "1.0",
   lessons: [
     welcome,
