@@ -5,6 +5,7 @@ const { publicCourse } = require("../src/lib/courses");
 const COURSES = [
   [require("../src/courses/delete-limiting-beliefs"), 18],
   [require("../src/courses/customer-service-skills"), 11],
+  [require("../src/courses/event-management"), 10],
 ];
 
 for (const [course, lessonCount] of COURSES) {

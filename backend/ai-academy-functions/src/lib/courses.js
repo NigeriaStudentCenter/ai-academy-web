@@ -9,6 +9,7 @@ const BUILT_IN = [
   require("../courses/become-extra-ordinary"),
   require("../courses/delete-limiting-beliefs"),
   require("../courses/customer-service-skills"),
+  require("../courses/event-management"),
 ];
 
 async function allCourses() {
