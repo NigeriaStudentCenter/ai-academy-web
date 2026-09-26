@@ -52,12 +52,18 @@ function sentenceCase(upper, extraWords = []) {
     [...KNOWN_WORDS, ...extraWords].map((w) => [w.toLowerCase(), w])
   );
   const words = plain(upper).toLowerCase().split(" ");
+  // Capitalise the first real word, so "4 · DETAILED CASE STUDY" → "4 · Detailed…".
+  let capitalised = false;
   return words
-    .map((w, i) => {
+    .map((w) => {
       const core = w.replace(/^[^a-z0-9]+|[^a-z0-9.\-]+$/g, "");
       const fixed = known.get(core);
-      const word = fixed ? w.replace(core, fixed) : w;
-      return i === 0 ? word.replace(/^\w/, (c) => c.toUpperCase()) : word;
+      let word = fixed ? w.replace(core, fixed) : w;
+      if (!capitalised && /[a-z]/i.test(word)) {
+        word = word.replace(/^([^a-z0-9]*)([a-z])/i, (_, pre, c) => pre + c.toUpperCase());
+        capitalised = true;
+      }
+      return word;
     })
     .join(" ");
 }

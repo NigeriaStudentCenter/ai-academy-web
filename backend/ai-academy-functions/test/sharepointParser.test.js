@@ -104,3 +104,8 @@ test("objective and checkpoint headings vary between courses", () => {
   assert.match(m1.contentBody, /<h3>What Runway does<\/h3>/);
   assert.match(m1.contentBody, /<h3>Learning goals<\/h3>/);
 });
+
+test("sentence case capitalises the first word after a number", () => {
+  const { sentenceCase } = require("../src/lib/sharepointParser");
+  assert.equal(sentenceCase("4 · DETAILED CASE STUDY"), "4 · Detailed case study");
+});

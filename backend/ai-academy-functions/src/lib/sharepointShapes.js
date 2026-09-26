@@ -164,13 +164,19 @@ function pageAsLesson(page, index, opts = {}) {
   const form = blocks.find((b) => b.type === "form");
   const pageTitle = plain(titleBlock?.title || page.title);
 
+  const OUTCOME = /^(LESSON|UNIT|TOPIC) OUTCOME$/i;
+  const objective = after(all, OUTCOME);
+
   const body = texts
     .map((lines) =>
       lines.filter(
         (l, i) =>
           l !== pageTitle &&
           l !== meta?.line &&
-          !(i === 0 && /^(UNIT|TOPIC)\s+\d+\b/.test(l)) // "UNIT 01 · PHASE 1 · …" kicker
+          !(i === 0 && /^(UNIT|TOPIC)\s+\d+\b/.test(l)) && // "UNIT 01 · PHASE 1 · …" kicker
+          // The outcome is shown as the lesson's Goal card, not repeated in the body.
+          !OUTCOME.test(l) &&
+          !(objective && l === objective && OUTCOME.test(lines[i - 1] || ""))
       )
     )
     .filter((lines) => lines.length)
@@ -182,7 +188,7 @@ function pageAsLesson(page, index, opts = {}) {
     title: pageTitle.replace(/^Unit\s+0?(\d+)\s*[·•]\s*/i, "Unit $1 · "),
     lessonOrder: index + 1,
     duration: meta?.duration || "",
-    objective: after(all, /^(LESSON|UNIT|TOPIC) OUTCOME$/i),
+    objective,
     contentBody: body,
     videoPath: video?.path || "",
     assessmentUrl: form?.url || "",
