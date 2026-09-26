@@ -14,6 +14,13 @@ class AppAuthState {
       isAdmin ||
       (currentUser?.email.toLowerCase().endsWith('@teenskills.co.uk') ?? false);
 
+  /// AI Academy (professional) learners: every domain except teenskills.co.uk
+  /// — and Admins. Mirrors the backend's audience rule.
+  static bool get isProfessional =>
+      isAdmin ||
+      (isLoggedIn &&
+          !currentUser!.email.toLowerCase().endsWith('@teenskills.co.uk'));
+
   static void login(EntraUser user) {
     currentUser = user;
   }

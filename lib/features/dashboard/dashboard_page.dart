@@ -155,6 +155,35 @@ class DashboardPage extends StatelessWidget {
                 ),
 
                 // =========================
+                // Student Success Hub (professional learners)
+                // =========================
+                if (AppAuthState.isProfessional) ...[
+                  const SizedBox(height: 20),
+                  SizedBox(
+                    width: double.infinity,
+                    child: OutlinedButton.icon(
+                      onPressed: () => context.go('/student-hub'),
+                      icon: const Icon(Icons.travel_explore),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: AppColors.nearWhite,
+                        side: const BorderSide(color: AppColors.nearWhite, width: 1.5),
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      label: const Text(
+                        "Student Success Hub",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+
+                // =========================
                 // Command Center (AI Academy for Teens)
                 // =========================
                 if (AppAuthState.isTeens) ...[

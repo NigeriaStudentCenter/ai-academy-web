@@ -67,6 +67,15 @@ class AppNavDrawer extends StatelessWidget {
                     routeName: '/chat',
                   ),
 
+                  // AI Academy (professional): the five live-web student tools.
+                  if (AppAuthState.isProfessional)
+                    _drawerItem(
+                      context,
+                      icon: Icons.travel_explore,
+                      title: 'Student Success Hub',
+                      routeName: '/student-hub',
+                    ),
+
                   // AI Academy for Teens: the Nigerian / British curriculum tutor.
                   if (AppAuthState.isTeens)
                     _drawerItem(
