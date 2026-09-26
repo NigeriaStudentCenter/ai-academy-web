@@ -8,6 +8,8 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/courses/course_api_service.dart';
 import '../../core/courses/course_data.dart';
+import '../../core/courses/lesson_activity.dart';
+import 'lesson_blocks.dart';
 
 class LessonPlayerPage extends StatefulWidget {
   final String courseId;
@@ -25,6 +27,7 @@ class LessonPlayerPage extends StatefulWidget {
 
 class _LessonPlayerPageState extends State<LessonPlayerPage> {
   CourseData? course;
+  Map<String, LessonSaved> saved = {};
   bool completed = false;
   bool loading = true;
   String? error;
@@ -52,8 +55,21 @@ class _LessonPlayerPageState extends State<LessonPlayerPage> {
     try {
       final loaded = await CourseApiService.getCourse(widget.courseId);
       final done = await CourseApiService.completedLessons(widget.courseId);
+      // Courses with exercises: the learner's saved answers and results.
+      var savedWork = <String, LessonSaved>{};
+      if (loaded != null &&
+          loaded.lessons
+              .any((l) => l.exercises.isNotEmpty || l.quiz.isNotEmpty)) {
+        try {
+          savedWork =
+              await LessonActivityService.load(widget.courseId, refresh: true);
+        } catch (_) {
+          // Exercises still work; they just start empty.
+        }
+      }
       if (!mounted) return;
       setState(() {
+        saved = savedWork;
         course = loaded;
         completed = done.contains(widget.lessonId);
         loading = false;
@@ -84,6 +100,69 @@ class _LessonPlayerPageState extends State<LessonPlayerPage> {
         content: Text('Could not save your progress. Please try again.'),
       ));
     }
+  }
+
+  static final _blockPattern =
+      RegExp(r'<div data-block="(\w+)(?::([\w-]+))?"></div>');
+
+  bool _interactive(LessonData lesson) =>
+      _blockPattern.hasMatch(lesson.contentBody);
+
+  /// Lesson HTML with its exercises, AI thinking partners, knowledge check
+  /// and portfolio placed where the course puts them.
+  List<Widget> _interactiveBody(LessonData lesson) {
+    final ctx = LessonContext(widget.courseId, lesson.lessonId, saved);
+    final html = lesson.contentBody;
+    final out = <Widget>[];
+    var at = 0;
+    Widget htmlPart(String part) => HtmlWidget(
+          part,
+          textStyle: const TextStyle(fontSize: 16, height: 1.5),
+          onTapUrl: (url) => _open(url),
+          // Here blockquotes are key questions and principles, not prompts.
+          customWidgetBuilder: (element) => element.localName == 'blockquote'
+              ? _QuoteCard(text: element.text.trim())
+              : null,
+        );
+    for (final m in _blockPattern.allMatches(html)) {
+      final before = html.substring(at, m.start);
+      if (before.trim().isNotEmpty) out.add(htmlPart(before));
+      at = m.end;
+      final kind = m.group(1);
+      final id = m.group(2);
+      switch (kind) {
+        case 'exercise':
+          final ex = lesson.exercises.where((e) => e.id == id).firstOrNull;
+          if (ex != null) {
+            out.add(ExerciseBlock(
+                key: ValueKey('${lesson.lessonId}/$id'),
+                ctx: ctx,
+                exercise: ex));
+          }
+        case 'coach':
+          final coach = lesson.coaches.where((c) => c.id == id).firstOrNull;
+          if (coach != null) out.add(CoachBlock(ctx: ctx, coach: coach));
+        case 'quiz':
+          if (lesson.quiz.isNotEmpty) {
+            out.add(QuizBlock(
+                key: ValueKey('${lesson.lessonId}/quiz'),
+                ctx: ctx,
+                questions: lesson.quiz));
+          }
+        case 'portfolio':
+          if (lesson.portfolio.isNotEmpty) {
+            out.add(PortfolioBlock(
+              ctx: ctx,
+              items: lesson.portfolio,
+              exercisesOf: (lessonId) =>
+                  course?.lessonById(lessonId)?.exercises ?? const [],
+            ));
+          }
+      }
+    }
+    final rest = html.substring(at);
+    if (rest.trim().isNotEmpty) out.add(htmlPart(rest));
+    return out;
   }
 
   /// An icon for a download, from the file type in its signed URL.
@@ -201,25 +280,28 @@ class _LessonPlayerPageState extends State<LessonPlayerPage> {
                 ),
               ],
               const SizedBox(height: 8),
-              HtmlWidget(
-                // The reflection question is shown in its own card below,
-                // so drop the inline copy some lessons include.
-                lesson.reflectionQuestion.isEmpty
-                    ? lesson.contentBody
-                    : lesson.contentBody.replaceAll(
-                        RegExp(
-                            r'<p>\s*<strong>\s*Reflection question:?\s*</strong>.*?</p>',
-                            caseSensitive: false,
-                            dotAll: true),
-                        ''),
-                textStyle: const TextStyle(fontSize: 16, height: 1.5),
-                onTapUrl: (url) => _open(url),
-                // Prompts (<blockquote>) become copyable prompt cards.
-                customWidgetBuilder: (element) =>
-                    element.localName == 'blockquote'
-                        ? _PromptCard(text: element.text.trim())
-                        : null,
-              ),
+              if (_interactive(lesson))
+                ..._interactiveBody(lesson)
+              else
+                HtmlWidget(
+                  // The reflection question is shown in its own card below,
+                  // so drop the inline copy some lessons include.
+                  lesson.reflectionQuestion.isEmpty
+                      ? lesson.contentBody
+                      : lesson.contentBody.replaceAll(
+                          RegExp(
+                              r'<p>\s*<strong>\s*Reflection question:?\s*</strong>.*?</p>',
+                              caseSensitive: false,
+                              dotAll: true),
+                          ''),
+                  textStyle: const TextStyle(fontSize: 16, height: 1.5),
+                  onTapUrl: (url) => _open(url),
+                  // Prompts (<blockquote>) become copyable prompt cards.
+                  customWidgetBuilder: (element) =>
+                      element.localName == 'blockquote'
+                          ? _PromptCard(text: element.text.trim())
+                          : null,
+                ),
               if (lesson.attachments.isNotEmpty) ...[
                 const SizedBox(height: 16),
                 Card(
@@ -315,6 +397,31 @@ class _LessonPlayerPageState extends State<LessonPlayerPage> {
       ),
     );
   }
+}
+
+/// A key question or principle in an interactive lesson.
+class _QuoteCard extends StatelessWidget {
+  final String text;
+  const _QuoteCard({required this.text});
+
+  @override
+  Widget build(BuildContext context) => Container(
+        width: double.infinity,
+        margin: const EdgeInsets.symmetric(vertical: 8),
+        padding: const EdgeInsets.fromLTRB(16, 12, 12, 12),
+        decoration: BoxDecoration(
+          color: const Color(0xFFFFF8E6),
+          borderRadius: BorderRadius.circular(10),
+          border: const Border(
+              left: BorderSide(color: Color(0xFFD1A054), width: 4)),
+        ),
+        child: Text(text,
+            style: const TextStyle(
+                fontSize: 17,
+                fontWeight: FontWeight.w600,
+                height: 1.4,
+                color: Color(0xFF0B3D2E))),
+      );
 }
 
 /// A course prompt learners can copy into ChatGPT, Claude, Gemini or Copilot.

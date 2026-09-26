@@ -1,3 +1,5 @@
+import 'lesson_activity.dart';
+
 /// Course and lesson models matching the /api/getCourse JSON shape.
 class LessonData {
   final String lessonId;
@@ -25,6 +27,13 @@ class LessonData {
   /// Downloads for the lesson (workbooks, slides, handouts) with signed URLs.
   final List<LessonAttachment> attachments;
 
+  /// Interactive parts (built-in courses): exercises, AI thinking partners,
+  /// knowledge check and the module portfolio.
+  final List<LessonExercise> exercises;
+  final List<LessonCoach> coaches;
+  final List<QuizQuestion> quiz;
+  final List<PortfolioItem> portfolio;
+
   const LessonData({
     required this.lessonId,
     required this.title,
@@ -41,6 +50,10 @@ class LessonData {
     this.resourceUrl = '',
     this.resourceLabel = '',
     this.attachments = const [],
+    this.exercises = const [],
+    this.coaches = const [],
+    this.quiz = const [],
+    this.portfolio = const [],
   });
 
   factory LessonData.fromJson(Map<String, dynamic> json) {
@@ -64,9 +77,16 @@ class LessonData {
           .map(LessonAttachment.fromJson)
           .where((a) => a.url.isNotEmpty)
           .toList(),
+      exercises: _list(json['exercises'], LessonExercise.fromJson),
+      coaches: _list(json['coaches'], LessonCoach.fromJson),
+      quiz: _list(json['quiz'], QuizQuestion.fromJson),
+      portfolio: _list(json['portfolio'], PortfolioItem.fromJson),
     );
   }
 }
+
+List<T> _list<T>(dynamic json, T Function(Map<String, dynamic>) f) =>
+    (json as List? ?? []).whereType<Map<String, dynamic>>().map(f).toList();
 
 class LessonAttachment {
   final String label;
