@@ -166,7 +166,8 @@ class DashboardPage extends StatelessWidget {
                       icon: const Icon(Icons.travel_explore),
                       style: OutlinedButton.styleFrom(
                         foregroundColor: AppColors.nearWhite,
-                        side: const BorderSide(color: AppColors.nearWhite, width: 1.5),
+                        side: const BorderSide(
+                            color: AppColors.nearWhite, width: 1.5),
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
@@ -189,7 +190,8 @@ class DashboardPage extends StatelessWidget {
                       icon: const Icon(Icons.storefront),
                       style: OutlinedButton.styleFrom(
                         foregroundColor: AppColors.nearWhite,
-                        side: const BorderSide(color: AppColors.nearWhite, width: 1.5),
+                        side: const BorderSide(
+                            color: AppColors.nearWhite, width: 1.5),
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
@@ -218,7 +220,8 @@ class DashboardPage extends StatelessWidget {
                       icon: const Icon(Icons.hub),
                       style: OutlinedButton.styleFrom(
                         foregroundColor: AppColors.nearWhite,
-                        side: const BorderSide(color: AppColors.nearWhite, width: 1.5),
+                        side: const BorderSide(
+                            color: AppColors.nearWhite, width: 1.5),
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
@@ -247,8 +250,16 @@ class DashboardPage extends StatelessWidget {
 }
 
 /// Overall progress across every course the learner can take.
-class _ProgressCard extends StatelessWidget {
+class _ProgressCard extends StatefulWidget {
   const _ProgressCard();
+
+  @override
+  State<_ProgressCard> createState() => _ProgressCardState();
+}
+
+class _ProgressCardState extends State<_ProgressCard> {
+  // Created once, so a rebuild of the dashboard doesn't restart the request.
+  late final Future<double> _progress = _overallProgress();
 
   static Future<double> _overallProgress() async {
     final courses = await CourseApiService.listCourses();
@@ -271,7 +282,7 @@ class _ProgressCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
       ),
       child: FutureBuilder<double>(
-        future: _overallProgress(),
+        future: _progress,
         builder: (context, snapshot) {
           final value = snapshot.data;
           return Column(
@@ -421,7 +432,6 @@ class _CertificatesSection extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 16),
-
               ...certificates.map(
                 (certificate) => _CertificateCard(
                   certificate: certificate,
@@ -483,9 +493,7 @@ class _CertificateCard extends StatelessWidget {
               ),
             ],
           ),
-
           const SizedBox(height: 10),
-
           Text(
             "Issued on ${certificate.issuedAt.toLocal().toString().split(' ').first}",
             style: TextStyle(
@@ -501,9 +509,7 @@ class _CertificateCard extends StatelessWidget {
               fontSize: 12,
             ),
           ),
-
           const SizedBox(height: 14),
-
           Wrap(
             spacing: 10,
             runSpacing: 10,
@@ -519,7 +525,6 @@ class _CertificateCard extends StatelessWidget {
                 icon: const Icon(Icons.verified_outlined, size: 18),
                 label: const Text("Verify"),
               ),
-
               ElevatedButton.icon(
                 onPressed: () async {
                   await Clipboard.setData(
@@ -541,7 +546,6 @@ class _CertificateCard extends StatelessWidget {
                 icon: const Icon(Icons.link, size: 18),
                 label: const Text("Copy Link"),
               ),
-
               ElevatedButton.icon(
                 onPressed: () {
                   ScaffoldMessenger.of(context).showSnackBar(

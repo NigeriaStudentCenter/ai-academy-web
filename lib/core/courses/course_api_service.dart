@@ -61,19 +61,30 @@ class CourseApiService {
 
   /// Lesson ids this learner has completed in [courseId].
   static Future<Set<String>> completedLessons(String courseId) async {
-    final cached = _progressCache[courseId];
-    if (cached != null) return cached;
-
-    final response = await ApiClient.get('getProgress');
-    if (response.statusCode != 200) {
-      throw Exception('Could not load progress (HTTP ${response.statusCode}).');
-    }
-    for (final row in (jsonDecode(response.body) as List)
-        .whereType<Map<String, dynamic>>()) {
-      _progressCache[row['courseId'] as String] =
-          ((row['completedLessons'] as List?) ?? []).cast<String>().toSet();
-    }
+    await (_progressLoad ??= _loadProgress());
     return _progressCache[courseId] ??= {};
+  }
+
+  // One getProgress call covers every course; courses the learner hasn't
+  // started aren't in the response, so they must not trigger another call.
+  static Future<void>? _progressLoad;
+
+  static Future<void> _loadProgress() async {
+    try {
+      final response = await ApiClient.get('getProgress');
+      if (response.statusCode != 200) {
+        throw Exception(
+            'Could not load progress (HTTP ${response.statusCode}).');
+      }
+      for (final row in (jsonDecode(response.body) as List)
+          .whereType<Map<String, dynamic>>()) {
+        _progressCache[row['courseId'] as String] =
+            ((row['completedLessons'] as List?) ?? []).cast<String>().toSet();
+      }
+    } catch (_) {
+      _progressLoad = null; // allow a retry next time
+      rethrow;
+    }
   }
 
   /// Records a completed lesson. Returns a certificate id when this finished
@@ -98,5 +109,6 @@ class CourseApiService {
   static void clearCache() {
     _courseCache.clear();
     _progressCache.clear();
+    _progressLoad = null;
   }
 }
