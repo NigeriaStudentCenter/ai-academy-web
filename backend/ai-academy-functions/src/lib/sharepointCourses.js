@@ -54,7 +54,7 @@ function imageUrl(src) {
   return `${API_BASE}/courseImage?path=${encodeURIComponent(decodeURIComponent(path))}`;
 }
 
-async function listCoursePages() {
+async function listAllPages() {
   const pages = [];
   let next =
     `/sites/${SITE_ID}/pages/microsoft.graph.sitePage` +
@@ -66,12 +66,56 @@ async function listCoursePages() {
       ? data["@odata.nextLink"].replace("https://graph.microsoft.com/v1.0", "")
       : null;
   }
-  return pages.filter(
+  return pages;
+}
+
+async function listCoursePages() {
+  return (await listAllPages()).filter(
     (p) =>
       /masterclass$/i.test((p.title || "").trim()) &&
       p.publishingState?.level === "published" &&
       !PAGE_OVERRIDES[p.name]?.skip
   );
+}
+
+/**
+ * Admin diagnostics: every page on the site with the structure the importer
+ * would see (banner titles, MODULE count, text volume) — used to find
+ * courses that don't follow the "… Masterclass" naming.
+ */
+async function surveyPages() {
+  const pages = await listAllPages();
+  const out = [];
+  for (const summary of pages) {
+    let banners = [];
+    let textChars = 0;
+    try {
+      const page = await graph(
+        `/sites/${SITE_ID}/pages/${summary.id}/microsoft.graph.sitePage?$expand=canvasLayout`
+      );
+      for (const section of page.canvasLayout?.horizontalSections || []) {
+        for (const column of section.columns || []) {
+          for (const part of column.webparts || []) {
+            const title = part.data?.properties?.title;
+            if (title && part.webPartType === "cbe7b0a9-3504-44dd-a3a3-0e5cacd07788") banners.push(title.normalize("NFKC"));
+            if (part.innerHtml) textChars += part.innerHtml.replace(/<[^>]+>/g, "").length;
+          }
+        }
+      }
+    } catch (err) {
+      banners = [`(error: ${err.status || err.message})`];
+    }
+    out.push({
+      name: summary.name,
+      title: summary.title,
+      published: summary.publishingState?.level === "published",
+      modified: summary.lastModifiedDateTime,
+      moduleBanners: banners.filter((b) => /^MODULE\s+\d+/i.test(b)).length,
+      banners: banners.slice(0, 12),
+      textChars,
+    });
+  }
+  return out.sort((a, b) => b.textChars - a.textChars);
 }
 
 /** Fetches every course page, converts it, and saves the catalogue. */
@@ -159,4 +203,4 @@ async function fetchCourseImage(path) {
   };
 }
 
-module.exports = { syncCourses, loadCatalog, fetchCourseImage, listCoursePages };
+module.exports = { syncCourses, loadCatalog, fetchCourseImage, listCoursePages, surveyPages };

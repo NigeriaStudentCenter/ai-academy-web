@@ -1,6 +1,6 @@
 const { app } = require("@azure/functions");
 const { requireUser } = require("../lib/auth");
-const { syncCourses } = require("../lib/sharepointCourses");
+const { syncCourses, surveyPages } = require("../lib/sharepointCourses");
 
 // Refresh SharePoint courses every 30 minutes…
 app.timer("syncCoursesTimer", {
@@ -38,5 +38,16 @@ app.http("syncCourses", {
       context.error("syncCourses failed", err);
       return { status: 502, jsonBody: { error: err.message, log } };
     }
+  }),
+});
+
+// Admin diagnostics: GET /api/coursePages lists every page on the course site
+// with the structure the importer sees.
+app.http("coursePages", {
+  methods: ["GET"],
+  authLevel: "anonymous",
+  handler: requireUser(async (request, context, user) => {
+    if (!user.isAdmin) return { status: 403, jsonBody: { error: "Admins only." } };
+    return { status: 200, jsonBody: await surveyPages() };
   }),
 });
