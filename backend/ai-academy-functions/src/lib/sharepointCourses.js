@@ -12,6 +12,7 @@ const { BlobServiceClient } = require("@azure/storage-blob");
 const { parseCoursePage } = require("./sharepointParser");
 const { fetchHustleCourses } = require("./githubCourses");
 const { fetchLibraryCourses } = require("./githubLibrary");
+const { fetchTeenCourses } = require("./teensCourses");
 const { parseVideoCourse, parseProgramme, parseMultiPageCourse } = require("./sharepointShapes");
 
 const SITE_ID =
@@ -260,6 +261,13 @@ async function syncCourses(log = () => {}) {
 
   // Other courses on the SharePoint Courses page that live on GitHub.
   courses.push(...(await fetchLibraryCourses(log)));
+
+  // AI Academy for Teens (sites/TeenSkills) — a failure skips only these.
+  try {
+    courses.push(...(await fetchTeenCourses(graph, log)));
+  } catch (err) {
+    log(`Teens courses not synced: ${err.message}`);
+  }
 
   const catalog = { syncedAt: new Date().toISOString(), courses };
   const container = blobService().getContainerClient(CONTAINER);

@@ -1,6 +1,7 @@
 const { app } = require("@azure/functions");
 const { requireUser } = require("../lib/auth");
-const { syncCourses, surveyPages, getPageLayout, previewExtraCourses } = require("../lib/sharepointCourses");
+const { syncCourses, surveyPages, getPageLayout, previewExtraCourses, graph } = require("../lib/sharepointCourses");
+const { fetchTeenCourses, loadTeenPages } = require("../lib/teensCourses");
 
 // Refresh SharePoint courses every 30 minutes…
 app.timer("syncCoursesTimer", {
@@ -48,6 +49,14 @@ app.http("coursePages", {
   authLevel: "anonymous",
   handler: requireUser(async (request, context, user) => {
     if (!user.isAdmin) return { status: 403, jsonBody: { error: "Admins only." } };
+    if (request.query.get("teens") === "raw") {
+      return { status: 200, jsonBody: Object.fromEntries(await loadTeenPages(graph)) };
+    }
+    if (request.query.get("teens")) {
+      const log = [];
+      const courses = await fetchTeenCourses(graph, (m) => log.push(m));
+      return { status: 200, jsonBody: { log, courses } };
+    }
     if (request.query.get("preview")) {
       return { status: 200, jsonBody: await previewExtraCourses() };
     }
