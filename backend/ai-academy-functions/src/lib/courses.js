@@ -4,7 +4,11 @@
 const { loadCatalog } = require("./sharepointCourses");
 const { CATEGORIES, categorize } = require("./catalogConfig");
 
-const BUILT_IN = [require("../courses/ai-foundations"), require("../courses/become-extra-ordinary")];
+const BUILT_IN = [
+  require("../courses/ai-foundations"),
+  require("../courses/become-extra-ordinary"),
+  require("../courses/delete-limiting-beliefs"),
+];
 
 async function allCourses() {
   let synced = [];
