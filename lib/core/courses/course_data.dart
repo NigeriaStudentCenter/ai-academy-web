@@ -17,6 +17,11 @@ class LessonData {
   /// External assessment (e.g. Microsoft Forms) for the lesson.
   final String assessmentUrl;
 
+  /// Where the lesson is studied or continued outside the app (e.g. a
+  /// Microsoft AI Skills Navigator playlist), with its button label.
+  final String resourceUrl;
+  final String resourceLabel;
+
   const LessonData({
     required this.lessonId,
     required this.title,
@@ -30,6 +35,8 @@ class LessonData {
     required this.published,
     this.videoUrl = '',
     this.assessmentUrl = '',
+    this.resourceUrl = '',
+    this.resourceLabel = '',
   });
 
   factory LessonData.fromJson(Map<String, dynamic> json) {
@@ -46,6 +53,8 @@ class LessonData {
       published: json['published'] as bool? ?? true,
       videoUrl: json['videoUrl'] as String? ?? '',
       assessmentUrl: json['assessmentUrl'] as String? ?? '',
+      resourceUrl: json['resourceUrl'] as String? ?? '',
+      resourceLabel: json['resourceLabel'] as String? ?? '',
     );
   }
 }

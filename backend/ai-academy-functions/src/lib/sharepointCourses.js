@@ -11,6 +11,7 @@ const { DefaultAzureCredential } = require("@azure/identity");
 const { BlobServiceClient } = require("@azure/storage-blob");
 const { parseCoursePage } = require("./sharepointParser");
 const { fetchHustleCourses } = require("./githubCourses");
+const { fetchLibraryCourses } = require("./githubLibrary");
 const { parseVideoCourse, parseProgramme, parseMultiPageCourse } = require("./sharepointShapes");
 
 const SITE_ID =
@@ -256,6 +257,9 @@ async function syncCourses(log = () => {}) {
   } catch (err) {
     log(`Hustles not synced: ${err.message}`);
   }
+
+  // Other courses on the SharePoint Courses page that live on GitHub.
+  courses.push(...(await fetchLibraryCourses(log)));
 
   const catalog = { syncedAt: new Date().toISOString(), courses };
   const container = blobService().getContainerClient(CONTAINER);

@@ -86,6 +86,13 @@ class _LessonPlayerPageState extends State<LessonPlayerPage> {
     }
   }
 
+  /// Opens a lesson link (playlist, form, tool) outside the app.
+  Future<bool> _open(String url) async {
+    final uri = Uri.tryParse(url);
+    if (uri == null || !uri.hasScheme) return false;
+    return launchUrl(uri, mode: LaunchMode.externalApplication);
+  }
+
   @override
   Widget build(BuildContext context) {
     if (loading) {
@@ -149,6 +156,23 @@ class _LessonPlayerPageState extends State<LessonPlayerPage> {
                 const SizedBox(height: 12),
                 _LessonVideo(key: ValueKey(lesson.videoUrl), url: lesson.videoUrl),
               ],
+              if (lesson.resourceUrl.isNotEmpty) ...[
+                const SizedBox(height: 12),
+                Card(
+                  color: const Color(0xFFEFF5F1),
+                  child: ListTile(
+                    leading: const Icon(Icons.play_circle_fill,
+                        color: Color(0xFF0B3D2E)),
+                    title: Text(
+                        lesson.resourceLabel.isNotEmpty
+                            ? lesson.resourceLabel
+                            : 'Open the learning material',
+                        style: const TextStyle(fontWeight: FontWeight.bold)),
+                    trailing: const Icon(Icons.open_in_new),
+                    onTap: () => _open(lesson.resourceUrl),
+                  ),
+                ),
+              ],
               if (lesson.objective.isNotEmpty) ...[
                 const SizedBox(height: 12),
                 Card(
@@ -172,6 +196,7 @@ class _LessonPlayerPageState extends State<LessonPlayerPage> {
                             caseSensitive: false, dotAll: true),
                         ''),
                 textStyle: const TextStyle(fontSize: 16, height: 1.5),
+                onTapUrl: (url) => _open(url),
                 // Prompts (<blockquote>) become copyable prompt cards.
                 customWidgetBuilder: (element) => element.localName == 'blockquote'
                     ? _PromptCard(text: element.text.trim())
@@ -188,8 +213,7 @@ class _LessonPlayerPageState extends State<LessonPlayerPage> {
                     subtitle: const Text(
                         'Check your understanding in the assessment form.'),
                     trailing: const Icon(Icons.open_in_new),
-                    onTap: () => launchUrl(Uri.parse(lesson.assessmentUrl),
-                        mode: LaunchMode.externalApplication),
+                    onTap: () => _open(lesson.assessmentUrl),
                   ),
                 ),
               ],
