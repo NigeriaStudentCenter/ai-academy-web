@@ -2,6 +2,7 @@
 // `audiences` array of "teens" and/or "professional") plus courses synced from
 // the SharePoint "AI Academy" site (see sharepointCourses.js).
 const { loadCatalog } = require("./sharepointCourses");
+const { CATEGORIES, categorize } = require("./catalogConfig");
 
 const BUILT_IN = [require("../courses/ai-foundations")];
 
@@ -39,7 +40,14 @@ async function listCoursesForUser(user) {
       lessonCount: c.lessons.length,
       certificateEligible: c.certificateEligible,
       audiences: c.audiences,
+      category: categorize(c),
     }));
 }
 
-module.exports = { getCourseForUser, listCoursesForUser };
+/** Categories that contain at least one of these courses, in display order. */
+function categoriesFor(courses) {
+  const used = new Set(courses.map((c) => c.category));
+  return CATEGORIES.filter((c) => used.has(c.id));
+}
+
+module.exports = { getCourseForUser, listCoursesForUser, categoriesFor };

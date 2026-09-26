@@ -13,6 +13,8 @@ const { parseCoursePage } = require("./sharepointParser");
 const { fetchHustleCourses } = require("./githubCourses");
 const { fetchLibraryCourses } = require("./githubLibrary");
 const { fetchTeenCourses } = require("./teensCourses");
+const { MEDIA_SITES, SITE_COURSES, categorize } = require("./catalogConfig");
+const { createSiteReader, buildSiteCourses } = require("./siteCourses");
 const { parseVideoCourse, parseProgramme, parseMultiPageCourse } = require("./sharepointShapes");
 
 const SITE_ID =
@@ -269,7 +271,24 @@ async function syncCourses(log = () => {}) {
     log(`Teens courses not synced: ${err.message}`);
   }
 
-  const catalog = { syncedAt: new Date().toISOString(), courses };
+  // Courses on the other SharePoint course sites (finance, HR, business,
+  // personal development, pharmacy …) — one failing site skips only itself.
+  const reader = createSiteReader(graph);
+  for (const def of SITE_COURSES) {
+    try {
+      const built = await buildSiteCourses(reader, def, log);
+      courses.push(...built);
+      built.forEach((c) => log(`Imported "${c.title}" (${c.lessons.length} lessons, ${def.site})`));
+    } catch (err) {
+      log(`Skipped ${def.site}/${def.hub}: ${err.message}`);
+    }
+  }
+
+  // Every course gets a category; ids stay unique (first one wins).
+  const seen = new Set();
+  const unique = courses.filter((c) => !seen.has(c.courseId) && seen.add(c.courseId));
+  unique.forEach((c) => (c.category = categorize(c)));
+  const catalog = { syncedAt: new Date().toISOString(), courses: unique };
   const container = blobService().getContainerClient(CONTAINER);
   await container.createIfNotExists();
   const body = JSON.stringify(catalog);
@@ -333,44 +352,98 @@ function verifyMediaSignature(path, exp, sig) {
   return expected.length === given.length && crypto.timingSafeEqual(expected, given);
 }
 
-let drivesCache = null;
-async function siteDrives() {
-  if (!drivesCache || Date.now() - drivesCache.at > 60 * 60 * 1000) {
-    const data = await graph(`/sites/${SITE_ID}/drives?$select=id,name,webUrl`);
-    drivesCache = {
-      at: Date.now(),
-      drives: (data.value || []).map((d) => ({
-        id: d.id,
-        path: decodeURIComponent(new URL(d.webUrl).pathname) + "/",
-      })),
-    };
-  }
-  return drivesCache.drives;
+// Drives (document libraries) of each course site, cached for an hour.
+const drivesCache = new Map();
+async function siteDrives(site) {
+  const cached = drivesCache.get(site);
+  if (cached && Date.now() - cached.at < 60 * 60 * 1000) return cached.drives;
+  const id =
+    site === "AIAcademy"
+      ? SITE_ID
+      : (await graph(`/sites/bsoed.sharepoint.com:/sites/${encodeURIComponent(site)}?$select=id`)).id;
+  const data = await graph(`/sites/${id}/drives?$select=id,name,webUrl`);
+  const drives = (data.value || []).map((d) => ({
+    id: d.id,
+    path: decodeURIComponent(new URL(d.webUrl).pathname) + "/",
+  }));
+  drivesCache.set(site, { at: Date.now(), drives });
+  return drives;
 }
 
-/** "/sites/AIAcademy/Workbook Templates/What is AI.mp4" → pre-authenticated download URL */
+const MEDIA_FILE = /\.(mp4|m4v|mov|webm|mp3|m4a|pdf|docx?|pptx?|xlsx?|csv|txt|png|jpe?g|gif|webp)$/i;
+
+/**
+ * A file by its web address, for libraries Graph doesn't list as site drives
+ * (e.g. "Site Assets", where page images and slides are stored).
+ */
+async function driveItemByUrl(serverRelativePath) {
+  const url = `https://bsoed.sharepoint.com${encodeURI(serverRelativePath)}`;
+  const token = "u!" + Buffer.from(url).toString("base64").replace(/=+$/, "").replace(/\//g, "_").replace(/\+/g, "-");
+  return graph(`/shares/${token}/driveItem`);
+}
+
+/** Admin diagnostics for mediaDownloadUrl: each step's result. */
+async function explainMedia(path) {
+  const clean = decodeURIComponent(String(path));
+  const site = (clean.match(/^\/sites\/([^/]+)\//) || [])[1];
+  const out = { clean, site, allowed: MEDIA_SITES.includes(site), typeOk: MEDIA_FILE.test(clean) };
+  try {
+    out.drives = await siteDrives(site);
+    const drive = out.drives.filter((d) => clean.startsWith(d.path)).sort((a, b) => b.path.length - a.path.length)[0];
+    out.drive = drive;
+    if (drive) {
+      const rel = clean.slice(drive.path.length).split("/").map(encodeURIComponent).join("/");
+      out.rel = rel;
+      const item = await graph(`/drives/${drive.id}/root:/${rel}`);
+      out.found = !!item["@microsoft.graph.downloadUrl"];
+    } else {
+      const item = await driveItemByUrl(clean);
+      out.foundByUrl = !!item["@microsoft.graph.downloadUrl"];
+    }
+  } catch (err) {
+    out.error = err.message.slice(0, 400);
+  }
+  return out;
+}
+
+/** "/sites/<course site>/<library>/…/file.ext" → pre-authenticated download URL */
 async function mediaDownloadUrl(path) {
   const clean = decodeURIComponent(String(path));
-  if (!clean.startsWith(SITE_PATH) || clean.includes("..") || !/\.(mp4|m4v|mov|webm|mp3|m4a)$/i.test(clean)) {
+  const site = (clean.match(/^\/sites\/([^/]+)\//) || [])[1];
+  if (!site || !MEDIA_SITES.includes(site) || clean.includes("..") || !MEDIA_FILE.test(clean)) {
     return null;
   }
-  const drive = (await siteDrives())
+  const drive = (await siteDrives(site))
     .filter((d) => clean.startsWith(d.path))
     .sort((a, b) => b.path.length - a.path.length)[0];
-  if (!drive) return null;
-  const rel = clean.slice(drive.path.length).split("/").map(encodeURIComponent).join("/");
-  const item = await graph(`/drives/${drive.id}/root:/${rel}`);
+  let item;
+  if (drive) {
+    const rel = clean.slice(drive.path.length).split("/").map(encodeURIComponent).join("/");
+    item = await graph(`/drives/${drive.id}/root:/${rel}`);
+  } else {
+    item = await driveItemByUrl(clean);
+  }
   return item["@microsoft.graph.downloadUrl"] || null;
 }
 
 /** Adds signed video URLs to a course before it's sent to a learner. */
 function withMediaUrls(course) {
-  if (!course.lessons.some((l) => l.videoPath)) return course;
   return {
     ...course,
-    lessons: course.lessons.map((l) =>
-      l.videoPath ? { ...l, videoUrl: signedMediaUrl(l.videoPath) } : l
-    ),
+    lessons: course.lessons.map((l) => {
+      const out = { ...l };
+      if (l.videoPath) out.videoUrl = signedMediaUrl(l.videoPath);
+      if (l.attachments?.length) {
+        out.attachments = l.attachments.map((a) => ({ label: a.label, url: signedMediaUrl(a.path) }));
+      }
+      if (l.contentBody && l.contentBody.includes("data-sp-path")) {
+        out.contentBody = l.contentBody.replace(
+          /<img data-sp-path="([^"]+)">/g,
+          (_, p) => `<img src="${signedMediaUrl(p)}">`
+        );
+      }
+      return out;
+    }),
   };
 }
 
@@ -395,5 +468,6 @@ async function fetchCourseImage(path) {
 
 module.exports = {
   syncCourses, loadCatalog, fetchCourseImage, listCoursePages, surveyPages, getPageLayout,
-  previewExtraCourses, withMediaUrls, verifyMediaSignature, mediaDownloadUrl, graph, SITE_ID,
+  previewExtraCourses, withMediaUrls, verifyMediaSignature, mediaDownloadUrl,
+  explainMedia, graph, SITE_ID,
 };
