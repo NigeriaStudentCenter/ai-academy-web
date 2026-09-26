@@ -16,7 +16,7 @@ test("become extra ordinary: every block in the lessons has a matching definitio
       if (kind === "portfolio") assert.ok(l.portfolio.length, `${l.lessonId}: portfolio`);
     }
   }
-  assert.equal(course.draft, true);
+  assert.equal(course.draft, false, "released to learners");
 });
 
 test("published course hides quiz answers and coach instructions", () => {
