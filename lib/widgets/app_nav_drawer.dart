@@ -67,6 +67,15 @@ class AppNavDrawer extends StatelessWidget {
                     routeName: '/chat',
                   ),
 
+                  // AI Academy for Teens: the Nigerian / British curriculum tutor.
+                  if (AppAuthState.isTeens)
+                    _drawerItem(
+                      context,
+                      icon: Icons.hub,
+                      title: 'Command Center',
+                      routeName: '/command-center',
+                    ),
+
                   const Divider(),
 
                   // ===============================

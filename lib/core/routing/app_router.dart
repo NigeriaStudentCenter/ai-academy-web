@@ -9,6 +9,7 @@ import '../../features/auth/login_page.dart';
 import '../../features/auth/oauth_callback_page.dart';
 import '../../features/certificates/certificate_verification_page.dart';
 import '../../features/certificates/subject_certificate.page.dart';
+import '../../features/command_center/command_center_page.dart';
 import '../../features/chat/ai_chat.page.dart';
 import '../../features/common/not_found_page.dart';
 import '../../features/courses/ai_notes.page.dart';
@@ -161,6 +162,10 @@ final GoRouter goRouter = GoRouter(
     // -------------------------------
     // Chat / Curriculum / Progress
     // -------------------------------
+    GoRoute(
+      path: '/command-center',
+      builder: (context, state) => const CommandCenterPage(),
+    ),
     GoRoute(
       path: '/chat',
       builder: (context, state) => const AIChatPage(),

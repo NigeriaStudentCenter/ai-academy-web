@@ -8,6 +8,12 @@ class AppAuthState {
 
   static bool get isAdmin => currentUser?.isAdmin ?? false;
 
+  /// AI Academy for Teens learners (teenskills.co.uk) — and Admins. The
+  /// backend enforces the same rule (src/lib/auth.js).
+  static bool get isTeens =>
+      isAdmin ||
+      (currentUser?.email.toLowerCase().endsWith('@teenskills.co.uk') ?? false);
+
   static void login(EntraUser user) {
     currentUser = user;
   }

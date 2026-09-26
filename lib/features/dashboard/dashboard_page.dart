@@ -154,6 +154,36 @@ class DashboardPage extends StatelessWidget {
                   ),
                 ),
 
+                // =========================
+                // Command Center (AI Academy for Teens)
+                // =========================
+                if (AppAuthState.isTeens) ...[
+                  const SizedBox(height: 20),
+                  SizedBox(
+                    width: double.infinity,
+                    child: OutlinedButton.icon(
+                      onPressed: () => context.go('/command-center'),
+                      icon: const Icon(Icons.hub),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: AppColors.nearWhite,
+                        side: const BorderSide(color: AppColors.nearWhite, width: 1.5),
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      label: const Text(
+                        "Command Center · Nigerian & British curricula",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                ],
+
                 const SizedBox(height: 40),
               ],
             ),
