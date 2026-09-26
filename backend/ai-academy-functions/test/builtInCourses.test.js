@@ -1,11 +1,16 @@
 const test = require("node:test");
 const assert = require("node:assert");
-const course = require("../src/courses/delete-limiting-beliefs");
 const { publicCourse } = require("../src/lib/courses");
 
+const COURSES = [
+  [require("../src/courses/delete-limiting-beliefs"), 18],
+  [require("../src/courses/customer-service-skills"), 11],
+];
+
+for (const [course, lessonCount] of COURSES) {
 const exercises = course.lessons.flatMap((l) => l.exercises || []);
 
-test("delete limiting beliefs: every block is defined and every definition is placed", () => {
+test(`${course.courseId}: every block is defined and every definition is placed`, () => {
   for (const l of course.lessons) {
     const blocks = [...l.contentBody.matchAll(/data-block="(\w+)(?::([\w-]+))?"/g)].map((m) => [m[1], m[2]]);
     const placed = new Set(blocks.map(([, id]) => id).filter(Boolean));
@@ -22,7 +27,7 @@ test("delete limiting beliefs: every block is defined and every definition is pl
   }
 });
 
-test("delete limiting beliefs: ids unique, exercises well-formed, references valid", () => {
+test(`${course.courseId}: ids unique, exercises well-formed, references valid`, () => {
   const ids = exercises.map((e) => e.exerciseId);
   assert.equal(new Set(ids).size, ids.length, "duplicate exercise ids");
   const orders = course.lessons.map((l) => l.lessonOrder);
@@ -42,12 +47,12 @@ test("delete limiting beliefs: ids unique, exercises well-formed, references val
       assert.ok(x.explanation, `${l.lessonId}: missing explanation`);
     }
   }
-  assert.equal(course.lessons.length, 18);
+  assert.equal(course.lessons.length, lessonCount);
 });
 
-test("delete limiting beliefs: published course hides answers and agent instructions", () => {
+test(`${course.courseId}: published course hides answers and agent instructions`, () => {
   const text = JSON.stringify(publicCourse(course));
   assert.ok(!text.includes("systemPrompt"));
-  assert.ok(!text.includes("Delete Script Studio. The learner brings"));
   assert.ok(!text.includes('"explanation"'));
 });
+}
