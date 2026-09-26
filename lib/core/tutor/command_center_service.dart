@@ -21,10 +21,11 @@ class Curriculum {
   });
 
   static Map<String, List<String>> _lists(dynamic json) =>
-      (json as Map<String, dynamic>? ?? {}).map((k, v) =>
-          MapEntry(k, (v as List).map((e) => e.toString()).toList()));
+      (json as Map<String, dynamic>? ?? {}).map(
+          (k, v) => MapEntry(k, (v as List).map((e) => e.toString()).toList()));
 
-  factory Curriculum.fromJson(String id, Map<String, dynamic> json) => Curriculum(
+  factory Curriculum.fromJson(String id, Map<String, dynamic> json) =>
+      Curriculum(
         id: id,
         label: json['label'] as String? ?? id,
         primaryHint: json['primHint'] as String? ?? '',
@@ -74,7 +75,8 @@ class CommandCenterService {
 
   static String _error(String body, String fallback) {
     try {
-      return (jsonDecode(body) as Map<String, dynamic>)['error'] as String? ?? fallback;
+      return (jsonDecode(body) as Map<String, dynamic>)['error'] as String? ??
+          fallback;
     } catch (_) {
       return fallback;
     }
@@ -86,8 +88,8 @@ class CommandCenterService {
     if (response.statusCode != 200) {
       throw Exception(_error(response.body, 'Could not load the curricula.'));
     }
-    final data = (jsonDecode(response.body) as Map<String, dynamic>)['curricula']
-        as Map<String, dynamic>;
+    final data = (jsonDecode(response.body)
+        as Map<String, dynamic>)['curricula'] as Map<String, dynamic>;
     // Nigerian first, then British — as on the Teens Academy site.
     _curricula = ['ng', 'uk']
         .where(data.containsKey)
@@ -101,13 +103,15 @@ class CommandCenterService {
         'tutorSession', jsonEncode({'path': path.toJson(), 'suggest': true}),
         timeout: _timeout);
     if (response.statusCode != 200) return [];
-    final topics = (jsonDecode(response.body) as Map<String, dynamic>)['topics'];
+    final topics =
+        (jsonDecode(response.body) as Map<String, dynamic>)['topics'];
     return (topics as List? ?? []).map((t) => t.toString()).toList();
   }
 
   /// The tutor's next message. [turns] excludes the hidden opening prompt,
   /// which the backend adds.
-  static Future<String> nextMessage(LearningPath path, List<TutorTurn> turns) async {
+  static Future<String> nextMessage(
+      LearningPath path, List<TutorTurn> turns) async {
     final response = await ApiClient.post(
         'tutorSession',
         jsonEncode({
@@ -116,8 +120,11 @@ class CommandCenterService {
         }),
         timeout: _timeout);
     if (response.statusCode != 200) {
-      throw Exception(_error(response.body, 'The tutor is unavailable. Please try again.'));
+      throw Exception(
+          _error(response.body, 'The tutor is unavailable. Please try again.'));
     }
-    return (jsonDecode(response.body) as Map<String, dynamic>)['text'] as String? ?? '';
+    return (jsonDecode(response.body) as Map<String, dynamic>)['text']
+            as String? ??
+        '';
   }
 }

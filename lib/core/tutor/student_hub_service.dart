@@ -68,11 +68,38 @@ class HubBrief {
   const HubBrief(this.name, this.bytes);
 }
 
-/// Student Success Hub — /api/studentHub. Searches the live web, so a run
-/// can take up to a couple of minutes.
+/// The done-for-you marketing offer shown in the Business Marketing Hub.
+class DoneForYou {
+  final String title;
+  final String text;
+  final String email;
+  final String subject;
+
+  const DoneForYou(this.title, this.text, this.email, this.subject);
+
+  static DoneForYou? fromJson(dynamic json) => json is Map<String, dynamic>
+      ? DoneForYou(
+          json['title'] as String? ?? '',
+          json['text'] as String? ?? '',
+          json['email'] as String? ?? '',
+          json['subject'] as String? ?? '',
+        )
+      : null;
+}
+
+/// A hub's tools, plus the business hub's done-for-you offer.
+class HubCatalog {
+  final List<HubTool> tools;
+  final DoneForYou? doneForYou;
+  const HubCatalog(this.tools, this.doneForYou);
+}
+
+/// Student Success Hub ('student') and Business Marketing Hub ('business')
+/// — /api/studentHub. Some tools search the live web, so a run can take up
+/// to a couple of minutes.
 class StudentHubService {
   static const _timeout = Duration(seconds: 180);
-  static List<HubTool>? _tools;
+  static final Map<String, HubCatalog> _catalogs = {};
 
   static String _error(String body, String fallback) {
     try {
@@ -83,26 +110,30 @@ class StudentHubService {
     }
   }
 
-  static Future<List<HubTool>> tools() async {
-    if (_tools != null) return _tools!;
-    final response = await ApiClient.get('studentHub');
+  static Future<HubCatalog> catalog(String hub) async {
+    final cached = _catalogs[hub];
+    if (cached != null) return cached;
+    final response = await ApiClient.get('studentHub', {'hub': hub});
     if (response.statusCode != 200) {
-      throw Exception(
-          _error(response.body, 'Could not load the Student Success Hub.'));
+      throw Exception(_error(response.body, 'Could not load the hub.'));
     }
-    _tools =
-        ((jsonDecode(response.body) as Map<String, dynamic>)['tools'] as List)
-            .whereType<Map<String, dynamic>>()
-            .map(HubTool.fromJson)
-            .toList();
-    return _tools!;
+    final data = jsonDecode(response.body) as Map<String, dynamic>;
+    return _catalogs[hub] = HubCatalog(
+      (data['tools'] as List)
+          .whereType<Map<String, dynamic>>()
+          .map(HubTool.fromJson)
+          .toList(),
+      DoneForYou.fromJson(data['doneForYou']),
+    );
   }
 
-  static Future<String> run(String toolId, Map<String, String> answers,
+  static Future<String> run(
+      String hub, String toolId, Map<String, String> answers,
       {HubBrief? brief}) async {
     final response = await ApiClient.post(
         'studentHub',
         jsonEncode({
+          'hub': hub,
           'tool': toolId,
           'answers': answers,
           if (brief != null)

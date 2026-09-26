@@ -1,5 +1,7 @@
 // Student Success Hub — the five live-web student tools from the Student
 // Tools site (naija-digest/src/students/main.ts), for the professional app.
+// The same form/prompt/run machinery serves the Business Marketing Hub
+// (businessHub.js): pass its tool list to publicTools / buildRun.
 // Forms and prompts live here; the app sends only the learner's answers.
 // Runs go through the key-holding proxy student-agents-api (Anthropic with
 // web search), authenticated as a trusted caller.
@@ -105,8 +107,8 @@ const LINKS_RULE =
   "\n\nLINKS: give every source, scholarship, listing or event a real, working URL written out in full (https://…), either on its own or as [short label](https://…). Never refer to a link without including its address.";
 
 /** Tool definitions for the app's forms (no prompts). */
-function publicTools() {
-  return TOOLS.map(({ prompt, tier, ...t }) => t);
+function publicTools(tools = TOOLS) {
+  return tools.map(({ prompt, tier, web, ...t }) => t);
 }
 
 const oneLine = (s) => String(s ?? "").replace(/[\r\n]+/g, " ").replace(/\s+/g, " ").trim();
@@ -136,8 +138,8 @@ function briefBlock(brief) {
  * Validates the learner's answers and builds the proxy request.
  * @returns { request: {tier, web, messages} } or { error }
  */
-function buildRun(toolId, answers = {}, brief = null) {
-  const tool = TOOLS.find((t) => t.id === toolId);
+function buildRun(toolId, answers = {}, brief = null, tools = TOOLS) {
+  const tool = tools.find((t) => t.id === toolId);
   if (!tool) return { error: "Unknown tool." };
   const f = {};
   for (const field of tool.fields) {
@@ -153,14 +155,15 @@ function buildRun(toolId, answers = {}, brief = null) {
     if (field.required && !f[field.id]) return { error: `Please fill in "${field.label}".` };
   }
 
-  const prompt = tool.prompt(f) + LINKS_RULE;
+  const web = tool.web !== false;
+  const prompt = tool.prompt(f) + (web ? LINKS_RULE : "");
   let content = prompt;
   if (tool.fields.some((x) => x.type === "file") && brief) {
     const { block, error } = briefBlock(brief);
     if (error) return { error };
     if (block) content = [block, { type: "text", text: prompt }];
   }
-  return { request: { tier: tool.tier, web: true, messages: [{ role: "user", content }] } };
+  return { request: { tier: tool.tier, web, messages: [{ role: "user", content }] } };
 }
 
 module.exports = { TOOLS, publicTools, buildRun, briefBlock };

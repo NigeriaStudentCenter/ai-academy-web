@@ -75,6 +75,13 @@ class AppNavDrawer extends StatelessWidget {
                       title: 'Student Success Hub',
                       routeName: '/student-hub',
                     ),
+                  if (AppAuthState.isProfessional)
+                    _drawerItem(
+                      context,
+                      icon: Icons.storefront,
+                      title: 'Business Marketing Hub',
+                      routeName: '/business-hub',
+                    ),
 
                   // AI Academy for Teens: the Nigerian / British curriculum tutor.
                   if (AppAuthState.isTeens)

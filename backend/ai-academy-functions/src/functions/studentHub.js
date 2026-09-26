@@ -1,9 +1,16 @@
 const { app } = require("@azure/functions");
 const { requireUser } = require("../lib/auth");
-const { publicTools, buildRun } = require("../lib/studentHub");
+const { TOOLS, publicTools, buildRun } = require("../lib/studentHub");
+const { BUSINESS_TOOLS, DONE_FOR_YOU } = require("../lib/businessHub");
 
-// Student Success Hub (professional learners). GET → the five tools' forms.
-// POST {tool, answers, brief?: {name, data(base64)}} → {text}
+// ?hub=business (GET) / {hub: "business"} (POST) selects the Business
+// Marketing Hub; anything else is the Student Success Hub.
+const HUBS = { student: TOOLS, business: BUSINESS_TOOLS };
+const hubTools = (id) => HUBS[id] || TOOLS;
+
+// Student Success Hub and Business Marketing Hub (professional learners).
+// GET ?hub= → the hub's tool forms.
+// POST {hub, tool, answers, brief?: {name, data(base64)}} → {text}
 const AGENTS_URL = (process.env.STUDENT_AGENTS_URL || "").replace(/\/$/, "");
 const AGENTS_KEY = process.env.STUDENT_AGENTS_KEY || "";
 
@@ -39,7 +46,16 @@ app.http("studentHub", {
     if (!user.audiences.includes("professional")) {
       return { status: 403, jsonBody: { error: "The Student Success Hub is part of the AI Academy." } };
     }
-    if (request.method === "GET") return { status: 200, jsonBody: { tools: publicTools() } };
+    if (request.method === "GET") {
+      const hub = request.query.get("hub");
+      return {
+        status: 200,
+        jsonBody: {
+          tools: publicTools(hubTools(hub)),
+          ...(hub === "business" ? { doneForYou: DONE_FOR_YOU } : {}),
+        },
+      };
+    }
 
     if (!AGENTS_URL || !AGENTS_KEY) {
       context.error("studentHub: STUDENT_AGENTS_URL / STUDENT_AGENTS_KEY not configured");
@@ -51,10 +67,15 @@ app.http("studentHub", {
     } catch {
       body = null;
     }
-    const { request: run, error } = buildRun(body?.tool, body?.answers || {}, body?.brief || null);
+    const { request: run, error } = buildRun(
+      body?.tool,
+      body?.answers || {},
+      body?.brief || null,
+      hubTools(body?.hub)
+    );
     if (error) return { status: 400, jsonBody: { error } };
     if (!allowRun(user.userId)) {
-      return { status: 429, jsonBody: { error: "You've used the hub a lot in the last hour — please try again a little later." } };
+      return { status: 429, jsonBody: { error: "You've used the hubs a lot in the last hour — please try again a little later." } };
     }
 
     try {

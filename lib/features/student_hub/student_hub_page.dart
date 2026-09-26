@@ -16,19 +16,68 @@ const _icons = <String, IconData>{
   'work': Icons.work,
   'celebration': Icons.celebration,
   'home': Icons.home,
+  'web': Icons.web,
+  'mail': Icons.mail,
+  'campaign': Icons.campaign,
+  'person_search': Icons.person_search,
+  'smart_toy': Icons.smart_toy,
+  'handshake': Icons.handshake,
 };
 
-/// Student Success Hub — five live-web tools for professional learners:
-/// Study Companion, Scholarship, Jobs, Social & Gigs and Accommodation.
+/// What differs between the two professional hubs.
+class HubConfig {
+  final String id; // 'student' | 'business'
+  final String title;
+  final String headline;
+  final String intro;
+  final String footnote;
+
+  const HubConfig({
+    required this.id,
+    required this.title,
+    required this.headline,
+    required this.intro,
+    required this.footnote,
+  });
+
+  /// Five live-web tools: Study Companion, Scholarship, Jobs, Social & Gigs
+  /// and Accommodation (student.html).
+  static const student = HubConfig(
+    id: 'student',
+    title: 'Student Success Hub',
+    headline: 'Ace your studies. Fund them. Live them fully.',
+    intro:
+        'Five tools that search the live web for you — real sources, scholarships, '
+        'jobs, events and places to live, with links you can act on today.',
+    footnote:
+        'Every tool searches the web in real time — always confirm details on the official link.',
+  );
+
+  /// Six marketing tools, one per service on business.html.
+  static const business = HubConfig(
+    id: 'business',
+    title: 'Business Marketing Hub',
+    headline: 'All your marketing, handled — without hiring a team.',
+    intro:
+        'Landing pages, emails, social content, lead generation, a 24/7 chatbot '
+        'and follow-up that closes — created for your business in minutes.',
+    footnote:
+        'Review everything before you publish or send — only promise what your business really delivers.',
+  );
+}
+
+/// A professional learner's hub (Student Success Hub or Business Marketing
+/// Hub): a list of AI tools, each a short form that returns a result.
 class StudentHubPage extends StatefulWidget {
-  const StudentHubPage({super.key});
+  final HubConfig hub;
+  const StudentHubPage({super.key, this.hub = HubConfig.student});
 
   @override
   State<StudentHubPage> createState() => _StudentHubPageState();
 }
 
 class _StudentHubPageState extends State<StudentHubPage> {
-  List<HubTool>? _tools;
+  HubCatalog? _catalog;
   String? _loadError;
   HubTool? _tool; // the open tool (null = the hub's tool list)
 
@@ -41,8 +90,8 @@ class _StudentHubPageState extends State<StudentHubPage> {
   Future<void> _load() async {
     setState(() => _loadError = null);
     try {
-      final tools = await StudentHubService.tools();
-      if (mounted) setState(() => _tools = tools);
+      final catalog = await StudentHubService.catalog(widget.hub.id);
+      if (mounted) setState(() => _catalog = catalog);
     } catch (e) {
       if (mounted) {
         setState(
@@ -55,16 +104,17 @@ class _StudentHubPageState extends State<StudentHubPage> {
   Widget build(BuildContext context) {
     final Widget body;
     if (!AppAuthState.isProfessional) {
-      body = const _Centered(
-          'The Student Success Hub is part of the AI Academy. Teens have the Command Center.');
+      body = _Centered(
+          'The ${widget.hub.title} is part of the AI Academy. Teens have the Command Center.');
     } else if (_loadError != null) {
       body = _Centered(_loadError!, onRetry: _load);
-    } else if (_tools == null) {
+    } else if (_catalog == null) {
       body = const Center(child: CircularProgressIndicator());
     } else if (_tool == null) {
-      body = _toolList(_tools!);
+      body = _toolList(_catalog!);
     } else {
-      body = _ToolRunner(key: ValueKey(_tool!.id), tool: _tool!);
+      body = _ToolRunner(
+          key: ValueKey(_tool!.id), hub: widget.hub.id, tool: _tool!);
     }
 
     return PopScope(
@@ -74,7 +124,7 @@ class _StudentHubPageState extends State<StudentHubPage> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: Text(_tool?.name ?? 'Student Success Hub'),
+          title: Text(_tool?.name ?? widget.hub.title),
           backgroundColor: AppColors.darkGreen,
           foregroundColor: Colors.white,
           leading: _tool == null
@@ -91,24 +141,22 @@ class _StudentHubPageState extends State<StudentHubPage> {
     );
   }
 
-  Widget _toolList(List<HubTool> tools) {
+  Widget _toolList(HubCatalog catalog) {
+    final offer = catalog.doneForYou;
     return Center(
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 720),
         child: ListView(
           padding: const EdgeInsets.all(20),
           children: [
-            Text('Ace your studies. Fund them. Live them fully.',
+            Text(widget.hub.headline,
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.bold, color: AppColors.darkGreen)),
             const SizedBox(height: 6),
-            const Text(
-              'Five tools that search the live web for you — real sources, scholarships, '
-              'jobs, events and places to live, with links you can act on today.',
-              style: TextStyle(fontSize: 15, height: 1.4),
-            ),
+            Text(widget.hub.intro,
+                style: const TextStyle(fontSize: 15, height: 1.4)),
             const SizedBox(height: 16),
-            for (final t in tools)
+            for (final t in catalog.tools)
               Card(
                 margin: const EdgeInsets.only(bottom: 12),
                 shape: RoundedRectangleBorder(
@@ -131,9 +179,48 @@ class _StudentHubPageState extends State<StudentHubPage> {
                   onTap: () => setState(() => _tool = t),
                 ),
               ),
+            if (offer != null) ...[
+              const SizedBox(height: 6),
+              Container(
+                padding: const EdgeInsets.all(18),
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                      colors: [Color(0xFF15803D), Color(0xFF14532D)]),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(offer.title,
+                        style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 6),
+                    Text(offer.text,
+                        style: const TextStyle(
+                            color: Colors.white, fontSize: 14.5, height: 1.4)),
+                    const SizedBox(height: 12),
+                    ElevatedButton.icon(
+                      onPressed: () => launchUrl(Uri(
+                        scheme: 'mailto',
+                        path: offer.email,
+                        queryParameters: {'subject': offer.subject},
+                      )),
+                      icon: const Icon(Icons.calendar_month),
+                      label: const Text('Book your free call'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        foregroundColor: const Color(0xFF15803D),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 12),
+            ],
             const SizedBox(height: 4),
-            Text(
-                'Every tool searches the web in real time — always confirm details on the official link.',
+            Text(widget.hub.footnote,
                 style: TextStyle(color: Colors.grey.shade700, fontSize: 13)),
           ],
         ),
@@ -144,8 +231,9 @@ class _StudentHubPageState extends State<StudentHubPage> {
 
 /// One tool: its form, then the result.
 class _ToolRunner extends StatefulWidget {
+  final String hub;
   final HubTool tool;
-  const _ToolRunner({super.key, required this.tool});
+  const _ToolRunner({super.key, required this.hub, required this.tool});
 
   @override
   State<_ToolRunner> createState() => _ToolRunnerState();
@@ -222,8 +310,9 @@ class _ToolRunnerState extends State<_ToolRunner> {
         for (final e in _text.entries) e.key: e.value.text,
         ..._select,
       };
-      final text =
-          await StudentHubService.run(widget.tool.id, answers, brief: _brief);
+      final text = await StudentHubService.run(
+          widget.hub, widget.tool.id, answers,
+          brief: _brief);
       if (!mounted) return;
       setState(() {
         _result = text.isEmpty ? null : text;
@@ -262,7 +351,7 @@ class _ToolRunnerState extends State<_ToolRunner> {
                       child: CircularProgressIndicator(
                           strokeWidth: 2, color: Colors.white))
                   : const Icon(Icons.search),
-              label: Text(_running ? 'Searching the web…' : 'Run ${tool.name}'),
+              label: Text(_running ? 'Working on it…' : 'Run ${tool.name}'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.darkGreen,
                 foregroundColor: Colors.white,
@@ -272,7 +361,7 @@ class _ToolRunnerState extends State<_ToolRunner> {
             if (_running)
               const Padding(
                 padding: EdgeInsets.only(top: 8),
-                child: Text('Live searches usually take 20–60 seconds.',
+                child: Text('This usually takes 20–60 seconds.',
                     textAlign: TextAlign.center,
                     style: TextStyle(color: Colors.grey)),
               ),

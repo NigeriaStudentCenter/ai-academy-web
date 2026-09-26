@@ -181,6 +181,29 @@ class DashboardPage extends StatelessWidget {
                       ),
                     ),
                   ),
+                  const SizedBox(height: 12),
+                  SizedBox(
+                    width: double.infinity,
+                    child: OutlinedButton.icon(
+                      onPressed: () => context.go('/business-hub'),
+                      icon: const Icon(Icons.storefront),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: AppColors.nearWhite,
+                        side: const BorderSide(color: AppColors.nearWhite, width: 1.5),
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      label: const Text(
+                        "Business Marketing Hub",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
                 ],
 
                 // =========================

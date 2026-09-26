@@ -168,6 +168,11 @@ final GoRouter goRouter = GoRouter(
       builder: (context, state) => const StudentHubPage(),
     ),
     GoRoute(
+      path: '/business-hub',
+      builder: (context, state) =>
+          const StudentHubPage(hub: HubConfig.business),
+    ),
+    GoRoute(
       path: '/command-center',
       builder: (context, state) => const CommandCenterPage(),
     ),

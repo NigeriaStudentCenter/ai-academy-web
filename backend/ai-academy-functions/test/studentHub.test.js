@@ -38,3 +38,19 @@ test("student hub: briefs attach as document/image/text blocks and are checked",
   const txt = buildRun("research", { topic: "x" }, { name: "b.txt", data: Buffer.from("Task 1").toString("base64") });
   assert.match(txt.request.messages[0].content[0].text, /ASSESSMENT BRIEF \(uploaded\): Task 1/);
 });
+
+test("business hub: six tools matching business.html; writing tools skip web search", () => {
+  const { BUSINESS_TOOLS } = require("../src/lib/businessHub");
+  const tools = publicTools(BUSINESS_TOOLS);
+  assert.deepEqual(tools.map((t) => t.id), ["landing", "email", "social", "leads", "chatbot", "followup"]);
+  const answers = { business: "Ada's Kitchen", offer: "event catering", audience: "HR teams" };
+  const landing = buildRun("landing", answers, null, BUSINESS_TOOLS).request;
+  assert.equal(landing.web, false);
+  assert.doesNotMatch(landing.messages[0].content, /LINKS:/);
+  assert.match(landing.messages[0].content, /Never invent testimonials/);
+  const leads = buildRun("leads", { offer: "bookkeeping", ideal: "cafés", loc: "Leeds" }, null, BUSINESS_TOOLS).request;
+  assert.equal(leads.web, true);
+  assert.match(leads.messages[0].content, /LINKS:/);
+  // A student tool id is not valid in the business hub.
+  assert.match(buildRun("scholar", {}, null, BUSINESS_TOOLS).error, /Unknown tool/);
+});
