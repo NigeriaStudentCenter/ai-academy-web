@@ -21,7 +21,11 @@ const CATEGORIES = [
   { id: "business", name: "Business & Entrepreneurship" },
   { id: "finance", name: "Finance & Accounting" },
   { id: "personal-development", name: "Personal Development" },
-  { id: "careers", name: "Careers & Job Search" },
+  { id: "careers", name: "Career Development & Job Search" },
+  { id: "workplace", name: "Workplace Essentials" },
+  { id: "admin-skills", name: "Administrative Skills" },
+  { id: "management", name: "Supervisors & Managers" },
+  { id: "hr", name: "Human Resources" },
   { id: "health", name: "Health & Pharmacy" },
   // AI Academy for Teens
   { id: "teens-start", name: "Start Here" },
@@ -175,6 +179,7 @@ const SITE_COURSES = [
     minLessons: 3,
     // Course hubs that exist but aren't linked from the home page.
     extraHubs: ["Goal-Setting-and-Getting-Things-Done.aspx", "Trust-Building-and-Resilience-Development.aspx"],
+    discoverHubs: true,
   },
   {
     site: "PersonalDevelopmentCourses2",
@@ -185,6 +190,23 @@ const SITE_COURSES = [
     title: "Limiting Career Behaviours",
     category: "careers",
   },
+  // Workshop-kit course sites: a home page linking to 12-module courses.
+  ...[
+    ["AdministrativeSkillsCourse", "admin", "admin-skills"],
+    ["CareerDevelopmentCourses2", "career", "careers"],
+    ["SupervisorsandManagersCourses2", "mgr", "management"],
+    ["WorkplaceEssentials", "work", "workplace"],
+    ["HumanResourcesCourses2", "hr", "hr"],
+  ].map(([site, idPrefix, category]) => ({
+    site,
+    hub: "DepartmentHome.aspx",
+    mode: "hub-of-hubs",
+    idPrefix,
+    category,
+    minLessons: 3,
+    trainerKit: true,
+    discoverHubs: true,
+  })),
   {
     site: "PharmacyAssistaantCourse",
     hub: "DepartmentHome.aspx",

@@ -430,6 +430,13 @@ async function buildSiteCourses(reader, def, log = () => {}) {
     for (const extra of def.extraHubs || []) {
       if (!hubLinks.some((l) => l.page === extra)) hubLinks.push({ page: extra, label: "" });
     }
+    // Course hubs not linked from the home page: pages linking to 8+ pages.
+    if (def.discoverHubs) {
+      for (const [name, page] of pages) {
+        if (name === def.hub || /sample content/i.test(page.title) || hubLinks.some((l) => l.page === name)) continue;
+        if (hubSections(page.canvas).flatMap((x) => x.links).length >= 8) hubLinks.push({ page: name, label: "" });
+      }
+    }
     for (const l of hubLinks) {
       const page = pages.get(l.page);
       if (!page) continue;
