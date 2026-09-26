@@ -20,7 +20,7 @@ test("lesson page: title, chips, outcome and cleaned body", () => {
   const l = parseLessonPage(LESSON, { lessonId: "lesson-1", lessonOrder: 1 });
   assert.equal(l.title, "Tailor Your CV");
   assert.equal(l.duration, "25 min");
-  assert.equal(l.objective, "match your CV to an advert.");
+  assert.equal(l.objective, "Match your CV to an advert.");
   assert.match(l.contentBody, /<h2>1 · Upload your CV<\/h2>/);
   assert.match(l.contentBody, /<a href="https:\/\/chatgpt.com">Open · ChatGPT<\/a>/);
   assert.match(l.contentBody, /<blockquote><p>Compare my CV to this advert.<\/p><\/blockquote>/);

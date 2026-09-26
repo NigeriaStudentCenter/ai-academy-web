@@ -75,7 +75,10 @@ function parseLessonPage(html, opts = {}) {
   const duration = (chips.find((c) => /min|hour|hr/i.test(c)) || "").replace(/^~/, "");
   const level = chips.find((c) => /beginner|intermediate|advanced/i.test(c)) || "";
   const outcome = root.querySelector(".callout.out");
-  const objective = clean(outcome?.text).replace(/^What you['’]ll be able to do:\s*/i, "");
+  // "What you'll be able to do: upload your CV…" → "Upload your CV…"
+  const objective = clean(outcome?.text)
+    .replace(/^What you['’]ll be able to do:\s*/i, "")
+    .replace(/^[a-z]/, (c) => c.toUpperCase());
   const main = (root.querySelector("main") || root.querySelector("body"))?.clone();
   if (!main) return null;
   main.querySelectorAll("h1, header, .callout.out").forEach((n) => n.remove());
