@@ -199,8 +199,8 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
               children: [
                 Text(
                   subject,
-                  style:
-                      const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                      fontSize: 22, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 4),
                 Text(
@@ -218,7 +218,8 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
               child: Card(
                 color: Colors.blue.shade50,
                 child: ListTile(
-                  leading: const Icon(Icons.play_circle_fill, color: Colors.blue),
+                  leading:
+                      const Icon(Icons.play_circle_fill, color: Colors.blue),
                   title: const Text(
                     "Resume learning",
                     style: TextStyle(fontWeight: FontWeight.bold),
@@ -240,8 +241,7 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
               child: Card(
                 color: Colors.green.shade50,
                 child: ListTile(
-                  leading:
-                      const Icon(Icons.verified, color: Colors.green),
+                  leading: const Icon(Icons.verified, color: Colors.green),
                   title: const Text(
                     "Subject completed",
                     style: TextStyle(fontWeight: FontWeight.bold),

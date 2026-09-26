@@ -16,16 +16,28 @@ class CourseApiService {
   static final ValueNotifier<int> completionChanges = ValueNotifier(0);
 
   /// Courses this learner can take.
-  static Future<List<CourseSummary>> listCourses() async {
+  static Future<List<CourseSummary>> listCourses() async =>
+      (await listCatalog()).courses;
+
+  /// Courses this learner can take, with their categories in display order.
+  static Future<
+          ({List<CourseSummary> courses, List<CourseCategory> categories})>
+      listCatalog() async {
     final response = await ApiClient.get('listCourses');
     if (response.statusCode != 200) {
       throw Exception('Could not load courses (HTTP ${response.statusCode}).');
     }
     final json = jsonDecode(response.body) as Map<String, dynamic>;
-    return (json['courses'] as List? ?? [])
-        .whereType<Map<String, dynamic>>()
-        .map(CourseSummary.fromJson)
-        .toList();
+    return (
+      courses: (json['courses'] as List? ?? [])
+          .whereType<Map<String, dynamic>>()
+          .map(CourseSummary.fromJson)
+          .toList(),
+      categories: (json['categories'] as List? ?? [])
+          .whereType<Map<String, dynamic>>()
+          .map(CourseCategory.fromJson)
+          .toList(),
+    );
   }
 
   /// Returns the course, or null if it doesn't exist or isn't available to

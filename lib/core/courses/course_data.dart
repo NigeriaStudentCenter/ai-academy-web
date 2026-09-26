@@ -22,6 +22,9 @@ class LessonData {
   final String resourceUrl;
   final String resourceLabel;
 
+  /// Downloads for the lesson (workbooks, slides, handouts) with signed URLs.
+  final List<LessonAttachment> attachments;
+
   const LessonData({
     required this.lessonId,
     required this.title,
@@ -37,6 +40,7 @@ class LessonData {
     this.assessmentUrl = '',
     this.resourceUrl = '',
     this.resourceLabel = '',
+    this.attachments = const [],
   });
 
   factory LessonData.fromJson(Map<String, dynamic> json) {
@@ -55,8 +59,35 @@ class LessonData {
       assessmentUrl: json['assessmentUrl'] as String? ?? '',
       resourceUrl: json['resourceUrl'] as String? ?? '',
       resourceLabel: json['resourceLabel'] as String? ?? '',
+      attachments: (json['attachments'] as List? ?? [])
+          .whereType<Map<String, dynamic>>()
+          .map(LessonAttachment.fromJson)
+          .where((a) => a.url.isNotEmpty)
+          .toList(),
     );
   }
+}
+
+class LessonAttachment {
+  final String label;
+  final String url;
+  const LessonAttachment(this.label, this.url);
+
+  factory LessonAttachment.fromJson(Map<String, dynamic> json) =>
+      LessonAttachment(
+        json['label'] as String? ?? 'Download',
+        json['url'] as String? ?? '',
+      );
+}
+
+/// A course category from /api/listCourses, in display order.
+class CourseCategory {
+  final String id;
+  final String name;
+  const CourseCategory(this.id, this.name);
+
+  factory CourseCategory.fromJson(Map<String, dynamic> json) => CourseCategory(
+      json['id'] as String? ?? '', json['name'] as String? ?? '');
 }
 
 /// Course card data from /api/listCourses (no lesson bodies).
@@ -67,6 +98,7 @@ class CourseSummary {
   final String level;
   final String estimatedDuration;
   final int lessonCount;
+  final String category;
 
   const CourseSummary({
     required this.courseId,
@@ -75,6 +107,7 @@ class CourseSummary {
     required this.level,
     required this.estimatedDuration,
     required this.lessonCount,
+    this.category = '',
   });
 
   factory CourseSummary.fromJson(Map<String, dynamic> json) {
@@ -85,6 +118,7 @@ class CourseSummary {
       level: json['level'] as String? ?? '',
       estimatedDuration: json['estimatedDuration'] as String? ?? '',
       lessonCount: (json['lessonCount'] as num?)?.toInt() ?? 0,
+      category: json['category'] as String? ?? '',
     );
   }
 }

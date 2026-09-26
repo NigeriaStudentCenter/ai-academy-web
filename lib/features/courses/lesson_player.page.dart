@@ -86,6 +86,20 @@ class _LessonPlayerPageState extends State<LessonPlayerPage> {
     }
   }
 
+  /// An icon for a download, from the file type in its signed URL.
+  IconData _fileIcon(String url) {
+    final path = Uri.tryParse(url)?.queryParameters['path']?.toLowerCase() ??
+        url.toLowerCase();
+    if (path.endsWith('.pdf')) return Icons.picture_as_pdf;
+    if (RegExp(r'\.pptx?$').hasMatch(path)) return Icons.slideshow;
+    if (RegExp(r'\.(xlsx?|csv)$').hasMatch(path)) return Icons.table_chart;
+    if (RegExp(r'\.(mp4|m4v|mov|webm)$').hasMatch(path)) {
+      return Icons.play_circle;
+    }
+    if (RegExp(r'\.(mp3|m4a)$').hasMatch(path)) return Icons.headphones;
+    return Icons.description;
+  }
+
   /// Opens a lesson link (playlist, form, tool) outside the app.
   Future<bool> _open(String url) async {
     final uri = Uri.tryParse(url);
@@ -154,7 +168,8 @@ class _LessonPlayerPageState extends State<LessonPlayerPage> {
               ),
               if (lesson.videoUrl.isNotEmpty) ...[
                 const SizedBox(height: 12),
-                _LessonVideo(key: ValueKey(lesson.videoUrl), url: lesson.videoUrl),
+                _LessonVideo(
+                    key: ValueKey(lesson.videoUrl), url: lesson.videoUrl),
               ],
               if (lesson.resourceUrl.isNotEmpty) ...[
                 const SizedBox(height: 12),
@@ -192,16 +207,48 @@ class _LessonPlayerPageState extends State<LessonPlayerPage> {
                 lesson.reflectionQuestion.isEmpty
                     ? lesson.contentBody
                     : lesson.contentBody.replaceAll(
-                        RegExp(r'<p>\s*<strong>\s*Reflection question:?\s*</strong>.*?</p>',
-                            caseSensitive: false, dotAll: true),
+                        RegExp(
+                            r'<p>\s*<strong>\s*Reflection question:?\s*</strong>.*?</p>',
+                            caseSensitive: false,
+                            dotAll: true),
                         ''),
                 textStyle: const TextStyle(fontSize: 16, height: 1.5),
                 onTapUrl: (url) => _open(url),
                 // Prompts (<blockquote>) become copyable prompt cards.
-                customWidgetBuilder: (element) => element.localName == 'blockquote'
-                    ? _PromptCard(text: element.text.trim())
-                    : null,
+                customWidgetBuilder: (element) =>
+                    element.localName == 'blockquote'
+                        ? _PromptCard(text: element.text.trim())
+                        : null,
               ),
+              if (lesson.attachments.isNotEmpty) ...[
+                const SizedBox(height: 16),
+                Card(
+                  color: const Color(0xFFF4F1EA),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 6),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.fromLTRB(16, 8, 16, 2),
+                          child: Text('Downloads',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 16)),
+                        ),
+                        for (final a in lesson.attachments)
+                          ListTile(
+                            dense: true,
+                            leading: Icon(_fileIcon(a.url),
+                                color: const Color(0xFF0B3D2E)),
+                            title: Text(a.label),
+                            trailing: const Icon(Icons.download),
+                            onTap: () => _open(a.url),
+                          ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
               if (lesson.assessmentUrl.isNotEmpty) ...[
                 const SizedBox(height: 16),
                 Card(
@@ -293,7 +340,8 @@ class _PromptCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              const Icon(Icons.auto_awesome, size: 18, color: Color(0xFF0B3D2E)),
+              const Icon(Icons.auto_awesome,
+                  size: 18, color: Color(0xFF0B3D2E)),
               const SizedBox(width: 6),
               const Expanded(
                 child: Text(

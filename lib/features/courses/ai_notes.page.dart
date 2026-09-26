@@ -295,7 +295,7 @@ $topic
 
     return Scaffold(
       // ✅ Step 5B: Drawer available on Notes page too
-    drawer: AppNavDrawer(),
+      drawer: AppNavDrawer(),
 
       appBar: AppBar(
         title: const Text("AI Study Notes"),
@@ -391,7 +391,8 @@ $topic
                 ),
                 const SizedBox(width: 12),
                 OutlinedButton.icon(
-                  onPressed: (isLoading || notes.isEmpty) ? null : regenerateNotes,
+                  onPressed:
+                      (isLoading || notes.isEmpty) ? null : regenerateNotes,
                   icon: const Icon(Icons.refresh),
                   label: const Text("Regenerate"),
                 ),

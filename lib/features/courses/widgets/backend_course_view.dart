@@ -55,9 +55,11 @@ class BackendCourseView extends StatelessWidget {
               ),
               const SizedBox(height: 4),
               Text(
-                [course.level, course.estimatedDuration, '${lessons.length} lessons']
-                    .where((s) => s.isNotEmpty)
-                    .join(' • '),
+                [
+                  course.level,
+                  course.estimatedDuration,
+                  '${lessons.length} lessons'
+                ].where((s) => s.isNotEmpty).join(' • '),
                 style: TextStyle(color: Colors.grey.shade600),
               ),
               if (course.description.isNotEmpty) ...[
@@ -112,8 +114,9 @@ class BackendCourseView extends StatelessWidget {
                             : const Icon(Icons.radio_button_unchecked,
                                 color: Colors.grey),
                     title: Text('${lesson.lessonOrder}. ${lesson.title}'),
-                    subtitle:
-                        lesson.duration.isNotEmpty ? Text(lesson.duration) : null,
+                    subtitle: lesson.duration.isNotEmpty
+                        ? Text(lesson.duration)
+                        : null,
                     onTap: () => context.go(
                         '/course/${course.courseId}/lesson/${lesson.lessonId}'),
                   ),
