@@ -158,6 +158,7 @@ const SITE_COURSES = [
     hub: "Procrastination.aspx",
     courseId: "beat-procrastination",
     title: "Beat Procrastination",
+    audiences: ["professional", "teens"],
     description:
       "Understand why you procrastinate and build the habits, focus, sleep, nutrition, exercise and mindfulness routines that help you get things done.",
     category: "personal-development",
@@ -168,6 +169,8 @@ const SITE_COURSES = [
     mode: "hub-of-hubs",
     idPrefix: "pd",
     category: "personal-development",
+    audiences: ["professional", "teens"],
+    trainerKit: true, // workshop kits: remove trainer-only sections
     categories: [["^Job Search", "careers"]],
     minLessons: 3,
     // Course hubs that exist but aren't linked from the home page.

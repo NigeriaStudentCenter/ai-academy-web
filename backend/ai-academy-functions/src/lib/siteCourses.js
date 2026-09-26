@@ -281,6 +281,46 @@ function lessonFromPage(page) {
   };
 }
 
+// Trainer-only parts of the workshop kits (Personal Development courses):
+// facilitation sections, per-topic planning tables and trainer instructions.
+const TRAINER_SECTIONS =
+  /^((review of )?(the )?parking lot|housekeeping items?|(completion of )?action plans? and evaluations?|ice ?breakers?|evaluations?)$/i;
+const TRAINER_TEXT =
+  /(suggestions? for the trainer|for the trainer|take a few moments to cover basic housekeeping|basic housekeeping|explain (the concept of )?.* to (the )?participants|ask (the )?participants|do a quick round robin|flip ?chart|\bice ?breakers?\b|washrooms?|review the items on the parking lot)/i;
+const PLANNING_TABLE = /(estimated time|topic objective|materials required|planning checklist|delivery tips|recommended activity)/i;
+
+function removeTrainerNotes(html) {
+  const root = parse(`<div>${html}</div>`);
+  const top = root.firstChild;
+  let skipping = false;
+  for (const el of [...top.childNodes]) {
+    const tag = el.rawTagName?.toLowerCase();
+    const text = clean(el.text);
+    if (tag && /^h[1-4]$/.test(tag)) {
+      skipping = TRAINER_SECTIONS.test(text);
+      if (skipping) el.remove();
+      continue;
+    }
+    if (skipping) {
+      el.remove();
+      continue;
+    }
+    if (tag === "table" && PLANNING_TABLE.test(text)) el.remove();
+    else if (tag === "p" && TRAINER_TEXT.test(text)) el.remove();
+    else if (tag === "ul" || tag === "ol") {
+      // Drop only the trainer items; drop the list if nothing is left.
+      el.querySelectorAll("li").forEach((li) => {
+        if (TRAINER_TEXT.test(clean(li.text))) li.remove();
+      });
+      if (!el.querySelector("li")) el.remove();
+    }
+  }
+  return top.innerHTML
+    .replace(/\bthe participants\b/gi, "learners")
+    .replace(/\bparticipants\b/gi, "learners")
+    .trim();
+}
+
 const hasContent = (l) =>
   l.videoPath || l.assessmentUrl || l.attachments.length || clean(l.contentBody.replace(/<(?!img)[^>]+>/g, " ")).length > 40 || /<img/.test(l.contentBody);
 
@@ -368,7 +408,10 @@ async function buildSiteCourses(reader, def, log = () => {}) {
     const drop = (def.dropPages || {})[fields.title] || [];
     links = links.filter((l) => !drop.some((re) => new RegExp(re, "i").test(l.page)));
     const lessons = lessonsFromLinks(pages, links, { expandHubs: def.expandHubs !== false });
-    for (const l of lessons) l.title = (def.lessonTitles || {})[l.title] || l.title;
+    for (const l of lessons) {
+      l.title = (def.lessonTitles || {})[l.title] || l.title;
+      if (def.trainerKit) l.contentBody = removeTrainerNotes(l.contentBody);
+    }
     const override = (def.categories || []).find(([re]) => new RegExp(re, "i").test(fields.title));
     if (override) fields = { ...fields, category: override[1] };
     if (lessons.length >= (def.minLessons || 1)) courses.push(courseFrom({ ...base, ...fields }, lessons, pages));
@@ -432,6 +475,7 @@ async function buildSiteCourses(reader, def, log = () => {}) {
 }
 
 module.exports.lessonFromPage = lessonFromPage;
+module.exports.removeTrainerNotes = removeTrainerNotes;
 module.exports.tidyRte = tidyRte;
 module.exports.buildSiteCourses = buildSiteCourses;
 module.exports.lessonsFromLinks = lessonsFromLinks;

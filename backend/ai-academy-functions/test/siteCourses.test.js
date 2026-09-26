@@ -48,3 +48,33 @@ test("lesson page: text, video, slide images, files and form", () => {
 test("tidyRte keeps safe external links", () => {
   assert.match(tidyRte('<p><a href="https://example.org" target="_blank">Read</a></p>'), /<a href="https:\/\/example.org">Read<\/a>/);
 });
+
+test("trainer kits: facilitation sections, planning tables and trainer lines are removed", () => {
+  const { removeTrainerNotes } = require("../src/lib/siteCourses");
+  const html = [
+    "<p>Welcome to the Stress Management workshop.</p>",
+    "<h2>Housekeeping Items</h2><p>Take a few moments to cover basic housekeeping items.</p><ul><li>Use the Icebreakers folder</li></ul>",
+    "<h2>The Parking Lot</h2><p>Explain the concept of The Parking Lot to participants.</p><p>Suggestions for the trainer:</p>",
+    "<h2>Workshop Objectives</h2><p>At the end of this workshop, you should be able to:</p><ul><li>Accept a situation</li></ul>",
+    "<table><tr><td>Estimated Time</td><td>10 minutes</td></tr><tr><td>Topic Objective</td></tr></table>",
+    "<h2>Case Study</h2><p>Richard dreaded public speaking, as many participants do.</p>",
+    "<h2>Action Plans and Evaluations</h2><p>Do a quick round robin.</p>",
+  ].join("");
+  const out = removeTrainerNotes(html);
+  assert.match(out, /Welcome to the Stress Management workshop/);
+  assert.match(out, /<h2>Workshop Objectives<\/h2>/);
+  assert.match(out, /<h2>Case Study<\/h2><p>Richard dreaded public speaking, as many learners do\.<\/p>/);
+  assert.doesNotMatch(out, /Housekeeping|Parking Lot|trainer|Estimated Time|round robin|Icebreakers/i);
+});
+
+test("trainer kits: end-of-course parking lot and icebreaker items go; stories stay", () => {
+  const { removeTrainerNotes } = require("../src/lib/siteCourses");
+  const out = removeTrainerNotes(
+    "<h2>Review of Parking Lot</h2><p>Review the items on the parking lot.</p>" +
+      "<h2>Build Trust</h2><ul><li>Use an icebreaker</li><li>Keep promises</li></ul>" +
+      "<p>He went out to the parking lot to check Ginny's car.</p>"
+  );
+  assert.doesNotMatch(out, /Review of Parking Lot|icebreaker/i);
+  assert.match(out, /<li>Keep promises<\/li>/);
+  assert.match(out, /He went out to the parking lot/);
+});
