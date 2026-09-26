@@ -1,6 +1,6 @@
 const { app } = require("@azure/functions");
 const { requireUser } = require("../lib/auth");
-const { getCourseForUser } = require("../lib/courses");
+const { getCourseForUser, publicCourse } = require("../lib/courses");
 const { withMediaUrls } = require("../lib/sharepointCourses");
 
 app.http("getCourse", {
@@ -15,6 +15,6 @@ app.http("getCourse", {
       return { status: 404, jsonBody: { message: "Course not found.", courseId } };
     }
 
-    return { status: 200, jsonBody: withMediaUrls(course) };
+    return { status: 200, jsonBody: withMediaUrls(publicCourse(course)) };
   }),
 });

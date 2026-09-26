@@ -4,7 +4,7 @@
 const { loadCatalog } = require("./sharepointCourses");
 const { CATEGORIES, categorize } = require("./catalogConfig");
 
-const BUILT_IN = [require("../courses/ai-foundations")];
+const BUILT_IN = [require("../courses/ai-foundations"), require("../courses/become-extra-ordinary")];
 
 async function allCourses() {
   let synced = [];
@@ -18,7 +18,25 @@ async function allCourses() {
 }
 
 function canAccess(user, course) {
+  // Draft courses are visible to admins only, for review before release.
+  if (course.draft && !user.isAdmin) return false;
   return course.audiences.some((a) => user.audiences.includes(a));
+}
+
+/**
+ * The course as sent to the app: quiz answers/explanations and the AI
+ * coaches' instructions stay on the server.
+ */
+function publicCourse(course) {
+  const { coachRules, ...rest } = course;
+  return {
+    ...rest,
+    lessons: rest.lessons.map((l) => ({
+      ...l,
+      quiz: l.quiz ? l.quiz.map(({ question, options }) => ({ question, options })) : undefined,
+      coaches: l.coaches ? l.coaches.map(({ systemPrompt, ...c }) => c) : undefined,
+    })),
+  };
 }
 
 /** The course if it exists and this learner may see it, otherwise null. */
@@ -41,6 +59,7 @@ async function listCoursesForUser(user) {
       certificateEligible: c.certificateEligible,
       audiences: c.audiences,
       category: categorize(c),
+      draft: !!c.draft,
     }));
 }
 
@@ -50,4 +69,4 @@ function categoriesFor(courses) {
   return CATEGORIES.filter((c) => used.has(c.id));
 }
 
-module.exports = { getCourseForUser, listCoursesForUser, categoriesFor };
+module.exports = { getCourseForUser, listCoursesForUser, categoriesFor, publicCourse };
