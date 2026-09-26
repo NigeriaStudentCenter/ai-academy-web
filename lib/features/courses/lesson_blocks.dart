@@ -169,11 +169,24 @@ class _ExerciseBlockState extends State<ExerciseBlock> {
 
   List<Widget> _fields(LessonExercise e) => [
         for (final f in e.fields) ...[
+          // The question sits above its box so long questions stay readable.
+          Padding(
+            padding: const EdgeInsets.only(bottom: 6),
+            child: Text(f.label,
+                style:
+                    const TextStyle(fontWeight: FontWeight.w600, height: 1.35)),
+          ),
           TextField(
             controller: _c[f.id],
             minLines: f.multiline ? (f.minWords > 0 ? 6 : 2) : 1,
             maxLines: f.multiline ? 12 : 1,
-            decoration: _dec(f.label),
+            decoration: const InputDecoration(
+              hintText: 'Your answer',
+              border: OutlineInputBorder(),
+              isDense: true,
+              filled: true,
+              fillColor: Colors.white,
+            ),
           ),
           if (f.minWords > 0 || f.maxWords > 0)
             ValueListenableBuilder(
@@ -193,7 +206,7 @@ class _ExerciseBlockState extends State<ExerciseBlock> {
                 );
               },
             ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 14),
         ],
       ];
 
