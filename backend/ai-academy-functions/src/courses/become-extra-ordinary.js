@@ -40,7 +40,7 @@ module.exports = {
   audiences: ["professional", "teens"],
   category: "personal-development",
   draft: true,
-  version: "0.3",
+  version: "0.4",
   lessons: [
     // ------------------------------------------------------------------ intro
     {
@@ -626,5 +626,6 @@ ${block("coach", "m1-action-check")}
     // Module 2 onwards live in their own files.
     ...require("./become-extra-ordinary-m2"),
     ...require("./become-extra-ordinary-m3"),
+    ...require("./become-extra-ordinary-m4"),
   ],
 };
