@@ -125,6 +125,13 @@ async function surveyPages() {
   return out.sort((a, b) => b.textChars - a.textChars);
 }
 
+/** Admin diagnostics: one page's full Graph layout, by file name. */
+async function getPageLayout(name) {
+  const summary = (await listAllPages()).find((p) => p.name === name);
+  if (!summary) return null;
+  return graph(`/sites/${SITE_ID}/pages/${summary.id}/microsoft.graph.sitePage?$expand=canvasLayout`);
+}
+
 /** Fetches every course page, converts it, and saves the catalogue. */
 async function syncCourses(log = () => {}) {
   const pages = await listCoursePages();
@@ -210,4 +217,4 @@ async function fetchCourseImage(path) {
   };
 }
 
-module.exports = { syncCourses, loadCatalog, fetchCourseImage, listCoursePages, surveyPages };
+module.exports = { syncCourses, loadCatalog, fetchCourseImage, listCoursePages, surveyPages, getPageLayout, graph, SITE_ID };
