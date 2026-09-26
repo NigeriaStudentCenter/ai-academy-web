@@ -91,7 +91,7 @@ module.exports = {
   level: "Beginner & intermediate",
   estimatedDuration: "1 day · 11 lessons",
   certificateEligible: true,
-  audiences: ["professional"],
+  audiences: ["professional", "teens"],
   category: "workplace",
   draft: false,
   version: "1.0",
