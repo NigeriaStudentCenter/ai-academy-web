@@ -3,19 +3,60 @@
 // in buildSiteCourses) and add the site name to MEDIA_SITES if it isn't there.
 
 const CATEGORIES = [
-  { id: "ai-essentials", name: "AI Essentials & Tools" },
-  { id: "ai-professions", name: "AI for Your Profession" },
+  { id: "ai-essentials", name: "AI Essentials" },
+  { id: "ai-tools", name: "AI Tools Masterclasses" },
+  { id: "ai-employment", name: "AI for Employment (CV & Interview)" },
+  { id: "ai-admin", name: "AI for Administrators" },
+  { id: "ai-legal", name: "AI for Lawyers" },
+  { id: "ai-marketing", name: "AI for Marketers" },
+  { id: "ai-sales", name: "AI for Sales" },
+  { id: "ai-product", name: "AI for Product Management" },
+  { id: "ai-business-analysis", name: "AI for Business Analysts" },
+  { id: "ai-data", name: "AI for Data Analysts" },
+  { id: "ai-finance", name: "AI for Finance" },
+  { id: "ai-hr", name: "AI for HR" },
+  { id: "ai-healthcare", name: "AI for Healthcare" },
+  { id: "ai-tech", name: "AI for IT, Developers & Engineers" },
   { id: "ai-business-ideas", name: "200 AI Business Ideas" },
-  { id: "careers", name: "Careers & Employability" },
   { id: "business", name: "Business & Entrepreneurship" },
   { id: "finance", name: "Finance & Accounting" },
   { id: "personal-development", name: "Personal Development" },
+  { id: "careers", name: "Careers & Job Search" },
   { id: "health", name: "Health & Pharmacy" },
   // AI Academy for Teens
   { id: "teens-start", name: "Start Here" },
   { id: "teens-tracks", name: "AI Tracks" },
   { id: "teens-wellbeing", name: "Wellbeing" },
 ];
+
+// Category of each course that doesn't set one in its source.
+const COURSE_CATEGORIES = {
+  "ai-foundations": "ai-essentials",
+  "ai-essentials": "ai-essentials",
+  "ai-skills-for-work": "ai-essentials",
+  "chatgpt-coworker": "ai-essentials",
+  "ai-cv-beat-the-ats": "ai-employment",
+  "ai-interview-prep": "ai-employment",
+  "research-a-company": "ai-employment",
+  "ai-for-admins": "ai-admin",
+  "legal-ai-accelerator": "ai-legal",
+  "legal-ai-fast-track": "ai-legal",
+  "ai-business-marketing-sales": "ai-marketing",
+  "meta-business-agent-whatsapp": "ai-marketing",
+  "human-ai-sales": "ai-sales",
+  "ai-agents-customer-engagement": "ai-sales",
+  "ai-product-management": "ai-product",
+  "ai-business-analysis": "ai-business-analysis",
+  "ai-data-analysts": "ai-data",
+  "ai-in-healthcare": "ai-healthcare",
+  "ai-for-it-developers": "ai-tech",
+  "azure-ai-engineer": "ai-tech",
+  "ai-engineering-mastery": "ai-tech",
+  "advanced-ai-systems-agents": "ai-tech",
+  "ai-ready-resources": "ai-tech",
+  "teens-ai-safety": "teens-start",
+  "teens-sel": "teens-wellbeing",
+};
 
 const SITE_COURSES = [
   {
@@ -26,7 +67,7 @@ const SITE_COURSES = [
     title: "AI in Finance",
     description:
       "How AI really works, putting it to work on real financial data, prompt engineering for finance, building your own AI team member, and the AI-enabled CFO.",
-    category: "ai-professions",
+    category: "ai-finance",
     level: "Beginner → Advanced",
   },
   {
@@ -39,7 +80,7 @@ const SITE_COURSES = [
     title: "AI in HR",
     description:
       "Use AI across the employee journey — recruitment, learning, engagement and experience — with an HR use-case library, prompt design for HR, AI agents and an AI strategy for your HR function.",
-    category: "ai-professions",
+    category: "ai-hr",
     level: "Beginner → Advanced",
   },
   {
@@ -51,7 +92,7 @@ const SITE_COURSES = [
     title: "AI Finance: Budgeting & Forecasting",
     description:
       "Generative AI fundamentals for finance, AI-assisted budgeting and forecasting, effective finance prompts, and applying AI tools to public-sector financial challenges.",
-    category: "ai-professions",
+    category: "ai-finance",
   },
   {
     site: "FinancialReportigBudgetingandInternalControl",
@@ -155,19 +196,14 @@ const SITE_COURSES = [
 // Sites whose videos, documents and images the app may stream (signed links).
 const MEDIA_SITES = ["AIAcademy", ...new Set(SITE_COURSES.map((d) => d.site))];
 
-/** Category for courses that don't set one (the built-in, SharePoint and GitHub courses). */
+/** Category for a course: its own if valid, else by id, else by pattern. */
 function categorize(course) {
   if (course.category && CATEGORIES.some((c) => c.id === course.category)) return course.category;
   const id = course.courseId || "";
-  const t = course.title || "";
-  if (id === "teens-ai-safety") return "teens-start";
+  if (COURSE_CATEGORIES[id]) return COURSE_CATEGORIES[id];
   if (/^teens-track/.test(id)) return "teens-tracks";
-  if (id === "teens-sel") return "teens-wellbeing";
   if (/^hustle-|^200-ai-business-ideas/.test(id)) return "ai-business-ideas";
-  if (/cv|interview|research-a-company|job-search/i.test(id)) return "careers";
-  if (/for-admins|healthcare|legal|product-management|business-analysis|data-analysts|business-marketing-sales|human-ai-sales|ai-in-hr|ai-in-finance|meta-business-agent|ai-agents-customer/i.test(id) || /in Sales|Customer Engagement/i.test(t)) {
-    return "ai-professions";
-  }
+  if (/-masterclass$/.test(id)) return "ai-tools";
   return "ai-essentials";
 }
 
