@@ -92,5 +92,5 @@ test("every exercise, coach and scenario defined in a lesson is placed on its pa
       }
     }
   }
-  assert.equal(course.lessons.length, 35);
+  assert.equal(course.lessons.length, 40);
 });
