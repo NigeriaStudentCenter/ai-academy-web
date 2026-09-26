@@ -6,6 +6,7 @@
 // is also assigned — once a site-level "read" grant for this app exists on the
 // AI Academy site, Sites.Read.All can be removed to narrow access).
 
+const crypto = require("node:crypto");
 const { DefaultAzureCredential } = require("@azure/identity");
 const { BlobServiceClient } = require("@azure/storage-blob");
 const { parseCoursePage } = require("./sharepointParser");
@@ -48,6 +49,7 @@ const EXTRA_COURSES = [
     topics: ["Sales-Strategies.aspx", "Selling-Formular.aspx", "Customer-Needs.aspx"],
     courseId: "human-ai-sales",
     audiences: PRO,
+    titleFixes: { "Selling Formular": "Selling Formula" },
   },
 ];
 
@@ -292,6 +294,74 @@ async function loadCatalog() {
   return cached.catalog;
 }
 
+// ---------------------------------------------------------------------------
+// Course videos: lessons carry a SharePoint path; learners get a signed,
+// expiring /api/courseMedia URL that redirects to a short-lived download URL.
+// ---------------------------------------------------------------------------
+
+const MEDIA_TTL_SECONDS = 6 * 60 * 60;
+
+function mediaSignature(path, exp) {
+  const secret = process.env.COURSE_MEDIA_SECRET;
+  if (!secret) throw new Error("COURSE_MEDIA_SECRET is not configured");
+  return crypto.createHmac("sha256", secret).update(`${path}|${exp}`).digest("base64url");
+}
+
+/** Signed URL for a course video (valid for MEDIA_TTL_SECONDS). */
+function signedMediaUrl(path) {
+  const exp = Math.floor(Date.now() / 1000) + MEDIA_TTL_SECONDS;
+  const sig = mediaSignature(path, exp);
+  return `${API_BASE}/courseMedia?path=${encodeURIComponent(path)}&exp=${exp}&sig=${sig}`;
+}
+
+function verifyMediaSignature(path, exp, sig) {
+  if (!path || !exp || !sig || Number(exp) < Date.now() / 1000) return false;
+  const expected = Buffer.from(mediaSignature(path, exp));
+  const given = Buffer.from(String(sig));
+  return expected.length === given.length && crypto.timingSafeEqual(expected, given);
+}
+
+let drivesCache = null;
+async function siteDrives() {
+  if (!drivesCache || Date.now() - drivesCache.at > 60 * 60 * 1000) {
+    const data = await graph(`/sites/${SITE_ID}/drives?$select=id,name,webUrl`);
+    drivesCache = {
+      at: Date.now(),
+      drives: (data.value || []).map((d) => ({
+        id: d.id,
+        path: decodeURIComponent(new URL(d.webUrl).pathname) + "/",
+      })),
+    };
+  }
+  return drivesCache.drives;
+}
+
+/** "/sites/AIAcademy/Workbook Templates/What is AI.mp4" → pre-authenticated download URL */
+async function mediaDownloadUrl(path) {
+  const clean = decodeURIComponent(String(path));
+  if (!clean.startsWith(SITE_PATH) || clean.includes("..") || !/\.(mp4|m4v|mov|webm|mp3|m4a)$/i.test(clean)) {
+    return null;
+  }
+  const drive = (await siteDrives())
+    .filter((d) => clean.startsWith(d.path))
+    .sort((a, b) => b.path.length - a.path.length)[0];
+  if (!drive) return null;
+  const rel = clean.slice(drive.path.length).split("/").map(encodeURIComponent).join("/");
+  const item = await graph(`/drives/${drive.id}/root:/${rel}`);
+  return item["@microsoft.graph.downloadUrl"] || null;
+}
+
+/** Adds signed video URLs to a course before it's sent to a learner. */
+function withMediaUrls(course) {
+  if (!course.lessons.some((l) => l.videoPath)) return course;
+  return {
+    ...course,
+    lessons: course.lessons.map((l) =>
+      l.videoPath ? { ...l, videoUrl: signedMediaUrl(l.videoPath) } : l
+    ),
+  };
+}
+
 /** Streams an image from a "… Course Images" folder on the course site. */
 async function fetchCourseImage(path) {
   const clean = decodeURIComponent(String(path || ""));
@@ -311,4 +381,7 @@ async function fetchCourseImage(path) {
   };
 }
 
-module.exports = { syncCourses, loadCatalog, fetchCourseImage, listCoursePages, surveyPages, getPageLayout, previewExtraCourses, graph, SITE_ID };
+module.exports = {
+  syncCourses, loadCatalog, fetchCourseImage, listCoursePages, surveyPages, getPageLayout,
+  previewExtraCourses, withMediaUrls, verifyMediaSignature, mediaDownloadUrl, graph, SITE_ID,
+};

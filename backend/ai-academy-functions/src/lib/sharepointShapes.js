@@ -107,6 +107,13 @@ function parseVideoCourse(page, opts) {
       }
       pending.push(lines);
     } else if (block.type === "video") {
+      // The same video placed twice on a page is one lesson, not two.
+      const existing = lessons.find((l) => l.videoPath === block.path);
+      if (existing) {
+        existing.contentBody += "\n" + pending.map(textHtml).join("\n");
+        pending = [];
+        continue;
+      }
       lessons.push(
         lesson({
           lessonId: `video-${lessons.length + 1}`,
@@ -225,6 +232,7 @@ function parseMultiPageCourse(intro, topicPages, opts) {
   }
   topicPages.forEach((page) => {
     const l = pageAsLesson(page, lessons.length, { lessonId: `topic-${lessons.length + 1}` });
+    l.title = (opts.titleFixes || {})[l.title] || l.title;
     if (!l.contentBody && l.videoPath) {
       l.contentBody = `<p>Watch the ${l.title.toLowerCase()} video, then note two ideas you will use in your next sales conversation.</p>`;
     }

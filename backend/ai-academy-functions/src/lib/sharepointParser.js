@@ -22,7 +22,8 @@ function plain(text) {
 function stripTags(html) {
   return String(html || "")
     .replace(/<br\s*\/?>/gi, "\n")
-    .replace(/<\/p>/gi, "\n")
+    // Block ends start a new line ("<h2>Title</h2><p>Text" → two lines).
+    .replace(/<\/(p|h[1-6]|div|li|blockquote)>/gi, "\n")
     .replace(/<[^>]+>/g, "")
     .replace(/&nbsp;/g, " ")
     .replace(/&amp;/g, "&")
