@@ -681,6 +681,12 @@ ${block("exercise", "m2-completion")}
 <blockquote><p>Is my current response the only response available to me?</p></blockquote>
 <p>Often, it isn't. That discovery is the beginning of deliberate personal transformation.</p>
 
+<h2>Remember this framework</h2>
+<p>Aim to remember this without needing the course — it runs through all 30 days:</p>
+${flow(["BELIEF", "THOUGHT", "EMOTION", "DECISION", "ACTION", "RESULT", "LEARNING"])}
+<p>And when something difficult happens:</p>
+<blockquote><p>STOP → NOTICE → NAME → CHECK → CHOOSE → ACT</p></blockquote>
+
 <h2>Next: Module 3 — Transform Your Identity (Days 7–9)</h2>
 <ul>
 <li><strong>Day 7 — Who Am I Now?</strong> You will examine the labels, roles and stories that make up your current identity.</li>

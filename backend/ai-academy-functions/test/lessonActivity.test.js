@@ -75,3 +75,22 @@ test("module 2: diagnostic scale, scenarios and true/false checks", () => {
   assert.equal(new Set(lessonIds).size, lessonIds.length);
   assert.deepEqual(course.lessons.map((l) => l.lessonOrder), course.lessons.map((_, i) => i + 1));
 });
+
+test("every exercise, coach and scenario defined in a lesson is placed on its page", () => {
+  for (const l of course.lessons) {
+    const placed = new Set([...l.contentBody.matchAll(/data-block="\w+:([\w-]+)"/g)].map((m) => m[1]));
+    for (const e of l.exercises || []) assert.ok(placed.has(e.exerciseId), `${l.lessonId}: exercise ${e.exerciseId} not placed`);
+    for (const c of l.coaches || []) assert.ok(placed.has(c.coachId), `${l.lessonId}: coach ${c.coachId} not placed`);
+    for (const x of l.scenarios || []) assert.ok(placed.has(x.scenarioId), `${l.lessonId}: scenario ${x.scenarioId} not placed`);
+    for (const p of l.portfolio || []) {
+      const owner = course.lessons.find((o) => o.lessonId === p.lessonId);
+      assert.ok(owner?.exercises.some((e) => e.exerciseId === p.exerciseId), `${l.lessonId}: portfolio ${p.exerciseId}`);
+    }
+    for (const c of l.coaches || []) {
+      for (const ex of c.usesExercises || []) {
+        assert.ok(course.lessons.some((o) => (o.exercises || []).some((e) => e.exerciseId === ex)), `${c.coachId} uses ${ex}`);
+      }
+    }
+  }
+  assert.equal(course.lessons.length, 15);
+});

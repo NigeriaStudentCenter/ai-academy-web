@@ -160,7 +160,8 @@ class _LessonPlayerPageState extends State<LessonPlayerPage> {
             out.add(QuizBlock(
                 key: ValueKey('${lesson.lessonId}/quiz'),
                 ctx: ctx,
-                questions: lesson.quiz));
+                questions: lesson.quiz,
+                bands: lesson.quizBands));
           }
         case 'portfolio':
           if (lesson.portfolio.isNotEmpty) {

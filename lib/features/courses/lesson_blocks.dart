@@ -336,12 +336,16 @@ class QuizBlock extends StatefulWidget {
   /// Set for a scenario question (one question, its own saved result).
   final String? quizId;
   final String? title;
+
+  /// Score guide shown after submitting (knowledge checks only).
+  final List<({int min, int max, String title})> bands;
   const QuizBlock(
       {super.key,
       required this.ctx,
       required this.questions,
       this.quizId,
-      this.title});
+      this.title,
+      this.bands = const []});
 
   @override
   State<QuizBlock> createState() => _QuizBlockState();
@@ -411,6 +415,16 @@ class _QuizBlockState extends State<QuizBlock> {
                         color: _green)),
               ),
             ]),
+            if (r != null && widget.quizId == null)
+              ...widget.bands
+                  .where((b) => r.score >= b.min && r.score <= b.max)
+                  .take(1)
+                  .map((b) => Padding(
+                        padding: const EdgeInsets.only(top: 4),
+                        child: Text(b.title,
+                            style: const TextStyle(
+                                fontWeight: FontWeight.w600, color: _green)),
+                      )),
             if (r == null)
               Padding(
                 padding: const EdgeInsets.only(top: 4),

@@ -33,6 +33,9 @@ class LessonData {
   final List<LessonCoach> coaches;
   final List<QuizQuestion> quiz;
   final List<LessonScenario> scenarios;
+
+  /// Optional guide shown with a knowledge-check score (e.g. 5/5 Excellent).
+  final List<({int min, int max, String title})> quizBands;
   final List<PortfolioItem> portfolio;
 
   const LessonData({
@@ -55,6 +58,7 @@ class LessonData {
     this.coaches = const [],
     this.quiz = const [],
     this.scenarios = const [],
+    this.quizBands = const [],
     this.portfolio = const [],
   });
 
@@ -83,6 +87,13 @@ class LessonData {
       coaches: _list(json['coaches'], LessonCoach.fromJson),
       quiz: _list(json['quiz'], QuizQuestion.fromJson),
       scenarios: _list(json['scenarios'], LessonScenario.fromJson),
+      quizBands: _list(
+          json['quizBands'],
+          (b) => (
+                min: (b['min'] as num?)?.toInt() ?? 0,
+                max: (b['max'] as num?)?.toInt() ?? 0,
+                title: b['title'] as String? ?? '',
+              )),
       portfolio: _list(json['portfolio'], PortfolioItem.fromJson),
     );
   }
