@@ -40,7 +40,7 @@ module.exports = {
   audiences: ["professional", "teens"],
   category: "personal-development",
   draft: true,
-  version: "0.5",
+  version: "0.6",
   lessons: [
     // ------------------------------------------------------------------ intro
     {
@@ -628,5 +628,6 @@ ${block("coach", "m1-action-check")}
     ...require("./become-extra-ordinary-m3"),
     ...require("./become-extra-ordinary-m4"),
     ...require("./become-extra-ordinary-m5"),
+    ...require("./become-extra-ordinary-m6"),
   ],
 };
