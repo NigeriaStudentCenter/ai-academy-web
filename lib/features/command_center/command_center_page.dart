@@ -67,12 +67,16 @@ class _CommandCenterPageState extends State<CommandCenterPage> {
       final list = await CommandCenterService.curricula();
       if (mounted) setState(() => _curricula = list);
     } catch (e) {
-      if (mounted) setState(() => _loadError = e.toString().replaceFirst('Exception: ', ''));
+      if (mounted) {
+        setState(
+            () => _loadError = e.toString().replaceFirst('Exception: ', ''));
+      }
     }
   }
 
-  String get _subjectValue =>
-      _subject == _otherSubject ? _otherSubjectCtrl.text.trim() : (_subject ?? '');
+  String get _subjectValue => _subject == _otherSubject
+      ? _otherSubjectCtrl.text.trim()
+      : (_subject ?? '');
 
   bool get _canStart =>
       _curriculum != null &&
@@ -90,10 +94,16 @@ class _CommandCenterPageState extends State<CommandCenterPage> {
       );
 
   Future<void> _suggest() async {
-    if (_curriculum == null || _level == null || _year == null || _subjectValue.isEmpty) return;
+    if (_curriculum == null ||
+        _level == null ||
+        _year == null ||
+        _subjectValue.isEmpty) {
+      return;
+    }
     setState(() => _suggesting = true);
     try {
-      final topics = await CommandCenterService.suggestTopics(_currentPath(topic: ''));
+      final topics =
+          await CommandCenterService.suggestTopics(_currentPath(topic: ''));
       if (mounted) setState(() => _suggestions = topics);
     } catch (_) {
       if (mounted) setState(() => _suggestions = []);
@@ -123,7 +133,8 @@ class _CommandCenterPageState extends State<CommandCenterPage> {
       setState(() => _turns.add(TutorTurn('assistant', reply)));
     } catch (e) {
       if (!mounted) return;
-      setState(() => _sessionError = e.toString().replaceFirst('Exception: ', ''));
+      setState(
+          () => _sessionError = e.toString().replaceFirst('Exception: ', ''));
     } finally {
       if (mounted) setState(() => _waiting = false);
       _scrollToEnd();
@@ -162,7 +173,8 @@ class _CommandCenterPageState extends State<CommandCenterPage> {
             TextButton.icon(
               onPressed: () => setState(() => _path = null),
               icon: const Icon(Icons.tune, color: Colors.white),
-              label: const Text('Edit path', style: TextStyle(color: Colors.white)),
+              label: const Text('Edit path',
+                  style: TextStyle(color: Colors.white)),
             ),
         ],
       ),
@@ -201,55 +213,64 @@ class _CommandCenterPageState extends State<CommandCenterPage> {
             ),
             const SizedBox(height: 20),
             _stepTitle(1, 'Curriculum'),
-            Row(
-              children: [
-                for (final c in curricula) ...[
-                  Expanded(
-                    child: _choiceCard(
-                      title: c.label,
-                      subtitle: c.id == 'ng' ? 'Primary 1 – SSS 3' : 'Years 1 – 11',
-                      icon: Icons.flag,
-                      color: c.id == 'uk' ? _ukColor : _ngColor,
-                      selected: _curriculum?.id == c.id,
-                      onTap: () => setState(() {
-                        _curriculum = c;
-                        _level = null;
-                        _year = null;
-                        _subject = null;
-                        _suggestions = [];
-                      }),
-                    ),
-                  ),
-                  if (c != curricula.last) const SizedBox(width: 12),
-                ],
-              ],
-            ),
-            if (_curriculum != null) ...[
-              const SizedBox(height: 20),
-              _stepTitle(2, 'Level'),
-              Row(
+            IntrinsicHeight(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  for (final level in const ['Primary', 'Secondary']) ...[
+                  for (final c in curricula) ...[
                     Expanded(
                       child: _choiceCard(
-                        title: level,
-                        subtitle: level == 'Primary'
-                            ? _curriculum!.primaryHint
-                            : _curriculum!.secondaryHint,
-                        icon: level == 'Primary' ? Icons.child_care : Icons.school,
-                        color: _accent,
-                        selected: _level == level,
+                        title: c.label,
+                        subtitle:
+                            c.id == 'ng' ? 'Primary 1 – SSS 3' : 'Years 1 – 11',
+                        icon: Icons.flag,
+                        color: c.id == 'uk' ? _ukColor : _ngColor,
+                        selected: _curriculum?.id == c.id,
                         onTap: () => setState(() {
-                          _level = level;
+                          _curriculum = c;
+                          _level = null;
                           _year = null;
                           _subject = null;
                           _suggestions = [];
                         }),
                       ),
                     ),
-                    if (level == 'Primary') const SizedBox(width: 12),
+                    if (c != curricula.last) const SizedBox(width: 12),
                   ],
                 ],
+              ),
+            ),
+            if (_curriculum != null) ...[
+              const SizedBox(height: 20),
+              _stepTitle(2, 'Level'),
+              IntrinsicHeight(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    for (final level in const ['Primary', 'Secondary']) ...[
+                      Expanded(
+                        child: _choiceCard(
+                          title: level,
+                          subtitle: level == 'Primary'
+                              ? _curriculum!.primaryHint
+                              : _curriculum!.secondaryHint,
+                          icon: level == 'Primary'
+                              ? Icons.child_care
+                              : Icons.school,
+                          color: _accent,
+                          selected: _level == level,
+                          onTap: () => setState(() {
+                            _level = level;
+                            _year = null;
+                            _subject = null;
+                            _suggestions = [];
+                          }),
+                        ),
+                      ),
+                      if (level == 'Primary') const SizedBox(width: 12),
+                    ],
+                  ],
+                ),
               ),
               if (_level != null) ...[
                 const SizedBox(height: 12),
@@ -257,9 +278,11 @@ class _CommandCenterPageState extends State<CommandCenterPage> {
                   key: ValueKey('year-${_curriculum!.id}-$_level'),
                   initialValue: _year,
                   decoration: const InputDecoration(
-                      labelText: 'Your year / class', border: OutlineInputBorder()),
+                      labelText: 'Your year / class',
+                      border: OutlineInputBorder()),
                   items: [
-                    for (final y in _curriculum!.years[_level] ?? const <String>[])
+                    for (final y
+                        in _curriculum!.years[_level] ?? const <String>[])
                       DropdownMenuItem(value: y, child: Text(y)),
                   ],
                   onChanged: (v) => setState(() => _year = v),
@@ -276,9 +299,13 @@ class _CommandCenterPageState extends State<CommandCenterPage> {
                 decoration: const InputDecoration(
                     labelText: 'Subject / unit', border: OutlineInputBorder()),
                 items: [
-                  for (final s in _curriculum!.subjects[_level] ?? const <String>[])
-                    DropdownMenuItem(value: s, child: Text(s, overflow: TextOverflow.ellipsis)),
-                  const DropdownMenuItem(value: _otherSubject, child: Text('Other…')),
+                  for (final s
+                      in _curriculum!.subjects[_level] ?? const <String>[])
+                    DropdownMenuItem(
+                        value: s,
+                        child: Text(s, overflow: TextOverflow.ellipsis)),
+                  const DropdownMenuItem(
+                      value: _otherSubject, child: Text('Other…')),
                 ],
                 onChanged: (v) => setState(() {
                   _subject = v;
@@ -291,7 +318,8 @@ class _CommandCenterPageState extends State<CommandCenterPage> {
                   controller: _otherSubjectCtrl,
                   maxLength: 120,
                   decoration: const InputDecoration(
-                      labelText: 'Type your subject', border: OutlineInputBorder()),
+                      labelText: 'Type your subject',
+                      border: OutlineInputBorder()),
                   onChanged: (_) => setState(() {}),
                 ),
               ],
@@ -315,9 +343,13 @@ class _CommandCenterPageState extends State<CommandCenterPage> {
                   onPressed: _suggesting ? null : _suggest,
                   icon: _suggesting
                       ? const SizedBox(
-                          width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
+                          width: 16,
+                          height: 16,
+                          child: CircularProgressIndicator(strokeWidth: 2))
                       : const Icon(Icons.lightbulb_outline),
-                  label: Text(_suggesting ? 'Thinking of topics…' : 'Suggest topics for me'),
+                  label: Text(_suggesting
+                      ? 'Thinking of topics…'
+                      : 'Suggest topics for me'),
                 ),
               ),
               if (_suggestions.isNotEmpty)
@@ -348,7 +380,8 @@ class _CommandCenterPageState extends State<CommandCenterPage> {
               const Padding(
                 padding: EdgeInsets.only(top: 8),
                 child: Text('Pick all four to begin.',
-                    textAlign: TextAlign.center, style: TextStyle(color: Colors.grey)),
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.grey)),
               ),
           ],
         ),
@@ -364,10 +397,15 @@ class _CommandCenterPageState extends State<CommandCenterPage> {
               radius: 13,
               backgroundColor: AppColors.darkGreen,
               child: Text('$n',
-                  style: const TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.bold)),
+                  style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 13,
+                      fontWeight: FontWeight.bold)),
             ),
             const SizedBox(width: 10),
-            Text(title, style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w600)),
+            Text(title,
+                style:
+                    const TextStyle(fontSize: 17, fontWeight: FontWeight.w600)),
           ],
         ),
       );
@@ -384,7 +422,9 @@ class _CommandCenterPageState extends State<CommandCenterPage> {
       color: selected ? color.withValues(alpha: 0.1) : Colors.white,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
-        side: BorderSide(color: selected ? color : Colors.grey.shade300, width: selected ? 2 : 1),
+        side: BorderSide(
+            color: selected ? color : Colors.grey.shade300,
+            width: selected ? 2 : 1),
       ),
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
@@ -396,9 +436,12 @@ class _CommandCenterPageState extends State<CommandCenterPage> {
             children: [
               Icon(icon, color: color),
               const SizedBox(height: 8),
-              Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+              Text(title,
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold, fontSize: 15)),
               const SizedBox(height: 2),
-              Text(subtitle, style: TextStyle(color: Colors.grey.shade700, fontSize: 13)),
+              Text(subtitle,
+                  style: TextStyle(color: Colors.grey.shade700, fontSize: 13)),
             ],
           ),
         ),
@@ -431,20 +474,15 @@ class _CommandCenterPageState extends State<CommandCenterPage> {
           width: double.infinity,
           color: _accent.withValues(alpha: 0.08),
           padding: const EdgeInsets.fromLTRB(12, 0, 12, 10),
-          child: Wrap(
-            spacing: 8,
-            runSpacing: 4,
+          child: Row(
             children: [
-              OutlinedButton.icon(
-                onPressed: () => _open('https://copilot.microsoft.com'),
-                icon: const Icon(Icons.open_in_new, size: 16),
-                label: const Text('Microsoft Copilot'),
-              ),
-              OutlinedButton.icon(
-                onPressed: () => _open('https://notebooklm.google.com'),
-                icon: const Icon(Icons.open_in_new, size: 16),
-                label: const Text('Google NotebookLM'),
-              ),
+              Expanded(
+                  child:
+                      _toolButton('Copilot', 'https://copilot.microsoft.com')),
+              const SizedBox(width: 8),
+              Expanded(
+                  child: _toolButton(
+                      'NotebookLM', 'https://notebooklm.google.com')),
             ],
           ),
         ),
@@ -458,7 +496,10 @@ class _CommandCenterPageState extends State<CommandCenterPage> {
                 const Padding(
                   padding: EdgeInsets.all(12),
                   child: Row(children: [
-                    SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2)),
+                    SizedBox(
+                        width: 18,
+                        height: 18,
+                        child: CircularProgressIndicator(strokeWidth: 2)),
                     SizedBox(width: 10),
                     Text('The tutor is thinking…'),
                   ]),
@@ -469,7 +510,8 @@ class _CommandCenterPageState extends State<CommandCenterPage> {
                   child: ListTile(
                     leading: const Icon(Icons.error_outline, color: Colors.red),
                     title: Text(_sessionError!),
-                    trailing: TextButton(onPressed: _ask, child: const Text('Retry')),
+                    trailing:
+                        TextButton(onPressed: _ask, child: const Text('Retry')),
                   ),
                 ),
             ],
@@ -500,7 +542,8 @@ class _CommandCenterPageState extends State<CommandCenterPage> {
                 ),
                 const SizedBox(width: 8),
                 IconButton.filled(
-                  onPressed: _waiting || _inputCtrl.text.trim().isEmpty ? null : _send,
+                  onPressed:
+                      _waiting || _inputCtrl.text.trim().isEmpty ? null : _send,
                   style: IconButton.styleFrom(backgroundColor: _accent),
                   icon: const Icon(Icons.send),
                 ),
@@ -511,6 +554,18 @@ class _CommandCenterPageState extends State<CommandCenterPage> {
       ],
     );
   }
+
+  // Study tools the tutor asks the learner to check facts in.
+  Widget _toolButton(String label, String url) => OutlinedButton.icon(
+        onPressed: () => _open(url),
+        icon: const Icon(Icons.open_in_new, size: 16),
+        label: Text(label),
+        style: OutlinedButton.styleFrom(
+          visualDensity: VisualDensity.compact,
+          foregroundColor: _accent,
+          side: BorderSide(color: _accent.withValues(alpha: 0.5)),
+        ),
+      );
 
   Widget _pathChip(String text, {bool strong = false}) => Chip(
         label: Text(text,
@@ -528,7 +583,8 @@ class _CommandCenterPageState extends State<CommandCenterPage> {
     return Align(
       alignment: mine ? Alignment.centerRight : Alignment.centerLeft,
       child: ConstrainedBox(
-        constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.82),
+        constraints:
+            BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.82),
         child: Container(
           margin: const EdgeInsets.symmetric(vertical: 6),
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
@@ -537,11 +593,14 @@ class _CommandCenterPageState extends State<CommandCenterPage> {
             borderRadius: BorderRadius.circular(14),
           ),
           child: mine
-              ? Text(t.content, style: const TextStyle(color: Colors.white, fontSize: 15, height: 1.4))
+              ? Text(t.content,
+                  style: const TextStyle(
+                      color: Colors.white, fontSize: 15, height: 1.4))
               : HtmlWidget(
                   md.markdownToHtml(t.content),
                   textStyle: const TextStyle(fontSize: 15, height: 1.45),
-                  onTapUrl: (url) => launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication),
+                  onTapUrl: (url) => launchUrl(Uri.parse(url),
+                      mode: LaunchMode.externalApplication),
                 ),
         ),
       ),
@@ -561,7 +620,9 @@ class _Message extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(text, textAlign: TextAlign.center, style: const TextStyle(fontSize: 16)),
+              Text(text,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(fontSize: 16)),
               if (onRetry != null) ...[
                 const SizedBox(height: 16),
                 ElevatedButton(onPressed: onRetry, child: const Text('Retry')),
