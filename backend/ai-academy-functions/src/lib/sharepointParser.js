@@ -42,6 +42,7 @@ const KNOWN_WORDS = [
   "Gemini", "Google", "NotebookLM", "Perplexity", "Gamma", "Runway", "ML",
   "ElevenLabs", "Adobe", "Firefly", "UK", "API", "APIs", "SEO", "GEO", "AEO",
   "CLEAR", "TRACE", "Gen-4.5", "Excel", "Word", "PowerPoint", "Teams", "Outlook",
+  "RAG", "MCP", "LLM", "LLMs", "HeyGen", "WhatsApp", "Meta", "SharePoint", "Azure",
 ];
 
 /** "FIND YOUR WAY AROUND CHATGPT" → "Find your way around ChatGPT" */
@@ -273,4 +274,4 @@ function parseCoursePage(page, opts) {
   };
 }
 
-module.exports = { parseCoursePage, plain, slug, textToHtml, sentenceCase };
+module.exports = { parseCoursePage, plain, slug, textToHtml, sentenceCase, stripTags, webParts, BANNER_TYPE };

@@ -10,6 +10,7 @@ const { DefaultAzureCredential } = require("@azure/identity");
 const { BlobServiceClient } = require("@azure/storage-blob");
 const { parseCoursePage } = require("./sharepointParser");
 const { fetchHustleCourses } = require("./githubCourses");
+const { parseVideoCourse, parseProgramme, parseMultiPageCourse } = require("./sharepointShapes");
 
 const SITE_ID =
   process.env.COURSE_SITE_ID || "cf178de6-35c7-4f02-b558-6c6548d49839"; // bsoed.sharepoint.com/sites/AIAcademy
@@ -25,6 +26,30 @@ const PAGE_OVERRIDES = {
   // Older duplicate of the Runway course (current copy is Runway-ML-Masterclass.aspx).
   "Runway-ML-Masterclass(1).aspx": { skip: true },
 };
+
+// Courses on the site that aren't "… Masterclass" pages (see sharepointShapes).
+const BOTH = ["teens", "professional"];
+const PRO = ["professional"];
+const EXTRA_COURSES = [
+  { shape: "video", page: "AI-Essential-Building-Foundational-Knowledge.aspx", courseId: "ai-essentials", audiences: BOTH },
+  { shape: "video", page: "AI-Agents-&-the-Future-of-Customer-Engagement.aspx", courseId: "ai-agents-customer-engagement", audiences: BOTH },
+  { shape: "video", page: "Starting-with-ChatGPT-Coworker.aspx", courseId: "chatgpt-coworker", audiences: BOTH },
+  { shape: "video", page: "Meta-Business-Agent-on-WhatsApp.aspx", courseId: "meta-business-agent-whatsapp", audiences: PRO },
+  {
+    shape: "programme",
+    page: "AI-Engineering-&-Agentic-Systems-Mastery-Programme.aspx",
+    units: /^Unit-(\d+)-/,
+    courseId: "ai-engineering-mastery",
+    audiences: PRO,
+  },
+  {
+    shape: "multipage",
+    page: "Human-And-AI-Intelligence-in-Sales.aspx",
+    topics: ["Sales-Strategies.aspx", "Selling-Formular.aspx", "Customer-Needs.aspx"],
+    courseId: "human-ai-sales",
+    audiences: PRO,
+  },
+];
 
 const CONTAINER = "course-catalog";
 const BLOB = "sharepoint-courses.json";
@@ -132,9 +157,73 @@ async function getPageLayout(name) {
   return graph(`/sites/${SITE_ID}/pages/${summary.id}/microsoft.graph.sitePage?$expand=canvasLayout`);
 }
 
+async function loadPage(summary) {
+  return graph(`/sites/${SITE_ID}/pages/${summary.id}/microsoft.graph.sitePage?$expand=canvasLayout`);
+}
+
+/** Video courses, the programme and multi-page courses. */
+async function buildExtraCourses(allPages, log) {
+  const byName = new Map(allPages.map((p) => [p.name, p]));
+  const published = (name) => {
+    const p = byName.get(name);
+    return p && p.publishingState?.level === "published" ? p : null;
+  };
+  const courses = [];
+  for (const spec of EXTRA_COURSES) {
+    try {
+      const main = published(spec.page);
+      if (!main) {
+        log(`Skipped ${spec.page}: not found or not published`);
+        continue;
+      }
+      const page = await loadPage(main);
+      let course;
+      if (spec.shape === "video") {
+        course = parseVideoCourse(page, spec);
+      } else if (spec.shape === "programme") {
+        const unitSummaries = allPages
+          .filter((p) => spec.units.test(p.name) && p.publishingState?.level === "published")
+          .sort((a, b) => Number(a.name.match(spec.units)[1]) - Number(b.name.match(spec.units)[1]));
+        const units = [];
+        for (const u of unitSummaries) units.push(await loadPage(u));
+        course = parseProgramme(page, units, spec);
+      } else {
+        const topics = [];
+        for (const name of spec.topics) {
+          const t = published(name);
+          if (t) topics.push(await loadPage(t));
+        }
+        course = parseMultiPageCourse(page, topics, spec);
+      }
+      if (!course.lessons.length) {
+        log(`Skipped "${course.title}": no lessons found`);
+        continue;
+      }
+      courses.push(course);
+      log(`Imported "${course.title}" (${course.lessons.length} lessons)`);
+    } catch (err) {
+      log(`Failed ${spec.page}: ${err.message}`);
+    }
+  }
+  return courses;
+}
+
+/** Everything the sync would publish, without saving it. */
+async function previewExtraCourses() {
+  const log = [];
+  const courses = await buildExtraCourses(await listAllPages(), (m) => log.push(m));
+  return { log, courses };
+}
+
 /** Fetches every course page, converts it, and saves the catalogue. */
 async function syncCourses(log = () => {}) {
-  const pages = await listCoursePages();
+  const allPages = await listAllPages();
+  const pages = allPages.filter(
+    (p) =>
+      /masterclass$/i.test((p.title || "").trim()) &&
+      p.publishingState?.level === "published" &&
+      !PAGE_OVERRIDES[p.name]?.skip
+  );
   const courses = [];
   for (const summary of pages) {
     const page = await graph(
@@ -152,6 +241,11 @@ async function syncCourses(log = () => {}) {
     }
     courses.push(course);
     log(`Imported "${course.title}" (${course.lessons.length} lessons)`);
+  }
+
+  // Video courses / programme / multi-page: on once verified (app setting).
+  if (process.env.IMPORT_EXTRA_COURSES === "1") {
+    courses.push(...(await buildExtraCourses(allPages, log)));
   }
 
   // 200 AI Hustles (GitHub) — a failure here must not drop the SharePoint courses.
@@ -217,4 +311,4 @@ async function fetchCourseImage(path) {
   };
 }
 
-module.exports = { syncCourses, loadCatalog, fetchCourseImage, listCoursePages, surveyPages, getPageLayout, graph, SITE_ID };
+module.exports = { syncCourses, loadCatalog, fetchCourseImage, listCoursePages, surveyPages, getPageLayout, previewExtraCourses, graph, SITE_ID };

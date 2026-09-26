@@ -1,6 +1,6 @@
 const { app } = require("@azure/functions");
 const { requireUser } = require("../lib/auth");
-const { syncCourses, surveyPages, getPageLayout } = require("../lib/sharepointCourses");
+const { syncCourses, surveyPages, getPageLayout, previewExtraCourses } = require("../lib/sharepointCourses");
 
 // Refresh SharePoint courses every 30 minutes…
 app.timer("syncCoursesTimer", {
@@ -48,6 +48,9 @@ app.http("coursePages", {
   authLevel: "anonymous",
   handler: requireUser(async (request, context, user) => {
     if (!user.isAdmin) return { status: 403, jsonBody: { error: "Admins only." } };
+    if (request.query.get("preview")) {
+      return { status: 200, jsonBody: await previewExtraCourses() };
+    }
     const name = request.query.get("name");
     if (name) {
       const page = await getPageLayout(name);
