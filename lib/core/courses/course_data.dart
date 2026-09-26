@@ -11,6 +11,12 @@ class LessonData {
   final String reflectionQuestion;
   final bool published;
 
+  /// Signed, expiring URL for the lesson video (SharePoint courses).
+  final String videoUrl;
+
+  /// External assessment (e.g. Microsoft Forms) for the lesson.
+  final String assessmentUrl;
+
   const LessonData({
     required this.lessonId,
     required this.title,
@@ -22,6 +28,8 @@ class LessonData {
     required this.videoAssetId,
     required this.reflectionQuestion,
     required this.published,
+    this.videoUrl = '',
+    this.assessmentUrl = '',
   });
 
   factory LessonData.fromJson(Map<String, dynamic> json) {
@@ -36,6 +44,8 @@ class LessonData {
       videoAssetId: json['videoAssetId'] as String? ?? '',
       reflectionQuestion: json['reflectionQuestion'] as String? ?? '',
       published: json['published'] as bool? ?? true,
+      videoUrl: json['videoUrl'] as String? ?? '',
+      assessmentUrl: json['assessmentUrl'] as String? ?? '',
     );
   }
 }

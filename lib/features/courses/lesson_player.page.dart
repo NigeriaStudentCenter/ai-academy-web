@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:chewie/chewie.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:video_player/video_player.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/courses/course_api_service.dart';
@@ -142,6 +145,10 @@ class _LessonPlayerPageState extends State<LessonPlayerPage> {
                 '${lesson.duration.isNotEmpty ? ' • ${lesson.duration}' : ''}',
                 style: TextStyle(color: Colors.grey.shade600),
               ),
+              if (lesson.videoUrl.isNotEmpty) ...[
+                const SizedBox(height: 12),
+                _LessonVideo(key: ValueKey(lesson.videoUrl), url: lesson.videoUrl),
+              ],
               if (lesson.objective.isNotEmpty) ...[
                 const SizedBox(height: 12),
                 Card(
@@ -170,6 +177,22 @@ class _LessonPlayerPageState extends State<LessonPlayerPage> {
                     ? _PromptCard(text: element.text.trim())
                     : null,
               ),
+              if (lesson.assessmentUrl.isNotEmpty) ...[
+                const SizedBox(height: 16),
+                Card(
+                  color: Colors.green.shade50,
+                  child: ListTile(
+                    leading: const Icon(Icons.fact_check, color: Colors.green),
+                    title: const Text('Unit assessment',
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                    subtitle: const Text(
+                        'Check your understanding in the assessment form.'),
+                    trailing: const Icon(Icons.open_in_new),
+                    onTap: () => launchUrl(Uri.parse(lesson.assessmentUrl),
+                        mode: LaunchMode.externalApplication),
+                  ),
+                ),
+              ],
               if (lesson.reflectionQuestion.isNotEmpty) ...[
                 const SizedBox(height: 16),
                 Card(
@@ -277,6 +300,74 @@ class _PromptCard extends StatelessWidget {
             style: const TextStyle(fontSize: 15, height: 1.5),
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// Lesson video (signed SharePoint URL) with standard playback controls.
+class _LessonVideo extends StatefulWidget {
+  final String url;
+
+  const _LessonVideo({super.key, required this.url});
+
+  @override
+  State<_LessonVideo> createState() => _LessonVideoState();
+}
+
+class _LessonVideoState extends State<_LessonVideo> {
+  late final VideoPlayerController _video;
+  ChewieController? _chewie;
+  bool _failed = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _video = VideoPlayerController.networkUrl(Uri.parse(widget.url));
+    _video.initialize().then((_) {
+      if (!mounted) return;
+      setState(() {
+        _chewie = ChewieController(
+          videoPlayerController: _video,
+          autoPlay: false,
+          looping: false,
+          aspectRatio: _video.value.aspectRatio,
+        );
+      });
+    }).catchError((_) {
+      if (mounted) setState(() => _failed = true);
+    });
+  }
+
+  @override
+  void dispose() {
+    _chewie?.dispose();
+    _video.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(12),
+      child: AspectRatio(
+        aspectRatio: _chewie != null ? _video.value.aspectRatio : 16 / 9,
+        child: Container(
+          color: Colors.black,
+          alignment: Alignment.center,
+          child: _failed
+              ? const Padding(
+                  padding: EdgeInsets.all(16),
+                  child: Text(
+                    'This video could not be loaded. Go back and open the lesson again.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.white70),
+                  ),
+                )
+              : _chewie == null
+                  ? const CircularProgressIndicator(color: Colors.white)
+                  : Chewie(controller: _chewie!),
+        ),
       ),
     );
   }
