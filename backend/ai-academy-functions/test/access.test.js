@@ -23,6 +23,8 @@ function withPaywall(fn) {
     process.env.PAYWALL_ENABLED = "1";
     delete process.env.ORG_ACCESS_DOMAINS;
     delete process.env.PAYWALL_TEST_ACCOUNTS;
+    delete process.env.PAYWALL_PREVIEW;
+    delete process.env.FREE_COURSE_IDS;
     try {
       await fn();
     } finally {
@@ -53,28 +55,33 @@ test("who gets full access", withPaywall(async () => {
   assert.equal(await full({ username: "staff@bsoedu.org" }), "none");
 }));
 
-test("preview: lesson 1 open without AI, the rest outline only", withPaywall(async () => {
+test("default: everything locked to an outline without a subscription", withPaywall(async () => {
   const a = await access.accessFor(learner, { loadSubscription: noSub });
-  const out = access.applyAccess(course, a);
-  assert.equal(out.access, "preview");
-  assert.equal(out.certificateEligible, false);
-  const [one, two] = out.lessons;
-  assert.equal(one.contentBody, "<p>a</p>");
-  assert.equal(one.coaches, undefined);
-  assert.equal(one.practiceCoach, undefined);
-  assert.equal(one.aiLocked, true);
-  assert.deepEqual(two, { lessonId: "l2", title: "Two", lessonOrder: undefined, duration: undefined, objective: "Goal", contentBody: "", locked: true });
-  assert.equal(access.lessonUnlocked(course, "l1", a), true);
-  assert.equal(access.lessonUnlocked(course, "l2", a), false);
+  for (const c of [course, pathway]) {
+    const out = access.applyAccess(c, a);
+    assert.equal(out.access, "locked");
+    assert.equal(out.certificateEligible, false);
+    assert.ok(out.lessons.every((l) => l.locked && l.contentBody === "" && !l.coaches && !l.videoUrl));
+    assert.equal(out.lessons[1].objective, "Goal", "outline keeps the goal");
+    assert.equal(access.lessonUnlocked(c, "l1", a), false);
+  }
+  assert.equal(access.isFreeCourse(pathway), false, "Microsoft pathways are in the bundle");
 }));
 
-test("Microsoft pathway courses stay free (no AI without subscription)", withPaywall(async () => {
+test("optional preview: lesson 1 open without AI", withPaywall(async () => {
+  process.env.PAYWALL_PREVIEW = "1";
   const a = await access.accessFor(learner, { loadSubscription: noSub });
-  assert.equal(access.isFreeCourse(pathway), true);
-  assert.equal(access.isFreeCourse({ courseId: "ai-foundations" }), true);
-  const out = access.applyAccess(pathway, a);
+  const [one, two] = access.applyAccess(course, a).lessons;
+  assert.equal(one.contentBody, "<p>a</p>");
+  assert.equal(one.coaches, undefined);
+  assert.equal(one.aiLocked, true);
+  assert.equal(two.locked, true);
+}));
+
+test("optional free course list", withPaywall(async () => {
+  process.env.FREE_COURSE_IDS = "ai-foundations";
+  const a = await access.accessFor(learner, { loadSubscription: noSub });
+  const out = access.applyAccess({ ...course, courseId: "ai-foundations" }, a);
   assert.equal(out.access, "free");
-  assert.ok(out.lessons.every((l) => !l.locked));
-  assert.ok(out.lessons.every((l) => !l.coaches));
-  assert.equal(access.lessonUnlocked(pathway, "l2", a), true);
+  assert.ok(out.lessons.every((l) => !l.locked && !l.coaches));
 }));

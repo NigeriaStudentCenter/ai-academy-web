@@ -5,11 +5,15 @@
 // without the subscribe screen must keep working, so the paywall is switched
 // on only once a build with in-app purchase is live in the stores.
 //
-// Without a subscription a learner gets:
-//   - free courses in full (Microsoft AI Skills Navigator pathways — we never
-//     charge for Microsoft's content — and AI Foundations), and
-//   - lesson 1 of every other course as a preview,
-// but no AI partners or certificates.
+// Everything is in the subscription (the owner's decision, 2026-09-27):
+// without it a learner sees the catalogue and each course's outline (lesson
+// titles and goals) but no lesson content, AI partners or certificates.
+// Microsoft AI Skills Navigator pathway courses are included: what the
+// subscription pays for is our structure, goals, Practice with AI, progress
+// tracking and certificates — Microsoft's material is only linked, never
+// copied, and stays free on Microsoft's site.
+// Optional, off by default: FREE_COURSE_IDS (comma list) and
+// PAYWALL_PREVIEW=1 (lesson 1 of each course open as a preview).
 //
 // Full access without paying in the app (Apple 3.1.3(c): organisations buy
 // seats directly): admins, organisation domains (BSOE staff, Teens Academy,
@@ -19,7 +23,6 @@
 const { TableClient } = require("@azure/data-tables");
 
 const SUBSCRIPTIONS_TABLE = "Subscriptions";
-const FREE_COURSE_IDS = new Set(["ai-foundations"]);
 const DEFAULT_ORG_DOMAINS = ["bsoedu.org", "teenskills.co.uk"];
 const DEFAULT_TEST_ACCOUNTS = ["appreview@bsoedu.org"];
 
@@ -31,9 +34,9 @@ function listSetting(name, fallback) {
 
 const paywallEnabled = () => process.env.PAYWALL_ENABLED === "1";
 
-/** Free to everyone: Microsoft pathway courses and the listed free courses. */
+/** Free to everyone: only courses listed in FREE_COURSE_IDS (none by default). */
 function isFreeCourse(course) {
-  return FREE_COURSE_IDS.has(course.courseId) || !!course.free || !!course.source?.playlistUrl;
+  return listSetting("FREE_COURSE_IDS", []).includes(String(course.courseId).toLowerCase());
 }
 
 function subscriptions() {
@@ -72,16 +75,18 @@ async function accessFor(user, { loadSubscription = getSubscription } = {}) {
   return { full: false, reason: "none", paywall: true };
 }
 
-/** How much of a course the learner gets: "full" | "free" | "preview". */
+/** How much of a course the learner gets: "full" | "free" | "preview" | "locked". */
 function courseAccess(course, access) {
   if (access.full) return "full";
-  return isFreeCourse(course) ? "free" : "preview";
+  if (isFreeCourse(course)) return "free";
+  return process.env.PAYWALL_PREVIEW === "1" ? "preview" : "locked";
 }
 
-/** Whether a lesson's content is available (free courses and lesson 1 always are). */
+/** Whether a lesson's content is available to this learner. */
 function lessonUnlocked(course, lessonId, access) {
-  if (courseAccess(course, access) !== "preview") return true;
-  return course.lessons[0]?.lessonId === lessonId;
+  const level = courseAccess(course, access);
+  if (level === "full" || level === "free") return true;
+  return level === "preview" && course.lessons[0]?.lessonId === lessonId;
 }
 
 /**
