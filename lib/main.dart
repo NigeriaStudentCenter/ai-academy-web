@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
 
+import 'core/api/api_client.dart';
 import 'core/auth/entra_auth_service.dart';
 import 'core/routing/app_router.dart';
 
@@ -13,6 +14,12 @@ Future<void> main() async {
 
   // Restore the learner's Microsoft sign-in before the first route loads.
   await EntraAuthService.restoreSession();
+
+  // Anything that needs the All Access subscription opens the subscribe screen.
+  ApiClient.onSubscriptionRequired = () {
+    final here = goRouter.routerDelegate.currentConfiguration.uri.path;
+    if (here != '/subscribe') goRouter.push('/subscribe');
+  };
 
   runApp(const MyApp());
 }

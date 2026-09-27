@@ -4,7 +4,10 @@ import 'package:go_router/go_router.dart';
 // ===============================
 // FEATURE IMPORTS
 // ===============================
+import '../../features/account/account_page.dart';
 import '../../features/admin/admin_dashboard.page.dart';
+import '../../features/auth/create_account_page.dart';
+import '../../features/subscription/paywall_page.dart';
 import '../../features/auth/login_page.dart';
 import '../../features/auth/oauth_callback_page.dart';
 import '../../features/certificates/certificate_verification_page.dart';
@@ -44,6 +47,7 @@ final GoRouter goRouter = GoRouter(
     final isPublic = location == '/' ||
         isLoggingIn ||
         location == '/oauth/callback' ||
+        location == '/create-account' ||
         location.startsWith('/verify/');
     final requiresAuth = !isPublic;
 
@@ -91,6 +95,23 @@ final GoRouter goRouter = GoRouter(
         final redirectTo = state.uri.queryParameters['from'];
         return LoginPage(redirectTo: redirectTo);
       },
+    ),
+
+    // -------------------------------
+    // Create account (public) · Account · Subscribe
+    // -------------------------------
+    GoRoute(
+      path: '/create-account',
+      builder: (context, state) => const CreateAccountPage(),
+    ),
+    GoRoute(
+      path: '/account',
+      builder: (context, state) => const AccountPage(),
+    ),
+    GoRoute(
+      path: '/subscribe',
+      builder: (context, state) =>
+          PaywallPage(preview: state.uri.queryParameters['preview'] == '1'),
     ),
 
     // -------------------------------

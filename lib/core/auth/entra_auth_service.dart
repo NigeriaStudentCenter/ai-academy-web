@@ -1,4 +1,5 @@
 import '../courses/course_api_service.dart';
+import '../subscription/subscription_service.dart';
 import 'app_auth_state.dart';
 import 'auth_platform.dart';
 import 'entra_user.dart';
@@ -73,10 +74,18 @@ class EntraAuthService {
     final claims = tokens.claims;
     AppAuthState.login(EntraUser(
       id: claims['oid'] as String? ?? '',
-      email: (claims['upn'] ?? claims['preferred_username'] ?? claims['email'] ?? '')
+      // Guests (learners who created an account) have a "…#EXT#@…" UPN;
+      // their real address is in preferred_username / email.
+      email: ((claims['upn'] as String? ?? '').contains('#EXT#')
+              ? (claims['preferred_username'] ?? claims['email'] ?? '')
+              : (claims['upn'] ?? claims['preferred_username'] ?? claims['email'] ?? ''))
           as String,
       name: claims['name'] as String? ?? '',
       roles: (claims['roles'] as List?)?.cast<String>() ?? const [],
     ));
+
+    // Pick up store purchases (incl. any unfinished ones) and current access.
+    SubscriptionService.start();
+    SubscriptionService.refresh();
   }
 }

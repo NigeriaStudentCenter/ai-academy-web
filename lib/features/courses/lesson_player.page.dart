@@ -294,7 +294,13 @@ class _LessonPlayerPageState extends State<LessonPlayerPage> {
                 ),
               ],
               const SizedBox(height: 8),
-              if (_interactive(lesson))
+              if (lesson.locked)
+                const _SubscribeCard(
+                  title: 'This lesson is part of AI Academy All Access',
+                  text:
+                      'Subscribe to unlock every lesson, Practice with AI, progress tracking and certificates.',
+                )
+              else if (_interactive(lesson))
                 ..._interactiveBody(lesson)
               else
                 HtmlWidget(
@@ -360,6 +366,14 @@ class _LessonPlayerPageState extends State<LessonPlayerPage> {
                   ),
                 ),
               ],
+              if (lesson.aiLocked) ...[
+                const SizedBox(height: 8),
+                const _SubscribeCard(
+                  title: 'Practice with AI',
+                  text:
+                      'Get hands-on tasks and feedback from your AI partner with AI Academy All Access.',
+                ),
+              ],
               if (lesson.practice != null) ...[
                 const SizedBox(height: 8),
                 CoachBlock(
@@ -386,7 +400,9 @@ class _LessonPlayerPageState extends State<LessonPlayerPage> {
                 ),
               ],
               const SizedBox(height: 24),
-              if (completed)
+              if (lesson.locked)
+                const SizedBox.shrink()
+              else if (completed)
                 const ListTile(
                   leading: Icon(Icons.check_circle, color: Colors.green),
                   title: Text('You have completed this lesson'),
@@ -568,6 +584,51 @@ class _LessonVideoState extends State<_LessonVideo> {
               : _chewie == null
                   ? const CircularProgressIndicator(color: Colors.white)
                   : Chewie(controller: _chewie!),
+        ),
+      ),
+    );
+  }
+}
+
+
+/// Invites the learner to subscribe (shown for locked content).
+class _SubscribeCard extends StatelessWidget {
+  final String title;
+  final String text;
+  const _SubscribeCard({required this.title, required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      color: const Color(0xFF0B3D2E),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(children: [
+              const Icon(Icons.lock, color: Color(0xFFD1A054)),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(title,
+                    style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16)),
+              ),
+            ]),
+            const SizedBox(height: 8),
+            Text(text, style: const TextStyle(color: Colors.white, height: 1.4)),
+            const SizedBox(height: 12),
+            ElevatedButton(
+              onPressed: () => context.push('/subscribe'),
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFFD1A054),
+                  foregroundColor: Colors.white),
+              child: const Text('See All Access'),
+            ),
+          ],
         ),
       ),
     );

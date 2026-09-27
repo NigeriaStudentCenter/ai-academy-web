@@ -238,7 +238,8 @@ class _CourseCard extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
           ),
         ),
-        trailing: const Icon(Icons.arrow_forward, color: AppColors.darkGreen),
+        trailing: Icon(course.locked ? Icons.lock : Icons.arrow_forward,
+            color: AppColors.darkGreen),
         onTap: () => context.go('/course/${course.courseId}'),
       ),
     );

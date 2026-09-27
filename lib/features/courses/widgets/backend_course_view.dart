@@ -75,7 +75,20 @@ class BackendCourseView extends StatelessWidget {
               const SizedBox(height: 6),
               Text('$doneCount of ${lessons.length} lessons completed'),
               const SizedBox(height: 16),
-              if (nextLesson != null)
+              if (lessons.any((l) => l.locked))
+                Card(
+                  color: const Color(0xFFFFF4E0),
+                  child: ListTile(
+                    leading: const Icon(Icons.lock, color: Color(0xFFB07A1E)),
+                    title: const Text('Included with AI Academy All Access',
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                    subtitle: const Text(
+                        'Subscribe to unlock every lesson, Practice with AI and your certificate.'),
+                    trailing: const Icon(Icons.arrow_forward),
+                    onTap: () => context.push('/subscribe'),
+                  ),
+                ),
+              if (nextLesson != null && !nextLesson.locked)
                 Card(
                   color: Colors.blue.shade50,
                   child: ListTile(
@@ -106,7 +119,9 @@ class BackendCourseView extends StatelessWidget {
                 Card(
                   margin: const EdgeInsets.symmetric(vertical: 6),
                   child: ListTile(
-                    leading: completedLessons.contains(lesson.lessonId)
+                    leading: lesson.locked
+                        ? const Icon(Icons.lock, color: Colors.grey)
+                        : completedLessons.contains(lesson.lessonId)
                         ? const Icon(Icons.check_circle, color: Colors.green)
                         : lesson == nextLesson
                             ? const Icon(Icons.play_circle_fill,
@@ -117,8 +132,10 @@ class BackendCourseView extends StatelessWidget {
                     subtitle: lesson.duration.isNotEmpty
                         ? Text(lesson.duration)
                         : null,
-                    onTap: () => context.go(
-                        '/course/${course.courseId}/lesson/${lesson.lessonId}'),
+                    onTap: () => lesson.locked
+                        ? context.push('/subscribe')
+                        : context.go(
+                            '/course/${course.courseId}/lesson/${lesson.lessonId}'),
                   ),
                 ),
             ],

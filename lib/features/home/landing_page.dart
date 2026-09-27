@@ -49,6 +49,14 @@ class LandingPage extends StatelessWidget {
                   ),
                   child: const Text("Sign in"),
                 ),
+                const SizedBox(height: 12),
+                TextButton(
+                  onPressed: () => context.go('/create-account'),
+                  child: Text(
+                    "New here? Create an account",
+                    style: TextStyle(color: AppColors.nearWhite, fontSize: 16),
+                  ),
+                ),
               ],
             ),
           ),

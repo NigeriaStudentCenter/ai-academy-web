@@ -95,6 +95,13 @@ class AppNavDrawer extends StatelessWidget {
 
                   const Divider(),
 
+                  _drawerItem(
+                    context,
+                    icon: Icons.account_circle,
+                    title: 'Account',
+                    routeName: '/account',
+                  ),
+
                   // ===============================
                   // Admin (Entra "Admin" app role only)
                   // ===============================

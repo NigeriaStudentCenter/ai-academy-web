@@ -7,6 +7,10 @@ class ApiClient {
   static const String baseUrl =
       'https://ai-academy-progress-api-bucjc4gtcsenhuhs.swedencentral-01.azurewebsites.net/api';
 
+  /// Called when the backend says an action needs the All Access
+  /// subscription (the app opens the subscribe screen).
+  static void Function()? onSubscriptionRequired;
+
   // Generous: the Flex Consumption backend can take ~30s to cold start.
   static const Duration _timeout = Duration(seconds: 45);
 
@@ -31,10 +35,22 @@ class ApiClient {
   /// A 401 means the token was rejected — sign out so the router sends the
   /// learner back to the sign-in page.
   static Future<http.Response> _check(http.Response response) async {
+    if (response.statusCode == 403 &&
+        response.body.contains('"subscription_required"')) {
+      onSubscriptionRequired?.call();
+      throw const SubscriptionRequiredException();
+    }
     if (response.statusCode == 401) {
       await EntraAuthService.signOut();
       throw Exception('Your session has expired. Please sign in again.');
     }
     return response;
   }
+}
+
+/// Thrown when an action needs the AI Academy All Access subscription.
+class SubscriptionRequiredException implements Exception {
+  const SubscriptionRequiredException();
+  @override
+  String toString() => 'This needs an AI Academy subscription.';
 }

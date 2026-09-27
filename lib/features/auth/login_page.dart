@@ -62,6 +62,11 @@ class LoginPage extends StatelessWidget {
                   }
                 },
               ),
+              const SizedBox(height: 12),
+              TextButton(
+                onPressed: () => context.go('/create-account'),
+                child: const Text('New here? Create an account'),
+              ),
             ],
           ),
         ),

@@ -42,6 +42,11 @@ class LessonData {
   /// shown at the end of the lesson, or '' if there is none.
   final String practiceCoach;
 
+  /// Without the All Access subscription: the lesson's content isn't sent
+  /// ([locked]), or its AI partners were removed ([aiLocked]).
+  final bool locked;
+  final bool aiLocked;
+
   /// The "Practice with AI" coach for this lesson, if it has one.
   LessonCoach? get practice =>
       coaches.where((c) => c.id == practiceCoach).firstOrNull;
@@ -69,6 +74,8 @@ class LessonData {
     this.quizBands = const [],
     this.portfolio = const [],
     this.practiceCoach = '',
+    this.locked = false,
+    this.aiLocked = false,
   });
 
   factory LessonData.fromJson(Map<String, dynamic> json) {
@@ -105,6 +112,8 @@ class LessonData {
               )),
       portfolio: _list(json['portfolio'], PortfolioItem.fromJson),
       practiceCoach: json['practiceCoach'] as String? ?? '',
+      locked: json['locked'] as bool? ?? false,
+      aiLocked: json['aiLocked'] as bool? ?? false,
     );
   }
 }
@@ -144,6 +153,10 @@ class CourseSummary {
   final int lessonCount;
   final String category;
 
+  /// "full" | "free" | "preview" | "locked" (without the All Access subscription).
+  final String access;
+  bool get locked => access == 'locked' || access == 'preview';
+
   const CourseSummary({
     required this.courseId,
     required this.title,
@@ -152,6 +165,7 @@ class CourseSummary {
     required this.estimatedDuration,
     required this.lessonCount,
     this.category = '',
+    this.access = 'full',
   });
 
   factory CourseSummary.fromJson(Map<String, dynamic> json) {
@@ -163,6 +177,7 @@ class CourseSummary {
       estimatedDuration: json['estimatedDuration'] as String? ?? '',
       lessonCount: (json['lessonCount'] as num?)?.toInt() ?? 0,
       category: json['category'] as String? ?? '',
+      access: json['access'] as String? ?? 'full',
     );
   }
 }
