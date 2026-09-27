@@ -40,8 +40,13 @@ async function authenticate(request) {
     throw new AuthError("Token is missing the access_as_user scope");
   }
 
+  // Guests (public learners invited by email) have a "…#EXT#@tenant" UPN;
+  // their real address is in preferred_username / email.
+  const upn = String(payload.upn || "");
+  const isGuest = upn.includes("#EXT#") || payload.acct === 1;
   const username = String(
-    payload.upn || payload.preferred_username || payload.email || ""
+    (isGuest ? payload.preferred_username || payload.email : upn) ||
+      payload.preferred_username || payload.email || ""
   ).toLowerCase();
   const domain = username.split("@")[1] || "";
   const roles = Array.isArray(payload.roles) ? payload.roles : [];
@@ -58,6 +63,7 @@ async function authenticate(request) {
     username,
     roles,
     isAdmin,
+    isGuest,
     audiences,
   };
 }
