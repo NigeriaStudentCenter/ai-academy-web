@@ -34,6 +34,19 @@ function listSetting(name, fallback) {
 
 const paywallEnabled = () => process.env.PAYWALL_ENABLED === "1";
 
+/** Accounts that must be able to buy (e.g. the App Review demo account). */
+function isTestAccount(user) {
+  return listSetting("PAYWALL_TEST_ACCOUNTS", DEFAULT_TEST_ACCOUNTS).includes((user.username || "").toLowerCase());
+}
+
+/**
+ * Sandbox (TestFlight / App Review) purchases are free, so they only unlock
+ * access for test accounts and admins — or everyone if APPLE_SANDBOX_OPEN=1.
+ */
+function sandboxAllowed(user) {
+  return process.env.APPLE_SANDBOX_OPEN === "1" || user.isAdmin || isTestAccount(user);
+}
+
 /** Free to everyone: only courses listed in FREE_COURSE_IDS (none by default). */
 function isFreeCourse(course) {
   return listSetting("FREE_COURSE_IDS", []).includes(String(course.courseId).toLowerCase());
@@ -66,8 +79,7 @@ async function accessFor(user, { loadSubscription = getSubscription } = {}) {
   if (user.isAdmin) return { full: true, reason: "admin", paywall: true };
   const username = (user.username || "").toLowerCase();
   const domain = username.split("@")[1] || "";
-  const testAccount = listSetting("PAYWALL_TEST_ACCOUNTS", DEFAULT_TEST_ACCOUNTS).includes(username);
-  if (!testAccount && listSetting("ORG_ACCESS_DOMAINS", DEFAULT_ORG_DOMAINS).includes(domain)) {
+  if (!isTestAccount(user) && listSetting("ORG_ACCESS_DOMAINS", DEFAULT_ORG_DOMAINS).includes(domain)) {
     return { full: true, reason: "organisation", paywall: true };
   }
   const sub = await loadSubscription(user.userId);
@@ -128,6 +140,8 @@ const SUBSCRIPTION_REQUIRED = {
 
 module.exports = {
   paywallEnabled,
+  isTestAccount,
+  sandboxAllowed,
   isFreeCourse,
   isActive,
   accessFor,
