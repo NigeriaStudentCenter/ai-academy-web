@@ -3,6 +3,7 @@
 // the SharePoint "AI Academy" site (see sharepointCourses.js).
 const { loadCatalog } = require("./sharepointCourses");
 const { CATEGORIES, categorize } = require("./catalogConfig");
+const { withPractice } = require("./practice");
 
 const BUILT_IN = [
   require("../courses/ai-foundations"),
@@ -52,7 +53,9 @@ function publicCourse(course) {
 /** The course if it exists and this learner may see it, otherwise null. */
 async function getCourseForUser(user, courseId) {
   const course = (await allCourses()).find((c) => c.courseId === courseId);
-  return course && canAccess(user, course) ? course : null;
+  if (!course || !canAccess(user, course)) return null;
+  // Imported courses are reading material; add a "Practice with AI" partner.
+  return BUILT_IN.includes(course) ? course : withPractice(course);
 }
 
 /** Summaries (no lesson bodies) of every course this learner may see. */

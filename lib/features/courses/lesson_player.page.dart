@@ -360,6 +360,14 @@ class _LessonPlayerPageState extends State<LessonPlayerPage> {
                   ),
                 ),
               ],
+              if (lesson.practice != null) ...[
+                const SizedBox(height: 8),
+                CoachBlock(
+                  ctx: LessonContext(widget.courseId, lesson.lessonId, saved),
+                  coach: lesson.practice!,
+                  buttonLabel: 'Start practising',
+                ),
+              ],
               if (lesson.reflectionQuestion.isNotEmpty) ...[
                 const SizedBox(height: 16),
                 Card(

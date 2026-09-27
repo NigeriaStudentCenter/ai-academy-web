@@ -541,7 +541,12 @@ class _QuizBlockState extends State<QuizBlock> {
 class CoachBlock extends StatelessWidget {
   final LessonContext ctx;
   final LessonCoach coach;
-  const CoachBlock({super.key, required this.ctx, required this.coach});
+  final String buttonLabel;
+  const CoachBlock(
+      {super.key,
+      required this.ctx,
+      required this.coach,
+      this.buttonLabel = 'Start the exercise'});
 
   @override
   Widget build(BuildContext context) {
@@ -577,7 +582,7 @@ class CoachBlock extends StatelessWidget {
                 builder: (_) => CoachChatPage(ctx: ctx, coach: coach),
               )),
               icon: const Icon(Icons.chat_bubble_outline),
-              label: const Text('Start the exercise'),
+              label: Text(buttonLabel),
               style: ElevatedButton.styleFrom(
                   backgroundColor: _gold, foregroundColor: Colors.white),
             ),

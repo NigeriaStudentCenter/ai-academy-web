@@ -38,6 +38,14 @@ class LessonData {
   final List<({int min, int max, String title})> quizBands;
   final List<PortfolioItem> portfolio;
 
+  /// Imported courses: the id of the "Practice with AI" coach (in [coaches])
+  /// shown at the end of the lesson, or '' if there is none.
+  final String practiceCoach;
+
+  /// The "Practice with AI" coach for this lesson, if it has one.
+  LessonCoach? get practice =>
+      coaches.where((c) => c.id == practiceCoach).firstOrNull;
+
   const LessonData({
     required this.lessonId,
     required this.title,
@@ -60,6 +68,7 @@ class LessonData {
     this.scenarios = const [],
     this.quizBands = const [],
     this.portfolio = const [],
+    this.practiceCoach = '',
   });
 
   factory LessonData.fromJson(Map<String, dynamic> json) {
@@ -95,6 +104,7 @@ class LessonData {
                 title: b['title'] as String? ?? '',
               )),
       portfolio: _list(json['portfolio'], PortfolioItem.fromJson),
+      practiceCoach: json['practiceCoach'] as String? ?? '',
     );
   }
 }
