@@ -2,6 +2,7 @@ const { app } = require("@azure/functions");
 const { requireUser } = require("../lib/auth");
 const { getCourseForUser } = require("../lib/courses");
 const progress = require("../lib/progress");
+const access = require("../lib/access");
 
 // POST { courseId, lessonId } — marks one lesson complete. Completion and
 // certificates are computed here, never trusted from the client.
@@ -26,6 +27,8 @@ app.http("saveProgress", {
     if (!lessonIds.includes(lessonId)) {
       return { status: 400, jsonBody: { message: "Unknown lessonId for this course." } };
     }
+    const learnerAccess = await access.accessFor(user);
+    if (!access.lessonUnlocked(course, lessonId, learnerAccess)) return access.SUBSCRIPTION_REQUIRED;
 
     const done = new Set(await progress.getProgress(user.userId, courseId));
     done.add(lessonId);
@@ -35,7 +38,7 @@ app.http("saveProgress", {
     await progress.saveProgress(user.userId, courseId, completedLessons, completion);
 
     let certificateId = null;
-    if (completion >= 1 && course.certificateEligible) {
+    if (completion >= 1 && course.certificateEligible && learnerAccess.full) {
       certificateId = (await progress.issueCertificate(user, course)).certificateId;
     }
 

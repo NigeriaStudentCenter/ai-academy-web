@@ -3,6 +3,7 @@ const { requireUser } = require("../lib/auth");
 const { getCourseForUser } = require("../lib/courses");
 const { askFoundry } = require("../lib/foundry");
 const act = require("../lib/lessonActivity");
+const access = require("../lib/access");
 
 async function readBody(request) {
   try {
@@ -28,6 +29,7 @@ app.http("lessonResponses", {
     const lesson = course && act.findLesson(course, body.lessonId);
     const exercise = lesson?.exercises?.find((e) => e.exerciseId === body.exerciseId);
     if (!exercise) return { status: 404, jsonBody: { error: "Exercise not found." } };
+    if (!access.lessonUnlocked(course, lesson.lessonId, await access.accessFor(user))) return access.SUBSCRIPTION_REQUIRED;
     const values = await act.saveExercise(user.userId, course.courseId, lesson.lessonId, exercise, body.values);
     return { status: 200, jsonBody: { values } };
   }),
@@ -45,6 +47,7 @@ app.http("submitQuiz", {
     const quizId = typeof body.quizId === "string" && body.quizId ? body.quizId : undefined;
     const questions = lesson ? act.questionsFor(lesson, quizId) : [];
     if (!questions.length) return { status: 404, jsonBody: { error: "Knowledge check not found." } };
+    if (!access.lessonUnlocked(course, lesson.lessonId, await access.accessFor(user))) return access.SUBSCRIPTION_REQUIRED;
     const answers = Array.isArray(body.answers) ? body.answers.slice(0, questions.length) : [];
     if (answers.length !== questions.length || answers.some((a) => !Number.isInteger(a))) {
       return { status: 400, jsonBody: { error: "Answer every question before submitting." } };
@@ -68,6 +71,8 @@ app.http("lessonCoach", {
     const lesson = course && act.findLesson(course, param("lessonId"));
     const coach = lesson?.coaches?.find((c) => c.coachId === param("coachId"));
     if (!coach) return { status: 404, jsonBody: { error: "Coach not found." } };
+    // AI partners (incl. Practice with AI) are part of the subscription.
+    if (!(await access.accessFor(user)).full) return access.SUBSCRIPTION_REQUIRED;
 
     if (request.method === "GET") {
       const saved = await act.courseResponses(user.userId, course.courseId);

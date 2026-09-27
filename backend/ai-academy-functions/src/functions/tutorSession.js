@@ -2,6 +2,7 @@ const { app } = require("@azure/functions");
 const { requireUser } = require("../lib/auth");
 const { askFoundry } = require("../lib/foundry");
 const cc = require("../lib/tutorCommandCenter");
+const access = require("../lib/access");
 
 // AI Tutor Command Center (teens). GET → the curricula for the path menus.
 // POST {path, turns}          → the tutor's next message
@@ -14,6 +15,7 @@ app.http("tutorSession", {
       return { status: 403, jsonBody: { error: "The Command Center is part of AI Academy for Teens." } };
     }
     if (request.method === "GET") return { status: 200, jsonBody: { curricula: cc.CURRICULA } };
+    if (!(await access.accessFor(user)).full) return access.SUBSCRIPTION_REQUIRED;
 
     let body;
     try {

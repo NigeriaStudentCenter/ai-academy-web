@@ -4,6 +4,7 @@
 const { loadCatalog } = require("./sharepointCourses");
 const { CATEGORIES, categorize } = require("./catalogConfig");
 const { withPractice } = require("./practice");
+const { isFreeCourse } = require("./access");
 
 const BUILT_IN = [
   require("../courses/ai-foundations"),
@@ -73,6 +74,7 @@ async function listCoursesForUser(user) {
       audiences: c.audiences,
       category: categorize(c),
       draft: !!c.draft,
+      free: isFreeCourse(c),
     }));
 }
 

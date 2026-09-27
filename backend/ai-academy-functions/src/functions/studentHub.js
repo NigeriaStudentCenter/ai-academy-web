@@ -1,5 +1,6 @@
 const { app } = require("@azure/functions");
 const { requireUser } = require("../lib/auth");
+const access = require("../lib/access");
 const { TOOLS, publicTools, buildRun } = require("../lib/studentHub");
 const { BUSINESS_TOOLS, DONE_FOR_YOU } = require("../lib/businessHub");
 
@@ -57,6 +58,7 @@ app.http("studentHub", {
       };
     }
 
+    if (!(await access.accessFor(user)).full) return access.SUBSCRIPTION_REQUIRED;
     if (!AGENTS_URL || !AGENTS_KEY) {
       context.error("studentHub: STUDENT_AGENTS_URL / STUDENT_AGENTS_KEY not configured");
       return { status: 500, jsonBody: { error: "The Student Success Hub is not configured." } };
