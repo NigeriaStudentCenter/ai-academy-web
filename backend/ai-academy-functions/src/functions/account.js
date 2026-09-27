@@ -42,6 +42,13 @@ app.http("createAccount", {
     try {
       await accounts.inviteLearner(email, accounts.cleanName(body.name));
     } catch (err) {
+      // Addresses on one of our own tenant's domains are members, not guests.
+      if (err.status === 400 && /verified domain/i.test(err.message)) {
+        return {
+          status: 409,
+          jsonBody: { error: "You already have an account through your school or organisation. Tap Sign in and use that email.", code: "organisation_account" },
+        };
+      }
       context.error("createAccount: invitation failed", err);
       return { status: 502, jsonBody: { error: "We couldn't create your account just now. Please try again." } };
     }
