@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart'; // ✅ REQUIRED FOR GoRouter
+import 'package:package_info_plus/package_info_plus.dart';
 
 import '../core/auth/app_auth_state.dart';
 import '../core/auth/entra_auth_service.dart';
@@ -133,14 +134,22 @@ class AppNavDrawer extends StatelessWidget {
             // Footer
             // ===============================
             const Divider(),
-            const Padding(
-              padding: EdgeInsets.all(12.0),
-              child: Text(
-                'AI Academy v1.0.0',
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.grey,
-                ),
+            Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: FutureBuilder<PackageInfo>(
+                future: PackageInfo.fromPlatform(),
+                builder: (context, snapshot) {
+                  final info = snapshot.data;
+                  return Text(
+                    info == null
+                        ? 'AI Academy'
+                        : 'AI Academy · version ${info.version} (${info.buildNumber})',
+                    style: const TextStyle(
+                      fontSize: 13,
+                      color: AppColors.darkGreen,
+                    ),
+                  );
+                },
               ),
             ),
           ],
