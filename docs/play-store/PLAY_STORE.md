@@ -17,6 +17,7 @@ questionnaires. Keep it in step with the app and with /privacy.html.
 | Contact email | john@bsoedu.org |
 | Website | https://black-sky-0782ebe03.7.azurestaticapps.net |
 | Privacy policy | https://black-sky-0782ebe03.7.azurestaticapps.net/privacy.html |
+| Account deletion URL | https://black-sky-0782ebe03.7.azurestaticapps.net/delete-account.html (`web/delete-account.html`) |
 | Release file | `build/app/outputs/bundle/release/app-release.aab` (versionCode from `pubspec.yaml`) |
 | Upload key | `~/.android-keys/ai-academy-upload.jks`, alias `upload`; passwords only in `android/key.properties` (git-ignored). Back both up to a password manager. Use Play App Signing. |
 
@@ -79,7 +80,7 @@ questionnaires. Keep it in step with the app and with /privacy.html.
 
 ## 4. Data safety
 
-Data is **encrypted in transit** (HTTPS only). Users can **request deletion** (email john@bsoedu.org; accounts are issued and removed by the programme). No data is **shared** with third parties — Microsoft Azure and Anthropic process it only as service providers on our behalf, which Google does not count as sharing. Nothing is used for ads or sold.
+Data is **encrypted in transit** (HTTPS only). Account creation method: **OAuth** (Create account sends a Microsoft invitation; sign-in is Microsoft only). Users can **delete their account** in the app (Menu → Account → Delete account) or via the account deletion URL above. No data is **shared** with third parties — Microsoft Azure and Anthropic process it only as service providers on our behalf, which Google does not count as sharing. Nothing is used for ads or sold.
 
 | Data type | Collected | Why | Optional? |
 |---|---|---|---|
