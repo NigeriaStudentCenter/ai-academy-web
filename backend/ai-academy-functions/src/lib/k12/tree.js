@@ -41,7 +41,7 @@ function buildTree({ state, grade, subject }) {
     family: fw.family,
     alignmentNote:
       fw.family === "state"
-        ? `${STATES[state]} uses its own standards (${fw.framework}). Skills are organised by the national benchmark (${SUBJECTS[subject].short}); the codes shown are the national benchmark codes for alignment — ${STATES[state]}'s own numbering and grade placement can differ.`
+        ? `${STATES[state]} uses its own standards: ${fw.framework}. Skills are organized by the national benchmark (${SUBJECTS[subject].short}), and the codes shown are national benchmark codes for alignment — ${STATES[state]}'s own numbering and grade placement can differ.`
         : `Codes shown are ${SUBJECTS[subject].short} codes, which ${STATES[state]}'s standards follow.`,
     domains,
   };

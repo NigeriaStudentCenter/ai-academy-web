@@ -87,7 +87,7 @@ class _UsK12HomePageState extends State<UsK12HomePage> {
         foregroundColor: Colors.white,
       ),
       drawer: const AppNavDrawer(),
-      floatingActionButton: _meta == null
+      floatingActionButton: _meta == null || (_learners ?? []).isEmpty
           ? null
           : FloatingActionButton.extended(
               backgroundColor: k12Red,

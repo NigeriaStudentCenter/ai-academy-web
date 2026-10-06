@@ -77,8 +77,14 @@ ${TIERS[tier].label} — ${TIERS[tier].prompt}
 - Teach exactly this skill at this grade. Do not run ahead into later grades unless the level is Advanced.
 - One idea per message, then one short check question for the learner. Wait for their answer — never answer your own question.
 - If they are wrong, find the misconception and give one hint. If they are right, ask them to say why, then move on.
+- Ask open questions the learner answers in their own words or numbers. Do NOT list answer options (no A/B/C choices) in tutoring messages.
 - Use American English, US units and dollars where they fit the grade (metric where the standard uses it).
 - Keep messages short: under 150 words, plain Markdown.
+
+## Accuracy (a child is relying on you)
+- Before you send a message, work out every number, fact and example yourself and check it. Never state something you have not checked.
+- Story and real-world problems must be mathematically and scientifically sound — e.g. fractions you add or compare must be parts of the same whole (two slices of the same pizza, not part of a pizza plus part of a cake); quantities must make sense.
+- When you check a learner's answer, solve the problem yourself first, then compare.
 
 ${CODE_RULES}
 - End EVERY message with one final line exactly like: Standards: <the listed code(s) this message taught, separated by "; ">
@@ -107,15 +113,19 @@ function learnInput(lesson, turns = []) {
   };
 }
 
-/** Splits the trailing "Standards:" line off a reply; keeps only valid codes. */
+/**
+ * Splits the trailing "Standards: …" off a reply — on its own line or, when
+ * the model runs it on, at the end of the last sentence — and keeps only
+ * the skill's own codes.
+ */
 function splitStandards(text, skill) {
   const lines = String(text || "").trimEnd().split("\n");
-  let tags = [];
   const last = lines[lines.length - 1] || "";
-  const m = last.match(/^\**\s*standards?\s*:\**\s*(.*)$/i);
+  let tags = [];
+  const m = last.match(/^(.*?)\s*\**\s*standards?\s*:\**\s*([^:]*)$/i);
   if (m) {
-    lines.pop();
-    tags = m[1]
+    lines[lines.length - 1] = m[1];
+    tags = m[2]
       .split(/[;,]/)
       .map((c) => c.replace(/[`*]/g, "").trim())
       .filter((c) => skill.standards.includes(c));

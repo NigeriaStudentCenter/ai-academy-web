@@ -25,7 +25,7 @@ class StatusChip extends StatelessWidget {
     final (label, color, icon) = switch (status) {
       'mastered' => ('Mastered', const Color(0xFF1B7F3B), Icons.star_rounded),
       'struggling' => ('Needs review', const Color(0xFFC0392B), Icons.flag_rounded),
-      'practising' => ('Practising', const Color(0xFFB7791F), Icons.timelapse_rounded),
+      'practising' => ('Practicing', const Color(0xFFB7791F), Icons.timelapse_rounded),
       _ => ('Not started', Colors.black45, Icons.circle_outlined),
     };
     return Container(

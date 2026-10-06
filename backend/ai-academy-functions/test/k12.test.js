@@ -201,3 +201,11 @@ test("options equal in value are rejected", () => {
   const raw = JSON.stringify({ questions: [{ type: "mc", question: "1/3 + 1/6?", options: ["2/6", "3/6", "1/2", "1/3"], answer: "1/2" }] });
   assert.strictEqual(tutor.parseQuiz(raw, skill, "core", false).length, 0);
 });
+
+test("a Standards line run onto the last sentence is stripped too", () => {
+  const r = tutor.splitStandards("Think about the tens place.\nSo how many tens are there? Standards: CCSS.MATH.CONTENT.5.NF.A.2", skill);
+  assert.strictEqual(r.text, "Think about the tens place.\nSo how many tens are there?");
+  assert.deepStrictEqual(r.tags, ["CCSS.MATH.CONTENT.5.NF.A.2"]);
+  const plain = tutor.splitStandards("Ratio: 3 to 2. What is the unit rate?", skill);
+  assert.strictEqual(plain.text, "Ratio: 3 to 2. What is the unit rate?", "other colons are left alone");
+});
