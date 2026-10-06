@@ -6,6 +6,16 @@
 // Curricula and instructions mirror news.nigeriastudentambassador.com/ai-tutor.html.
 // The instructions are built here, never taken from the client.
 
+const cambridge = require("./k12/cambridge");
+
+const camSubjects = (stage) => cambridge.subjectsFor(stage).map((x) => `${x.code} ${x.name}`);
+const US_SUBJECTS = [
+  "Math", "Algebra I", "Geometry", "Algebra II", "Precalculus", "Calculus", "Statistics",
+  "English Language Arts", "Biology", "Chemistry", "Physics", "Earth and Space Science",
+  "Environmental Science", "U.S. History", "World History", "U.S. Government and Civics", "Economics",
+  "Geography", "Computer Science", "Spanish", "French",
+];
+
 const CURRICULA = {
   ng: {
     label: "Nigerian (NERDC)",
@@ -37,6 +47,35 @@ const CURRICULA = {
         "Religious Education", "Business Studies", "Economics", "PSHE",
       ],
     },
+  },
+  cambridge: {
+    label: "Cambridge International",
+    secHint: "Lower Secondary, IGCSE, AS & A Level (ages 13+)",
+    levelHints: {
+      "Lower Secondary": "Stage 9 · ages 13–14",
+      IGCSE: "Years 10–11 · ages 14–16",
+      "AS & A Level": "Years 12–13 · ages 16–19",
+    },
+    years: {
+      "Lower Secondary": ["Stage 9"],
+      IGCSE: ["Year 10 (IGCSE)", "Year 11 (IGCSE)"],
+      "AS & A Level": ["Year 12 (AS Level)", "Year 13 (A Level)"],
+    },
+    subjects: {
+      "Lower Secondary": camSubjects("lower"),
+      IGCSE: camSubjects("igcse"),
+      "AS & A Level": camSubjects("alevel"),
+    },
+  },
+  us: {
+    label: "United States",
+    secHint: "Grades 8–12 (ages 13+)",
+    levelHints: { "Middle school": "Grade 8 · ages 13–14", "High school": "Grades 9–12 · ages 14–18" },
+    years: {
+      "Middle school": ["Grade 8"],
+      "High school": ["Grade 9", "Grade 10", "Grade 11", "Grade 12"],
+    },
+    subjects: { "Middle school": US_SUBJECTS.slice(0, 1).concat(["English Language Arts", "Science", "Social Studies", "Computer Science", "Spanish"]), "High school": US_SUBJECTS },
   },
 };
 
@@ -76,6 +115,8 @@ Onboarding is complete. These are LOCKED for this session - do not re-ask them:
 ## Curriculum grounding
 - Nigerian (NERDC): follow the NERDC national curriculum — JSS 3 and Senior Secondary (SSS 1-3). Use Nigerian names, contexts and Naira.
 - British (UK National): follow the UK Department for Education national curriculum — Year 9 (Key Stage 3) and Key Stage 4 (Years 10-11) with GCSE framing.
+- Cambridge International: follow the Cambridge syllabus named by its code (e.g. 0625 Physics, 9709 Mathematics) — Lower Secondary Stage 9, IGCSE (Core/Extended) or AS & A Level. Use the syllabus terminology and Cambridge command words (State, Describe, Explain, Calculate, Evaluate…); when practising, set original exam-style questions with marks in brackets and mark against mark-scheme points. Use British English.
+- United States: follow the national benchmark standards most states use — Common Core (math, ELA), NGSS (science), C3 (social studies) — at the student's grade (8–12). Use American English and US units.
 Teach at the locked level. Do not run far ahead of it.
 
 ## Pedagogical engine - the Socratic boundary

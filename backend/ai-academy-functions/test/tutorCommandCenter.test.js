@@ -39,3 +39,15 @@ test("command center: topic suggestions are parsed defensively", () => {
   assert.deepEqual(cc.parseTopics('Sure! ["Fractions","Decimals"]'), ["Fractions", "Decimals"]);
   assert.deepEqual(cc.parseTopics("no json here"), []);
 });
+
+test("command center: Cambridge and US curricula (13+)", () => {
+  assert.deepEqual(Object.keys(cc.CURRICULA), ["ng", "uk", "cambridge", "us"]);
+  assert.ok(cc.CURRICULA.cambridge.subjects.IGCSE.includes("0625 Physics"));
+  assert.ok(cc.CURRICULA.cambridge.subjects["AS & A Level"].includes("9709 Mathematics"));
+  assert.ok(cc.validatePath({ curriculum: "cambridge", level: "IGCSE", year: "Year 11 (IGCSE)", subject: "0580 Mathematics", topic: "Surds" }).path);
+  assert.ok(cc.validatePath({ curriculum: "cambridge", level: "IGCSE", year: "Stage 9", subject: "0580 Mathematics", topic: "x" }).error);
+  assert.ok(cc.validatePath({ curriculum: "us", level: "High school", year: "Grade 10", subject: "Geometry", topic: "Proofs" }).path);
+  assert.ok(cc.validatePath({ curriculum: "us", level: "Middle school", year: "Grade 7", subject: "Math", topic: "x" }).error, "no grade 7 (under 13)");
+  const { path } = cc.validatePath({ curriculum: "cambridge", level: "AS & A Level", year: "Year 12 (AS Level)", subject: "9702 Physics", topic: "Kinematics" });
+  assert.match(cc.conversation(path, []).input[0].content, /Cambridge command words/);
+});

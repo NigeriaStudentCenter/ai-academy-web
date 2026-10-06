@@ -8,8 +8,9 @@ class Curriculum {
   final String label;
   final String primaryHint;
   final String secondaryHint;
-  final Map<String, List<String>> years; // Primary / Secondary → classes
+  final Map<String, List<String>> years; // level → classes / years
   final Map<String, List<String>> subjects;
+  final Map<String, String> levelHints; // level → e.g. "Years 10–11 · ages 14–16"
 
   const Curriculum({
     required this.id,
@@ -18,7 +19,11 @@ class Curriculum {
     required this.secondaryHint,
     required this.years,
     required this.subjects,
+    this.levelHints = const {},
   });
+
+  String hintFor(String level) =>
+      levelHints[level] ?? (level == 'Primary' ? primaryHint : secondaryHint);
 
   static Map<String, List<String>> _lists(dynamic json) =>
       (json as Map<String, dynamic>? ?? {}).map(
@@ -32,6 +37,8 @@ class Curriculum {
         secondaryHint: json['secHint'] as String? ?? '',
         years: _lists(json['years']),
         subjects: _lists(json['subjects']),
+        levelHints: (json['levelHints'] as Map<String, dynamic>? ?? {})
+            .map((k, v) => MapEntry(k, v.toString())),
       );
 }
 
@@ -90,8 +97,8 @@ class CommandCenterService {
     }
     final data = (jsonDecode(response.body)
         as Map<String, dynamic>)['curricula'] as Map<String, dynamic>;
-    // Nigerian first, then British — as on the Teens Academy site.
-    _curricula = ['ng', 'uk']
+    // Nigerian, British, Cambridge International, United States.
+    _curricula = ['ng', 'uk', 'cambridge', 'us']
         .where(data.containsKey)
         .map((id) => Curriculum.fromJson(id, data[id] as Map<String, dynamic>))
         .toList();

@@ -8,9 +8,22 @@ import '../../core/theme/app_colors.dart';
 import '../../core/tutor/command_center_service.dart';
 import '../../widgets/app_nav_drawer.dart';
 
-// Curriculum accents, as on the web tutor: Nigerian green, British navy.
+// Curriculum accents, as on the web tutor: Nigerian green, British navy,
+// Cambridge crimson, US blue.
 const _ngColor = Color(0xFF0B7A3E);
 const _ukColor = Color(0xFF1D3F8F);
+const _colors = {
+  'ng': _ngColor,
+  'uk': _ukColor,
+  'cambridge': Color(0xFFA51C30),
+  'us': Color(0xFF1F3A93),
+};
+const _subtitles = {
+  'ng': 'JSS 3 – SSS 3 (13+)',
+  'uk': 'Years 9 – 11 (13+)',
+  'cambridge': 'Lower Secondary, IGCSE, AS & A Level',
+  'us': 'Grades 8 – 12, by state',
+};
 const _otherSubject = '__other__';
 
 /// AI Tutor Command Center — a Socratic tutor on the Nigerian (NERDC) and
@@ -44,7 +57,7 @@ class _CommandCenterPageState extends State<CommandCenterPage> {
   final _inputCtrl = TextEditingController();
   final _scroll = ScrollController();
 
-  Color get _accent => _curriculum?.id == 'uk' ? _ukColor : _ngColor;
+  Color get _accent => _colors[_curriculum?.id] ?? _ngColor;
 
   @override
   void initState() {
@@ -213,33 +226,40 @@ class _CommandCenterPageState extends State<CommandCenterPage> {
             ),
             const SizedBox(height: 20),
             _stepTitle(1, 'Curriculum'),
-            IntrinsicHeight(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  for (final c in curricula) ...[
-                    Expanded(
-                      child: _choiceCard(
-                        title: c.label,
-                        subtitle:
-                            c.id == 'ng' ? 'JSS 3 – SSS 3 (13+)' : 'Years 9 – 11 (13+)',
-                        icon: Icons.flag,
-                        color: c.id == 'uk' ? _ukColor : _ngColor,
-                        selected: _curriculum?.id == c.id,
-                        onTap: () => setState(() {
-                          _curriculum = c;
-                          _level = null;
-                          _year = null;
-                          _subject = null;
-                          _suggestions = [];
-                        }),
+            // Two cards per row.
+            for (var i = 0; i < curricula.length; i += 2) ...[
+              if (i > 0) const SizedBox(height: 12),
+              IntrinsicHeight(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    for (final c in curricula.skip(i).take(2)) ...[
+                      if (c != curricula[i]) const SizedBox(width: 12),
+                      Expanded(
+                        child: _choiceCard(
+                          title: c.label,
+                          subtitle: _subtitles[c.id] ?? c.secondaryHint,
+                          icon: c.id == 'cambridge' || c.id == 'us' ? Icons.public : Icons.flag,
+                          color: _colors[c.id] ?? _ngColor,
+                          selected: _curriculum?.id == c.id,
+                          onTap: () => setState(() {
+                            _curriculum = c;
+                            _level = null;
+                            _year = null;
+                            _subject = null;
+                            _suggestions = [];
+                          }),
+                        ),
                       ),
-                    ),
-                    if (c != curricula.last) const SizedBox(width: 12),
+                    ],
+                    if (curricula.skip(i).length == 1) ...[
+                      const SizedBox(width: 12),
+                      const Expanded(child: SizedBox()),
+                    ],
                   ],
-                ],
+                ),
               ),
-            ),
+            ],
             if (_curriculum != null) ...[
               const SizedBox(height: 20),
               _stepTitle(2, 'Level'),
@@ -253,9 +273,7 @@ class _CommandCenterPageState extends State<CommandCenterPage> {
                       Expanded(
                         child: _choiceCard(
                           title: level,
-                          subtitle: level == 'Primary'
-                              ? _curriculum!.primaryHint
-                              : _curriculum!.secondaryHint,
+                          subtitle: _curriculum!.hintFor(level),
                           icon: Icons.school,
                           color: _accent,
                           selected: _level == level,

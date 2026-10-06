@@ -21,8 +21,9 @@ class K12CamSubject {
   final String years;
   final bool tiered;
   final bool practical;
+  final bool popular;
   const K12CamSubject(this.code, this.name, this.qualification, this.years,
-      this.tiered, this.practical);
+      this.tiered, this.practical, [this.popular = false]);
 
   String get label => '$code $name';
 }
@@ -61,7 +62,7 @@ class K12Meta {
           stage,
           _maps(list)
               .map((s) => K12CamSubject(_s(s['code']), _s(s['name']), _s(s['qualification']),
-                  _s(s['years']), s['tiered'] == true, s['practical'] == true))
+                  _s(s['years']), s['tiered'] == true, s['practical'] == true, s['popular'] == true))
               .toList())),
       _maps(cam['styles'])
           .map((s) => K12Option(_s(s['id']), _s(s['label']), s['sciencesOnly'] == true ? 'science' : ''))

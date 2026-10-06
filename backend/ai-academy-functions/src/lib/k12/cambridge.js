@@ -32,8 +32,8 @@ async function loadContent() {
  * for the prompt — or "" when none are available.
  */
 function statementsText(content, code, skill, tier) {
-  const sub = skill.id.split("|")[3];
-  const block = content?.[code]?.[sub];
+  const [, , topic, sub] = skill.id.split("|");
+  const block = content?.[code]?.[sub === "T" ? `T${topic}` : sub];
   if (!block) return "";
   const cap = (t) => String(t || "").slice(0, 3500);
   if (block.core !== undefined || block.supplement !== undefined || block.extended !== undefined) {
@@ -110,16 +110,21 @@ const STYLES = {
   },
 };
 
+const hasPractical = (s) => SCIENCES.includes(s.code) || !!s.practical;
+
+/** Syllabi for a stage: the most popular first (in popularity order), then A–Z. */
 function subjectsFor(stage) {
   return Object.values(SYLLABI)
     .filter((s) => s.stage === stage)
+    .sort((a, b) => (a.popular ?? 999) - (b.popular ?? 999) || a.name.localeCompare(b.name))
     .map((s) => ({
       code: s.code,
       name: s.name,
       qualification: s.qualification,
       years: s.years,
       tiered: s.tiered,
-      practical: SCIENCES.includes(s.code),
+      practical: hasPractical(s),
+      popular: s.popular !== undefined,
     }));
 }
 
@@ -190,7 +195,7 @@ function treeMeta(stage, code) {
       tiered: s.tiered,
       papers: s.papers,
       practical: s.practical,
-      hasPractical: SCIENCES.includes(code),
+      hasPractical: hasPractical(s),
       commandWords: s.commandWords,
     },
   };

@@ -54,6 +54,19 @@ class _SkillTreePageState extends State<SkillTreePage> {
     }
   }
 
+  Future<void> _pickCambridgeSubject() async {
+    final all = widget.meta.camSubjects[widget.learner.stage] ?? const <K12CamSubject>[];
+    final picked = await showModalBottomSheet<String>(
+      context: context,
+      isScrollControlled: true,
+      builder: (_) => _SubjectSheet(subjects: all, selected: _subject),
+    );
+    if (picked != null && picked != _subject) {
+      _subject = picked;
+      _load();
+    }
+  }
+
   Future<void> _open(K12Domain domain, K12Skill skill) async {
     await Navigator.push(
       context,
@@ -91,33 +104,59 @@ class _SkillTreePageState extends State<SkillTreePage> {
         ],
       ),
       body: Column(children: [
-        SizedBox(
-          height: 56,
-          child: ListView(
-            scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-            children: [
-              for (final (id, label, icon) in _subjects)
-                Padding(
-                  padding: const EdgeInsets.only(right: 8),
-                  child: ChoiceChip(
-                    avatar: Icon(icon, size: 18, color: _subject == id ? Colors.white : k12Blue),
-                    label: Text(label),
-                    selected: _subject == id,
-                    selectedColor: k12Blue,
-                    labelStyle: TextStyle(color: _subject == id ? Colors.white : k12Blue),
-                    showCheckmark: false,
-                    onSelected: (_) {
-                      if (_subject != id) {
-                        _subject = id;
-                        _load();
-                      }
-                    },
+        if (widget.learner.isCambridge)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(12, 10, 12, 6),
+            child: OutlinedButton(
+              style: OutlinedButton.styleFrom(
+                foregroundColor: k12Blue,
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                alignment: Alignment.centerLeft,
+              ),
+              onPressed: _pickCambridgeSubject,
+              child: Row(children: [
+                const Icon(Icons.menu_book_outlined, size: 20),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    _subjects.firstWhere((s) => s.$1 == _subject, orElse: () => (_subject, _subject, Icons.book)).$2,
+                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
-            ],
+                Text('${_subjects.length} subjects', style: const TextStyle(fontSize: 12, color: Colors.black54)),
+                const Icon(Icons.arrow_drop_down),
+              ]),
+            ),
+          )
+        else
+          SizedBox(
+            height: 56,
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              children: [
+                for (final (id, label, icon) in _subjects)
+                  Padding(
+                    padding: const EdgeInsets.only(right: 8),
+                    child: ChoiceChip(
+                      avatar: Icon(icon, size: 18, color: _subject == id ? Colors.white : k12Blue),
+                      label: Text(label),
+                      selected: _subject == id,
+                      selectedColor: k12Blue,
+                      labelStyle: TextStyle(color: _subject == id ? Colors.white : k12Blue),
+                      showCheckmark: false,
+                      onSelected: (_) {
+                        if (_subject != id) {
+                          _subject = id;
+                          _load();
+                        }
+                      },
+                    ),
+                  ),
+              ],
+            ),
           ),
-        ),
         Expanded(
           child: _error != null
               ? ErrorRetry(_error!, _load)
@@ -232,6 +271,76 @@ class _SkillTreePageState extends State<SkillTreePage> {
             ]),
           ),
           const Icon(Icons.chevron_right, color: Colors.black38),
+        ]),
+      ),
+    );
+  }
+}
+
+/// Searchable list of Cambridge syllabi: popular first, then A–Z.
+class _SubjectSheet extends StatefulWidget {
+  final List<K12CamSubject> subjects;
+  final String selected;
+  const _SubjectSheet({required this.subjects, required this.selected});
+
+  @override
+  State<_SubjectSheet> createState() => _SubjectSheetState();
+}
+
+class _SubjectSheetState extends State<_SubjectSheet> {
+  String _q = '';
+
+  @override
+  Widget build(BuildContext context) {
+    final q = _q.toLowerCase().trim();
+    final list = widget.subjects
+        .where((s) => q.isEmpty || s.name.toLowerCase().contains(q) || s.code.contains(q))
+        .toList();
+    final popular = q.isEmpty ? list.where((s) => s.popular).toList() : <K12CamSubject>[];
+    final rest = q.isEmpty ? list.where((s) => !s.popular).toList() : list;
+    Widget tile(K12CamSubject s) => ListTile(
+          dense: true,
+          leading: Text(s.code, style: const TextStyle(fontFamily: 'monospace', fontWeight: FontWeight.w600, color: k12Blue)),
+          title: Text(s.name),
+          subtitle: s.tiered ? const Text('Core / Extended') : null,
+          trailing: s.code == widget.selected ? const Icon(Icons.check, color: k12Blue) : null,
+          onTap: () => Navigator.pop(context, s.code),
+        );
+    return SafeArea(
+      child: SizedBox(
+        height: MediaQuery.of(context).size.height * 0.8,
+        child: Column(children: [
+          Padding(
+            padding: EdgeInsets.fromLTRB(16, 16, 16, 8 + MediaQuery.of(context).viewInsets.bottom * 0),
+            child: TextField(
+              autofocus: false,
+              onChanged: (v) => setState(() => _q = v),
+              decoration: const InputDecoration(
+                prefixIcon: Icon(Icons.search),
+                hintText: 'Search subjects or syllabus codes',
+                border: OutlineInputBorder(),
+              ),
+            ),
+          ),
+          Expanded(
+            child: ListView(children: [
+              if (popular.isNotEmpty) ...[
+                const Padding(
+                  padding: EdgeInsets.fromLTRB(16, 8, 16, 4),
+                  child: Text('Most popular', style: TextStyle(fontWeight: FontWeight.w700, color: k12Blue)),
+                ),
+                for (final s in popular) tile(s),
+                const Divider(),
+                const Padding(
+                  padding: EdgeInsets.fromLTRB(16, 4, 16, 4),
+                  child: Text('All subjects A–Z', style: TextStyle(fontWeight: FontWeight.w700, color: k12Blue)),
+                ),
+              ],
+              for (final s in rest) tile(s),
+              if (list.isEmpty)
+                const Padding(padding: EdgeInsets.all(24), child: Text('No matching subjects.')),
+            ]),
+          ),
         ]),
       ),
     );

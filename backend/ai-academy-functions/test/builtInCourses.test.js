@@ -3,7 +3,7 @@ const assert = require("node:assert");
 const { publicCourse } = require("../src/lib/courses");
 
 const COURSES = [
-  [require("../src/courses/delete-limiting-beliefs"), 18],
+  [require("../src/courses/delete-limiting-beliefs"), 24],
   [require("../src/courses/customer-service-skills"), 11],
   [require("../src/courses/event-management"), 10],
   [require("../src/courses/marketing-skills"), 10],
@@ -58,3 +58,28 @@ test(`${course.courseId}: published course hides answers and agent instructions`
   assert.ok(!text.includes('"explanation"'));
 });
 }
+
+test("draft lessons: learners don't see them, admins do", () => {
+  const { visibleLessons } = require("../src/lib/courses");
+  const dlb = require("../src/courses/delete-limiting-beliefs");
+  const { TRACKS_LIVE } = require("../src/courses/delete-limiting-beliefs/tracks");
+  const drafts = dlb.lessons.filter((l) => l.draft).map((l) => l.lessonId);
+  if (!TRACKS_LIVE) assert.equal(drafts.length, 6, "the six new lessons wait for release");
+  const learner = visibleLessons({ isAdmin: false }, dlb);
+  const admin = visibleLessons({ isAdmin: true }, dlb);
+  assert.equal(admin.lessons.length, dlb.lessons.length);
+  assert.equal(learner.lessons.length, dlb.lessons.length - drafts.length);
+  assert.ok(learner.lessons.every((l) => !l.draft));
+  // Released lessons are untouched for learners.
+  assert.deepEqual(learner.lessons.map((l) => l.lessonId), dlb.lessons.filter((l) => !l.draft).map((l) => l.lessonId));
+  // Course without drafts is returned as-is.
+  const other = require("../src/courses/marketing-skills");
+  assert.equal(visibleLessons({ isAdmin: false }, other), other);
+});
+
+test("delete-limiting-beliefs: lessons in order, assessment last", () => {
+  const dlb = require("../src/courses/delete-limiting-beliefs");
+  const orders = dlb.lessons.map((l) => l.lessonOrder);
+  assert.deepEqual(orders, [...orders].sort((a, b) => a - b));
+  assert.equal(dlb.lessons.at(-1).lessonId, "dlb-assessment");
+});

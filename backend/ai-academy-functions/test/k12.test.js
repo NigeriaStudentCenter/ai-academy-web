@@ -368,3 +368,23 @@ test("cambridge: a blind solve must reach the model answer's number", () => {
   assert.strictEqual(tutor.numericAgreement('{"finalValue": null}', exam), null, "non-numeric → examiner check");
   assert.strictEqual(tutor.numericAgreement('{"finalValue": 5}', { modelAnswer: "Because particles collide more often." }), null);
 });
+
+test("cambridge: the full catalogue, popular subjects first", () => {
+  const ig = cam.subjectsFor("igcse");
+  const al = cam.subjectsFor("alevel");
+  assert.ok(ig.length >= 70, `IGCSE subjects: ${ig.length}`);
+  assert.ok(al.length >= 40, `AS & A Level subjects: ${al.length}`);
+  assert.deepStrictEqual(ig.slice(0, 3).map((s) => s.code), ["0580", "0606", "0500"]);
+  assert.strictEqual(al[0].code, "9709");
+  for (const c of ["0452", "0417", "0470", "0495", "0520", "0653"]) assert.ok(ig.some((s) => s.code === c), c);
+  for (const c of ["9231", "9706", "9093", "9990", "9084"]) assert.ok(al.some((s) => s.code === c), c);
+  assert.ok(ig.find((s) => s.code === "0653").practical, "combined science has a practical paper");
+  const psych = buildTree({ curriculum: "cambridge", stage: "alevel", subject: "9990" });
+  assert.deepStrictEqual(psych.domains.map((d) => d.level), ["AS", "AS", "AS", "AS", "AS", "A2", "A2", "A2", "A2"]);
+});
+
+test("cambridge: topic-level statements for syllabi without sub-topics", () => {
+  const content = { "0470": { T2: { text: "How was Italy unified? Key questions…" } } };
+  assert.match(cam.statementsText(content, "0470", { id: "cam|0470|2|T" }, "core"), /Italy/);
+  assert.strictEqual(cam.statementsText(content, "0470", { id: "cam|0470|3|T" }, "core"), "");
+});
