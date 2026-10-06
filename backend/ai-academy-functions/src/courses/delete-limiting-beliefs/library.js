@@ -3,11 +3,6 @@
 
 const { block, field, numbered, table, list, script, scriptTable } = require("./kit");
 const { studioCoach } = require("./studio");
-const { TRACKS_LIVE } = require("./tracks");
-
-const TRACK_LABEL = TRACKS_LIVE
-  ? "My track — Rising, High Achiever, or a specialist track (Wealth, Relationships, African Excellence, Reinvention, Resilience):"
-  : "My track — Rising, High Achiever or both:";
 
 const pickExercise = (exerciseId, title) => ({
   exerciseId,
@@ -15,7 +10,7 @@ const pickExercise = (exerciseId, title) => ({
   fields: [
     field("beliefs", "Up to three beliefs from this library that feel true for me:"),
     field("strongest", "The one that feels strongest, and when it shows up:"),
-    field("track", TRACK_LABEL, "text"),
+    field("track", "My track — Rising, High Achiever or both:", "text"),
   ],
 });
 
@@ -111,7 +106,7 @@ ${block("exercise", "studio-collection")}
         title: "What I'm facing",
         fields: [
           field("belief", "The belief (in my own words):"),
-          field("track", TRACK_LABEL, "text"),
+          field("track", "My track — Rising, High Achiever or both:", "text"),
           field("situation", "What's happening right now, or where it shows up:"),
           field("origin", "Where I think it came from (optional):"),
           field("against", "Any evidence against it (optional):"),
@@ -205,7 +200,7 @@ ${block("coach", "universal-studio")}
   {
     lessonId: "dlb-assessment",
     title: "Delete Script Mastery Assessment",
-    lessonOrder: 24,
+    lessonOrder: 18,
     duration: "90 minutes",
     objective: "Show how you find, understand and rewrite limiting beliefs — and how you'll keep going.",
     contentBody: `

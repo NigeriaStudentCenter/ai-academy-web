@@ -5,7 +5,6 @@
 
 const { block, table, flow, field } = require("./kit");
 const { SNAPSHOT } = require("./snapshot");
-const { TRACK_LESSONS, WELCOME_TRACKS } = require("./tracks");
 
 const COACH_RULES = `You are an AI thinking partner inside "Delete Limiting Beliefs", a 12-week programme from the British School of Outdoor Education (BSOE) that teaches the Delete Script method: DELETE → REPLACE WITH → INSTALL → RUN → LOCK. Learners may be adults or teenagers (13+), on the Rising track (young people) or the High Achiever track (wealth, success and influence).
 How you work:
@@ -69,7 +68,6 @@ ${table(["Level", "Weeks", "What you do"], [
 
 <h2>Choose your track</h2>
 <p><strong>🌱 Rising</strong> — for young people navigating school, comparison, social media, family expectations and first steps into work. <strong>💼 High Achiever</strong> — for people carrying the pressures of wealth, success, visibility and influence. You can follow one track or both; every week shows examples from each.</p>
-${WELCOME_TRACKS}
 ${block("exercise", "dlb-track")}
 
 <h2>Your starting snapshot</h2>
@@ -118,6 +116,5 @@ module.exports = {
     ...require("./level-3"),
     ...require("./level-4-5"),
     ...require("./library"),
-    ...TRACK_LESSONS,
-  ].sort((a, b) => a.lessonOrder - b.lessonOrder),
+  ],
 };
