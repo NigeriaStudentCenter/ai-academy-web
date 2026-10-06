@@ -135,11 +135,8 @@ app.http("k12", {
           const raw = await askFoundry([{ role: "user", content: tutor.quizPrompt({ tree, domain, skill, micro, tier, count, worksheet }) }]);
           const draft = tutor.parseQuiz(raw, skill, tier, worksheet);
           if (!draft.length) continue;
-          const checked = draft.some((q) => q.type === "mc")
-            ? tutor.applyVerification(draft, await askFoundry([{ role: "user", content: tutor.verifyPrompt(draft, tree) }]))
-            : draft;
-          const seen = new Set(questions.map((q) => q.question));
-          questions = questions.concat(checked.filter((q) => !seen.has(q.question))).slice(0, count);
+          const checked = tutor.applyVerification(draft, await askFoundry([{ role: "user", content: tutor.verifyPrompt(draft, tree) }]));
+          questions = tutor.mergeQuestions(questions, checked, count);
         }
         if (questions.length < Math.min(3, count)) return bad("Could not write the questions. Please try again.", 502);
         return {

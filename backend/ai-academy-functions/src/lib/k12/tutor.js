@@ -143,8 +143,9 @@ function quizPrompt({ tree, domain, skill, micro, tier, count, worksheet }) {
 Write a ${worksheet ? "printable practice worksheet" : "5-minute practice quiz"} with exactly ${count} questions on this skill for this grade.
 - ${worksheet ? "Mix multiple-choice and short-answer questions (at least 3 short-answer)." : "All multiple choice, 4 options each, exactly one correct."}
 - Depth of Knowledge: use DOK levels ${dok.join(", ")} (${dok.map((d) => `${d} = ${DOK[d]}`).join("; ")}), easiest first.
+- Every question must test something different — no repeats or near-repeats.
 - Plausible wrong options that reveal common misconceptions. Age-appropriate wording; no personal questions.
-- Options are plain values — no "A." / "B." letters. No two options may be equal in value (e.g. never offer both 3/6 and 1/2, or 0.5 and 1/2).
+- Options are plain values — no "A." / "B." letters. No two options may be equal in value (e.g. never offer both 3/6 and 1/2, 0.5 and 1/2, or 17/12 and 1 5/12).
 - ACCURACY: for each question, first work the problem out fully in "working", THEN write "answer" as the exact text of the correct option (or, for short answer, the model answer). Make sure exactly one option is correct.
 - Every question gets ONE code from the list above.
 ${CODE_RULES}
@@ -190,7 +191,8 @@ function parseQuiz(raw, skill, tier, worksheet) {
  */
 function numericValue(option) {
   const s = String(option).trim().replace(/^[$\u2212-]?\s*/, (m) => (m.includes("-") || m.includes("\u2212") ? "-" : "")).replace(/,/g, "");
-  const m = s.match(/^(-?)(?:(\d+)\s+)?(\d+(?:\.\d+)?)(?:\s*\/\s*(\d+(?:\.\d+)?))?\s*(%|[a-zA-Z ]{0,12})?$/);
+  // Mixed numbers may be written "1 5/12", "1 and 5/12" or "1-5/12".
+  const m = s.match(/^(-?)(?:(\d+)(?:\s+and\s+|\s+|-))?(\d+(?:\.\d+)?)(?:\s*\/\s*(\d+(?:\.\d+)?))?\s*(%|[a-zA-Z ]{0,12})?$/i);
   if (!m) return null;
   const [, sign, whole, num, den] = m;
   if (den !== undefined && Number(den) === 0) return null;
@@ -208,26 +210,65 @@ function hasEqualValues(options) {
   return values.some((v, i) => values.slice(i + 1).some((w) => Math.abs(v - w) < 1e-9));
 }
 
-/** An independent check: solve each multiple-choice question without the key. */
-function verifyPrompt(questions, tree) {
-  const items = questions
-    .map((q, i) => (q.type === "mc" ? { n: i + 1, question: q.question, options: q.options } : null))
-    .filter(Boolean);
-  return `You are checking a ${tree.gradeLabel} ${tree.subjectLabel} quiz before a child sees it. Solve each question yourself, carefully, showing your working. Then pick the ONE correct option, copied exactly. If no option is correct, or more than one is — including options that are equal in value, like 1/2 and 3/6 — answer "INVALID".
+// Words and maths operators, so "3/4 + 1/8" and "3/4 - 1/8" stay different.
+const words = (q) =>
+  new Set(
+    String(q)
+      .toLowerCase()
+      .replace(/([+\-\u2212\u00d7\u00f7=<>])/g, " $1 ")
+      .replace(/[^a-z0-9/.+\-\u2212\u00d7\u00f7=<> ]+/g, " ")
+      .split(/\s+/)
+      .map((w) => w.replace(/^\.+|\.+$/g, ""))
+      .filter(Boolean)
+  );
 
-${JSON.stringify(items)}
+/** True when the shorter question's words are (almost) all in the other. */
+function nearDuplicate(a, b) {
+  const x = words(a);
+  const y = words(b);
+  const shared = [...x].filter((w) => y.has(w)).length;
+  return shared / Math.min(x.size, y.size) >= 0.85;
+}
 
-Reply with ONLY JSON: {"answers":[{"n":1,"working":"...","answer":"exact option text or INVALID"}]}`;
+/** Adds questions that aren't (near-)repeats of ones already kept. */
+function mergeQuestions(kept, more, count) {
+  const out = [...kept];
+  for (const q of more) {
+    if (out.length >= count) break;
+    if (!out.some((k) => nearDuplicate(k.question, q.question))) out.push(q);
+  }
+  return out;
 }
 
 /**
- * Keeps short-answer questions and the multiple-choice questions whose key
- * the independent check agrees with.
+ * An independent check, without the key for multiple choice: solve each
+ * question; for short answers, judge the model answer.
+ */
+function verifyPrompt(questions, tree) {
+  const items = questions.map((q, i) =>
+    q.type === "mc"
+      ? { n: i + 1, type: "choice", question: q.question, options: q.options }
+      : { n: i + 1, type: "short", question: q.question, modelAnswer: q.answer }
+  );
+  return `You are checking a ${tree.gradeLabel} ${tree.subjectLabel} quiz before a child sees it. Work every question out yourself, carefully, showing your working.
+- "choice" items: pick the ONE correct option, copied exactly. If no option is correct, or more than one is — including options equal in value written two ways, like 17/12 and 1 5/12, or 0.5 and 1/2 — answer "INVALID".
+- "short" items: answer "OK" only if the model answer is fully correct and complete for the question; otherwise "WRONG".
+
+${JSON.stringify(items)}
+
+Reply with ONLY JSON: {"answers":[{"n":1,"working":"...","answer":"exact option text, INVALID, OK or WRONG"}]}`;
+}
+
+/**
+ * Keeps the questions the independent check agrees with: multiple choice
+ * where it picked the same option, short answers it marked OK.
  */
 function applyVerification(questions, raw) {
   const data = extractJson(raw, "{", "}");
   const answers = new Map((Array.isArray(data?.answers) ? data.answers : []).map((a) => [Number(a?.n), stripLetter(a?.answer)]));
-  return questions.filter((q, i) => q.type !== "mc" || norm(answers.get(i + 1)) === norm(q.options[q.answer]));
+  return questions.filter((q, i) =>
+    q.type === "mc" ? norm(answers.get(i + 1)) === norm(q.options[q.answer]) : norm(answers.get(i + 1)) === "ok"
+  );
 }
 
 // ---- Parent insights ---------------------------------------------------
@@ -249,6 +290,8 @@ module.exports = {
   parseQuiz,
   verifyPrompt,
   applyVerification,
+  nearDuplicate,
+  mergeQuestions,
   numericValue,
   hasEqualValues,
   insightsPrompt,

@@ -209,3 +209,36 @@ test("a Standards line run onto the last sentence is stripped too", () => {
   const plain = tutor.splitStandards("Ratio: 3 to 2. What is the unit rate?", skill);
   assert.strictEqual(plain.text, "Ratio: 3 to 2. What is the unit rate?", "other colons are left alone");
 });
+
+test("mixed numbers count as the same value as improper fractions", () => {
+  assert.strictEqual(tutor.numericValue("1 and 5/12"), 17 / 12);
+  assert.strictEqual(tutor.numericValue("1-5/12"), 17 / 12);
+  assert.strictEqual(tutor.numericValue("2 1/4 cups"), 2.25);
+  assert.ok(tutor.hasEqualValues(["17/12", "1 and 5/12", "11/12", "5/12"]));
+  assert.ok(!tutor.hasEqualValues(["5/8", "4/12", "5/12", "6/8"]));
+});
+
+test("short-answer keys are kept only when the check marks them OK", () => {
+  const qs = [
+    { type: "short", question: "1/6 + 1/3 = ?", answer: "1/2" },
+    { type: "short", question: "5/8 - 1/4 = ?", answer: "1/2" },
+    { type: "mc", question: "2/3 + 1/6 = ?", options: ["3/6", "5/6", "5/9", "2/6"], answer: 1 },
+  ];
+  const tree = findSkill({ state: "OH", grade: "5", subject: "math" }, "math|5|NF|A").tree;
+  assert.match(tutor.verifyPrompt(qs, tree), /"modelAnswer":"1\/2"/);
+  const kept = tutor.applyVerification(qs, JSON.stringify({ answers: [{ n: 1, answer: "OK" }, { n: 2, answer: "WRONG" }, { n: 3, answer: "5/6" }] }));
+  assert.deepStrictEqual(kept.map((q) => q.question), ["1/6 + 1/3 = ?", "2/3 + 1/6 = ?"]);
+});
+
+test("near-repeat questions are dropped", () => {
+  assert.ok(tutor.nearDuplicate("Which shows the correct way to add 1/6 + 1/3?", "Which shows the correct way to add 1/6 + 1/3 using equivalent fractions?"));
+  assert.ok(!tutor.nearDuplicate("What is 2/5 + 1/10?", "Subtract: 3/8 − 1/4. Write your answer as a fraction."));
+  const q = (question) => ({ question });
+  const merged = tutor.mergeQuestions([q("What is 2/5 + 1/10?")], [q("What is 2/5 + 1/10 ?"), q("Solve: 3/4 - 1/8"), q("Add 5/12 + 1/4")], 2);
+  assert.deepStrictEqual(merged.map((x) => x.question), ["What is 2/5 + 1/10?", "Solve: 3/4 - 1/8"]);
+});
+
+test("different operations on the same numbers are not repeats", () => {
+  assert.ok(!tutor.nearDuplicate("What is 3/4 - 1/8?", "What is 3/4 + 1/8?"));
+  assert.ok(!tutor.nearDuplicate("How many inches are in 2 feet?", "How many inches are in 1 foot?"));
+});
