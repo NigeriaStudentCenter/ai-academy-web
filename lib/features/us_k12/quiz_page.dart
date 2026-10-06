@@ -201,7 +201,7 @@ class _QuizPageState extends State<QuizPage> {
             const Divider(),
             if (q.explanation.isNotEmpty) Text(q.explanation, style: const TextStyle(height: 1.4)),
             const SizedBox(height: 6),
-            Text('DOK ${q.dok} · ${q.dokLabel} · ${q.code}',
+            Text(widget.learner.isCambridge ? q.code : 'DOK ${q.dok} · ${q.dokLabel} · ${q.code}',
                 style: const TextStyle(fontSize: 11.5, color: Colors.black45, fontFamily: 'monospace')),
           ],
         ]),

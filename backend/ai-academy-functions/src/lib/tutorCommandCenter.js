@@ -1,6 +1,7 @@
 // The AI Tutor Command Center (Teens Academy site, SitePages/AI-Tutor.aspx):
 // a Socratic tutor on the Nigerian (NERDC) and British (UK National)
-// curricula. The learner locks a path — curriculum, level/year, subject,
+// curricula. AI Academy is for learners aged 13+, so only the classes and
+// years for ages 13 and up are offered (JSS 3–SSS 3, Years 9–11). The learner locks a path — curriculum, level/year, subject,
 // topic — and the tutor teaches one micro-concept and one question at a time.
 // Curricula and instructions mirror news.nigeriastudentambassador.com/ai-tutor.html.
 // The instructions are built here, never taken from the client.
@@ -8,19 +9,11 @@
 const CURRICULA = {
   ng: {
     label: "Nigerian (NERDC)",
-    primHint: "Primary 1 to Primary 6",
-    secHint: "JSS 1 to SSS 3",
+    secHint: "JSS 3 to SSS 3 (ages 13+)",
     years: {
-      Primary: ["Primary 1", "Primary 2", "Primary 3", "Primary 4", "Primary 5", "Primary 6"],
-      Secondary: ["JSS 1", "JSS 2", "JSS 3", "SSS 1", "SSS 2", "SSS 3"],
+      Secondary: ["JSS 3", "SSS 1", "SSS 2", "SSS 3"],
     },
     subjects: {
-      Primary: [
-        "English Studies", "Mathematics", "Basic Science and Technology",
-        "National Values Education (Civic / Social Studies / Security)", "Cultural and Creative Arts",
-        "Prevocational Studies", "Christian Religious Studies", "Islamic Religious Studies", "History",
-        "Nigerian Language", "Computer Studies / ICT",
-      ],
       Secondary: [
         "English Language", "Mathematics", "Basic Science", "Basic Technology", "Biology", "Chemistry",
         "Physics", "Further Mathematics", "Civic Education", "Social Studies", "Economics", "Government",
@@ -32,17 +25,11 @@ const CURRICULA = {
   },
   uk: {
     label: "British (UK National)",
-    primHint: "Years 1-6 (Key Stages 1-2)",
-    secHint: "Years 7-11 (Key Stages 3-4)",
+    secHint: "Years 9-11 (Key Stages 3-4, ages 13+)",
     years: {
-      Primary: ["Year 1 (KS1)", "Year 2 (KS1)", "Year 3 (KS2)", "Year 4 (KS2)", "Year 5 (KS2)", "Year 6 (KS2)"],
-      Secondary: ["Year 7 (KS3)", "Year 8 (KS3)", "Year 9 (KS3)", "Year 10 (KS4 / GCSE)", "Year 11 (KS4 / GCSE)"],
+      Secondary: ["Year 9 (KS3)", "Year 10 (KS4 / GCSE)", "Year 11 (KS4 / GCSE)"],
     },
     subjects: {
-      Primary: [
-        "English", "Mathematics", "Science", "History", "Geography", "Computing", "Art and Design",
-        "Design and Technology", "Music", "Physical Education", "Religious Education", "Languages", "PSHE",
-      ],
       Secondary: [
         "English Language", "English Literature", "Mathematics", "Combined Science", "Biology", "Chemistry",
         "Physics", "History", "Geography", "Computer Science", "Modern Foreign Languages",
@@ -66,7 +53,7 @@ const oneLine = (s) => String(s || "").replace(/[\r\n]+/g, " ").replace(/\s+/g, 
 function validatePath(p = {}) {
   const cur = CURRICULA[p.curriculum];
   if (!cur) return { error: "Choose a curriculum." };
-  if (!cur.years[p.level]) return { error: "Choose Primary or Secondary." };
+  if (!cur.years[p.level]) return { error: "Choose your level." };
   if (!cur.years[p.level].includes(p.year)) return { error: "Choose your year or class." };
   const subject = oneLine(p.subject);
   const topic = oneLine(p.topic);
@@ -87,8 +74,8 @@ Onboarding is complete. These are LOCKED for this session - do not re-ask them:
 - Topic: ${path.topic}
 
 ## Curriculum grounding
-- Nigerian (NERDC): follow the NERDC national curriculum. Primary = Primary 1-6; Junior Secondary = JSS 1-3; Senior Secondary = SSS 1-3. Use Nigerian names, contexts and Naira.
-- British (UK National): follow the UK Department for Education national curriculum. Primary = Key Stages 1-2 (Years 1-6); Secondary = Key Stages 3-4 (Years 7-11), with GCSE framing at KS4.
+- Nigerian (NERDC): follow the NERDC national curriculum — JSS 3 and Senior Secondary (SSS 1-3). Use Nigerian names, contexts and Naira.
+- British (UK National): follow the UK Department for Education national curriculum — Year 9 (Key Stage 3) and Key Stage 4 (Years 10-11) with GCSE framing.
 Teach at the locked level. Do not run far ahead of it.
 
 ## Pedagogical engine - the Socratic boundary
@@ -100,8 +87,7 @@ You are an active tutor, not an answer key.
 - Keep each message short: a sentence or two of framing, then the question on its own line.
 
 ## Tone and scaling
-- Primary: high-energy, warm, everyday language. Explain abstract ideas with playground, sport, food or market analogies. Short sentences. Encourage often.
-- Secondary: academic vocabulary for the level. Introduce and use the RTCE framework (Role, Task, Context, Execution) when the student structures their thinking or a prompt. Expect precision; demand source verification.
+- Learners are 13+: academic vocabulary for the level. Introduce and use the RTCE framework (Role, Task, Context, Execution) when the student structures their thinking or a prompt. Expect precision; demand source verification.
 
 ## Study-tool integration
 The student has Microsoft Copilot (in their Academy Microsoft 365 account) and Google NotebookLM, each with a button to open it beside this tutor.

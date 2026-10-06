@@ -63,7 +63,7 @@ Future<void> printWorksheet(K12Quiz quiz, {String focus = ''}) async {
     header: (c) => c.pageNumber == 1 ? header() : pw.SizedBox(),
     footer: (c) => pw.Align(
       alignment: pw.Alignment.centerRight,
-      child: pw.Text('AI Academy · US K-12 Tutor · page ${c.pageNumber}',
+      child: pw.Text('AI Academy · Curriculum Tutor · page ${c.pageNumber}',
           style: const pw.TextStyle(fontSize: 8, color: grey)),
     ),
     build: (c) => [
@@ -100,7 +100,7 @@ Future<void> printWorksheet(K12Quiz quiz, {String focus = ''}) async {
                 style: pw.TextStyle(fontSize: 11.5, fontWeight: pw.FontWeight.bold)),
             if (quiz.questions[i].explanation.isNotEmpty)
               pw.Text(text(quiz.questions[i].explanation), style: const pw.TextStyle(fontSize: 10.5)),
-            pw.Text(text('DOK ${quiz.questions[i].dok} (${quiz.questions[i].dokLabel}) · ${quiz.questions[i].code}'),
+            pw.Text(text(quiz.state == 'Cambridge International' ? quiz.questions[i].code : 'DOK ${quiz.questions[i].dok} (${quiz.questions[i].dokLabel}) · ${quiz.questions[i].code}'),
                 style: const pw.TextStyle(fontSize: 8.5, color: grey)),
           ]),
         ),

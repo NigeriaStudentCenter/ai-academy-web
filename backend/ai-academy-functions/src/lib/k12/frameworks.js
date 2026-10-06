@@ -3,8 +3,11 @@
 // CCSS (math, ELA), NGSS (science), C3 (social studies) — and a state
 // overlay (states.js) adjusts labels, placement and extra strands.
 
-/** Grade levels, K–12. High school grades share course-based trees. */
+/** Grade levels, K–12 (the standards data covers them all). High school grades share course-based trees. */
 const GRADES = ["K", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"];
+
+/** AI Academy is for learners aged 13+: grade 8 (ages 13–14) and up. */
+const LEARNER_GRADES = ["8", "9", "10", "11", "12"];
 
 const GRADE_LABELS = {
   K: "Kindergarten",
@@ -33,9 +36,9 @@ const SUBJECTS = {
 
 /** How the tutor explains — the learner picks one. */
 const STYLES = {
-  eli8: {
-    label: "Explain like I'm 8",
-    prompt: "Explain as if to a bright 8-year-old: very short sentences, everyday words, one friendly comparison (food, games, sport, pets). No jargon unless you explain it in five words.",
+  simple: {
+    label: "Explain it simply",
+    prompt: "Explain in the simplest possible way: short sentences, everyday words, one relatable comparison from a teenager's life (sport, gaming, music, food, phones). Introduce each technical term with a plain-English meaning.",
   },
   story: {
     label: "Teach me through a story",
@@ -47,7 +50,7 @@ const STYLES = {
   },
   realworld: {
     label: "Show me a real-world example",
-    prompt: "Anchor everything in one real-life situation a child in the United States would recognise (shopping, sports, cooking, a road trip, a school event), then generalise to the rule.",
+    prompt: "Anchor everything in one real-life situation a teenager in the United States would recognize (shopping, sports, cooking, a road trip, a school event), then generalise to the rule.",
   },
   socratic: {
     label: "Ask me questions",
@@ -88,4 +91,4 @@ const DOK = {
 /** Inclusive integer range. */
 const range = (a, b) => Array.from({ length: b - a + 1 }, (_, i) => a + i);
 
-module.exports = { GRADES, gradeLabel, isHighSchool, gradeBand, SUBJECTS, STYLES, TIERS, DOK, range };
+module.exports = { GRADES, LEARNER_GRADES, gradeLabel, isHighSchool, gradeBand, SUBJECTS, STYLES, TIERS, DOK, range };

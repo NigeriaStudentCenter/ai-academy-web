@@ -84,11 +84,11 @@ class AppNavDrawer extends StatelessWidget {
                       routeName: '/business-hub',
                     ),
 
-                  // US K–12: CCSS / NGSS / C3 tutor with a state overlay (families).
+                  // Curriculum Tutor: US (CCSS / NGSS / C3 by state) and Cambridge International, 13+.
                   _drawerItem(
                     context,
                     icon: Icons.account_tree_outlined,
-                    title: 'US K–12 Tutor',
+                    title: 'Curriculum Tutor',
                     routeName: '/us-k12',
                   ),
 

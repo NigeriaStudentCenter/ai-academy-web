@@ -240,7 +240,7 @@ class DashboardPage extends StatelessWidget {
                 ],
 
                 // =========================
-                // US K–12 Tutor (families)
+                // Curriculum Tutor: US and Cambridge International (13+)
                 // =========================
                 const SizedBox(height: 20),
                 SizedBox(
@@ -258,7 +258,7 @@ class DashboardPage extends StatelessWidget {
                       ),
                     ),
                     label: const Text(
-                      "US K–12 Tutor · Common Core, NGSS & C3",
+                      "Curriculum Tutor · US & Cambridge",
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,

@@ -222,7 +222,7 @@ class _CommandCenterPageState extends State<CommandCenterPage> {
                       child: _choiceCard(
                         title: c.label,
                         subtitle:
-                            c.id == 'ng' ? 'Primary 1 – SSS 3' : 'Years 1 – 11',
+                            c.id == 'ng' ? 'JSS 3 – SSS 3 (13+)' : 'Years 9 – 11 (13+)',
                         icon: Icons.flag,
                         color: c.id == 'uk' ? _ukColor : _ngColor,
                         selected: _curriculum?.id == c.id,
@@ -247,16 +247,16 @@ class _CommandCenterPageState extends State<CommandCenterPage> {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    for (final level in const ['Primary', 'Secondary']) ...[
+                    // Levels come from the server (13+: Secondary only).
+                    for (final (i, level) in _curriculum!.years.keys.indexed) ...[
+                      if (i > 0) const SizedBox(width: 12),
                       Expanded(
                         child: _choiceCard(
                           title: level,
                           subtitle: level == 'Primary'
                               ? _curriculum!.primaryHint
                               : _curriculum!.secondaryHint,
-                          icon: level == 'Primary'
-                              ? Icons.child_care
-                              : Icons.school,
+                          icon: Icons.school,
                           color: _accent,
                           selected: _level == level,
                           onTap: () => setState(() {
@@ -267,7 +267,6 @@ class _CommandCenterPageState extends State<CommandCenterPage> {
                           }),
                         ),
                       ),
-                      if (level == 'Primary') const SizedBox(width: 12),
                     ],
                   ],
                 ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/k12/k12_service.dart';
 import 'k12_widgets.dart';
+import 'exam_page.dart';
 import 'quiz_page.dart';
 import 'tutor_page.dart';
 import 'worksheet_pdf.dart';
@@ -35,12 +36,37 @@ class _SkillPageState extends State<SkillPage> {
   String _tier = 'core';
   bool _makingSheet = false;
 
+  bool get _cam => widget.tree.isCambridge;
+  bool get _tiered => _cam && (widget.tree.syllabus?.tiered ?? false);
+
+  /// Explanation styles for the curriculum (the virtual lab only for sciences).
+  List<K12Option> get _styles => _cam
+      ? widget.meta.camStyles
+          .where((s) => s.detail != 'science' || (widget.tree.syllabus?.hasPractical ?? false))
+          .toList()
+      : widget.meta.styles;
+
+  /// Levels: US tiers, Cambridge Core/Extended, or none (single-tier syllabi).
+  List<K12Option> get _tiers => !_cam ? widget.meta.tiers : _tiered ? widget.meta.camTiers : const [];
+
+  /// The level label shown when there's no choice (e.g. "AS Level").
+  String get _fixedLevel => widget.domain.level == 'A2'
+      ? 'A Level (second year)'
+      : widget.domain.level == 'AS'
+          ? 'AS Level'
+          : widget.tree.syllabus?.qualification ?? '';
+
+  String get _tierLabel => _tiers.isEmpty
+      ? _fixedLevel
+      : _tiers.firstWhere((t) => t.id == _tier, orElse: () => _tiers.first).label;
+
   @override
   void initState() {
     super.initState();
-    // Younger learners usually want the simplest explanation.
-    final g = widget.learner.grade;
-    if (['K', '1', '2', '3'].contains(g)) _style = 'eli8';
+    if (_cam) {
+      _style = 'examprep';
+      _tier = 'extended';
+    }
     _loadMicro();
   }
 
@@ -56,7 +82,7 @@ class _SkillPageState extends State<SkillPage> {
 
   String get _microTitle => _focus?.title ?? '';
 
-  void _learn() => Navigator.push(
+  void _learn([String? style]) => Navigator.push(
         context,
         MaterialPageRoute(
           builder: (_) => TutorPage(
@@ -64,10 +90,24 @@ class _SkillPageState extends State<SkillPage> {
             tree: widget.tree,
             skill: widget.skill,
             micro: _microTitle,
-            style: _style,
-            styleLabel: widget.meta.styles.firstWhere((s) => s.id == _style).label,
+            style: style ?? _style,
+            styleLabel: _styles.firstWhere((s) => s.id == (style ?? _style), orElse: () => _styles.first).label,
             tier: _tier,
-            tierLabel: widget.meta.tiers.firstWhere((t) => t.id == _tier).label,
+            tierLabel: _tierLabel,
+          ),
+        ),
+      );
+
+  void _exam() => Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => ExamPage(
+            learner: widget.learner,
+            tree: widget.tree,
+            skill: widget.skill,
+            micro: _microTitle,
+            tier: _tier,
+            tierLabel: _tierLabel,
           ),
         ),
       );
@@ -119,7 +159,8 @@ class _SkillPageState extends State<SkillPage> {
           const SizedBox(height: 10),
           CodeChips(s.standards, color: s.fromState ? k12Red : k12Blue),
           const SizedBox(height: 20),
-          _section('Pick what to learn', 'The skill broken into bite-sized steps, easiest first.'),
+          _section('Pick what to learn',
+              _cam ? 'This content broken into learning objectives, easiest first.' : 'The skill broken into bite-sized steps, easiest first.'),
           if (_microError != null)
             TextButton.icon(onPressed: _loadMicro, icon: const Icon(Icons.refresh), label: Text(_microError!))
           else if (_micro == null)
@@ -138,7 +179,7 @@ class _SkillPageState extends State<SkillPage> {
           const SizedBox(height: 20),
           _section('How should the tutor explain?', null),
           Wrap(spacing: 8, runSpacing: 8, children: [
-            for (final st in widget.meta.styles)
+            for (final st in _styles)
               ChoiceChip(
                 label: Text(st.label),
                 selected: _style == st.id,
@@ -149,22 +190,29 @@ class _SkillPageState extends State<SkillPage> {
               ),
           ]),
           const SizedBox(height: 20),
-          _section('Level', 'Depth of Knowledge rises with each level.'),
-          RadioGroup<String>(
-            groupValue: _tier,
-            onChanged: (v) => setState(() => _tier = v ?? _tier),
-            child: Column(children: [
-              for (final t in widget.meta.tiers)
-                RadioListTile<String>(
-                  value: t.id,
-                  activeColor: k12Blue,
-                  contentPadding: EdgeInsets.zero,
-                  dense: true,
-                  title: Text(t.label, style: const TextStyle(fontWeight: FontWeight.w600)),
-                  subtitle: Text(t.detail),
-                ),
-            ]),
-          ),
+          if (_tiers.isNotEmpty) ...[
+            _section(_cam ? 'Exam tier' : 'Level',
+                _cam ? 'Match the papers you’re entered for.' : 'Depth of Knowledge rises with each level.'),
+            RadioGroup<String>(
+              groupValue: _tier,
+              onChanged: (v) => setState(() => _tier = v ?? _tier),
+              child: Column(children: [
+                for (final t in _tiers)
+                  RadioListTile<String>(
+                    value: t.id,
+                    activeColor: k12Blue,
+                    contentPadding: EdgeInsets.zero,
+                    dense: true,
+                    enabled: !(t.id == 'core' && widget.skill.extendedOnly),
+                    title: Text(t.label, style: const TextStyle(fontWeight: FontWeight.w600)),
+                    subtitle: Text(t.id == 'core' && widget.skill.extendedOnly
+                        ? 'This content is Extended only'
+                        : t.detail),
+                  ),
+              ]),
+            ),
+          ] else if (_fixedLevel.isNotEmpty)
+            _section('Level: $_fixedLevel', null),
           const SizedBox(height: 16),
           FilledButton.icon(
             style: FilledButton.styleFrom(backgroundColor: k12Blue, padding: const EdgeInsets.symmetric(vertical: 14)),
@@ -172,6 +220,30 @@ class _SkillPageState extends State<SkillPage> {
             icon: const Icon(Icons.school_outlined),
             label: Text(_focus == null ? 'Start learning' : 'Learn: ${_focus!.title}'),
           ),
+          if (_cam) ...[
+            const SizedBox(height: 10),
+            Row(children: [
+              Expanded(
+                child: FilledButton.tonalIcon(
+                  style: FilledButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 12)),
+                  onPressed: _exam,
+                  icon: const Icon(Icons.edit_note),
+                  label: const Text('Exam question'),
+                ),
+              ),
+              if (widget.tree.syllabus?.hasPractical ?? false) ...[
+                const SizedBox(width: 10),
+                Expanded(
+                  child: FilledButton.tonalIcon(
+                    style: FilledButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 12)),
+                    onPressed: () => _learn('practical'),
+                    icon: const Icon(Icons.biotech_outlined),
+                    label: const Text('Virtual lab'),
+                  ),
+                ),
+              ],
+            ]),
+          ],
           const SizedBox(height: 10),
           Row(children: [
             Expanded(
@@ -232,7 +304,7 @@ class _SkillPageState extends State<SkillPage> {
               const SizedBox(width: 10),
               Expanded(
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text(m?.title ?? 'The whole skill', style: const TextStyle(fontSize: 14.5)),
+                  Text(m?.title ?? (_cam ? 'All of this content' : 'The whole skill'), style: const TextStyle(fontSize: 14.5)),
                   if (m != null)
                     Text(m.code, style: const TextStyle(fontSize: 11, color: Colors.black45, fontFamily: 'monospace')),
                 ]),

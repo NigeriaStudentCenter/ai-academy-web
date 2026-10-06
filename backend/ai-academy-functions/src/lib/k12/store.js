@@ -7,8 +7,9 @@
 //   K12MicroSkills PK "v1", RK sha1(skillId) — shared micro-skill cache
 const crypto = require("crypto");
 const { TableClient, odata } = require("@azure/data-tables");
-const { GRADES } = require("./frameworks");
+const { LEARNER_GRADES } = require("./frameworks");
 const { STATES } = require("./states");
+const { STAGES } = require("./cambridge");
 const { allSkills } = require("./tree");
 const { oneLine } = require("./tutor");
 
@@ -46,16 +47,35 @@ const learnerKey = (userId, learnerId) => `${userId}~${learnerId}`;
 
 // ---- Learners -----------------------------------------------------------
 
-function cleanLearner(body = {}) {
+function cleanLearner(body = {}, { isNew = true } = {}) {
   const nickname = oneLine(body.nickname).slice(0, 24);
   if (!nickname) return { error: "Enter a first name or nickname." };
   if (/@|\d{5,}/.test(nickname)) return { error: "Use a first name or nickname only — no email or phone numbers." };
-  if (!GRADES.includes(String(body.grade))) return { error: "Choose a grade level." };
+  if (isNew && body.ageConfirmed !== true) return { error: "AI Academy is for learners aged 13 and over." };
+  if (body.curriculum === "cambridge") {
+    if (!STAGES[body.stage]) return { error: "Choose a Cambridge stage." };
+    return { learner: { nickname, curriculum: "cambridge", stage: body.stage, grade: "", state: "" } };
+  }
+  if (!LEARNER_GRADES.includes(String(body.grade))) return { error: "Choose a grade level (8–12)." };
   if (!STATES[body.state]) return { error: "Choose a state." };
-  return { learner: { nickname, grade: String(body.grade), state: body.state } };
+  return { learner: { nickname, curriculum: "us", stage: "", grade: String(body.grade), state: body.state } };
 }
 
-const publicLearner = (e) => ({ learnerId: e.rowKey, nickname: e.nickname, grade: e.grade, state: e.state, createdAt: e.createdAt });
+const publicLearner = (e) => ({
+  learnerId: e.rowKey,
+  nickname: e.nickname,
+  curriculum: e.curriculum || "us",
+  grade: e.grade || "",
+  state: e.state || "",
+  stage: e.stage || "",
+  createdAt: e.createdAt,
+});
+
+/** The tree context for a learner and subject. */
+const contextFor = (learner, subject) =>
+  learner.curriculum === "cambridge"
+    ? { curriculum: "cambridge", stage: learner.stage, subject }
+    : { curriculum: "us", state: learner.state, grade: learner.grade, subject };
 
 async function listLearners(userId) {
   const rows = await list("K12Learners", odata`PartitionKey eq ${userId}`);
@@ -69,7 +89,7 @@ async function getLearner(userId, learnerId) {
 }
 
 async function saveLearner(userId, body) {
-  const { learner, error } = cleanLearner(body);
+  const { learner, error } = cleanLearner(body, { isNew: !body.learnerId });
   if (error) return { error };
   const t = await table("K12Learners");
   let learnerId = body.learnerId;
@@ -122,7 +142,7 @@ async function record(userId, learner, { kind, skill, domain, subject, tier, sty
     partitionKey: pk,
     rowKey: skill.id,
     subject,
-    grade: learner.grade,
+    grade: learner.curriculum === "cambridge" ? learner.stage : learner.grade,
     skillName: skill.name,
     domain: domain.short || domain.name,
     code: skill.code,
@@ -192,7 +212,7 @@ async function dashboard(userId, learner) {
   }
   // The next skill in each subject the learner has started.
   for (const subject of [...new Set(skills.map((s) => s.subject))]) {
-    const order = allSkills({ state: learner.state, grade: learner.grade, subject });
+    const order = allSkills(contextFor(learner, subject));
     const studied = new Set(skills.filter((s) => s.subject === subject).map((s) => s.skillId));
     const lastIdx = Math.max(-1, ...order.map((s, i) => (studied.has(s.id) ? i : -1)));
     const next = order.slice(lastIdx + 1).find((s) => !studied.has(s.id));
@@ -246,6 +266,7 @@ async function cacheMicroSkills(skillId, micro) {
 module.exports = {
   MAX_LEARNERS,
   cleanLearner,
+  contextFor,
   statusFor,
   listLearners,
   getLearner,

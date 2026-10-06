@@ -76,7 +76,7 @@ class _ParentDashboardPageState extends State<ParentDashboardPage> {
     return ListView(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
       children: [
-        Text('${meta.gradeLabel(widget.learner.grade)} · ${meta.stateName(widget.learner.state)}',
+        Text(meta.learnerLine(widget.learner),
             style: const TextStyle(color: Colors.black54)),
         const SizedBox(height: 12),
         Row(children: [
@@ -124,7 +124,7 @@ class _ParentDashboardPageState extends State<ParentDashboardPage> {
                 for (final r in d.recommendations)
                   ListTile(
                     contentPadding: EdgeInsets.zero,
-                    leading: Icon(subjectIcons[r.subject], color: k12Blue),
+                    leading: Icon(subjectIcons[r.subject] ?? Icons.menu_book_outlined, color: k12Blue),
                     title: Text(r.name),
                     subtitle: Text('${meta.subjectLabel(r.subject)} · ${r.domain}\n${r.reason}'),
                     isThreeLine: true,
@@ -136,8 +136,8 @@ class _ParentDashboardPageState extends State<ParentDashboardPage> {
           _card(
             'By subject',
             Column(children: [
-              for (final s in meta.subjects)
-                if (d.subjects[s.id] != null) _subjectRow(s, d.subjects[s.id]!),
+              for (final id in d.subjects.keys)
+                _subjectRow(K12Option(id, meta.subjectLabel(id)), d.subjects[id]!),
             ]),
           ),
           if (d.mastered.isNotEmpty)
@@ -208,7 +208,7 @@ class _ParentDashboardPageState extends State<ParentDashboardPage> {
   Widget _skillRow(K12SkillRef s, {bool showStatus = true}) => ListTile(
         dense: true,
         contentPadding: EdgeInsets.zero,
-        leading: Icon(subjectIcons[s.subject], color: k12Blue),
+        leading: Icon(subjectIcons[s.subject] ?? Icons.menu_book_outlined, color: k12Blue),
         title: Text(s.name),
         subtitle: Text('${widget.meta.subjectLabel(s.subject)} · ${s.domain}'
             '${s.lastPct != null ? ' · last quiz ${(s.lastPct! * 100).round()}%' : ''}'),
@@ -220,7 +220,7 @@ class _ParentDashboardPageState extends State<ParentDashboardPage> {
         padding: const EdgeInsets.only(bottom: 10),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Row(children: [
-            Icon(subjectIcons[s.id], size: 18, color: k12Blue),
+            Icon(subjectIcons[s.id] ?? Icons.menu_book_outlined, size: 18, color: k12Blue),
             const SizedBox(width: 6),
             Expanded(child: Text(s.label, style: const TextStyle(fontWeight: FontWeight.w600))),
             Text('${sum.mastered} mastered · ${sum.studied} studied'

@@ -1,0 +1,6176 @@
+{
+ "0625": {
+  "code": "0625",
+  "name": "Physics",
+  "stage": "igcse",
+  "qualification": "Cambridge IGCSE",
+  "years": "2026, 2027 and 2028",
+  "tiered": true,
+  "papers": [
+   "Paper 1: Multiple Choice (Core)",
+   "Paper 2: Multiple Choice (Extended)",
+   "Paper 3: Theory (Core)",
+   "Paper 4: Theory (Extended)",
+   "Paper 5: Practical Test",
+   "Paper 6: Alternative to Practical"
+  ],
+  "practical": "Paper 6: Alternative to Practical (or Paper 5: Practical Test)",
+  "grades": "A*–G",
+  "topics": [
+   {
+    "name": "Motion, forces and energy",
+    "subtopics": [
+     {
+      "n": "1.1",
+      "title": "Physical quantities and measurement techniques"
+     },
+     {
+      "n": "1.2",
+      "title": "Motion"
+     },
+     {
+      "n": "1.3",
+      "title": "Mass and weight"
+     },
+     {
+      "n": "1.4",
+      "title": "Density"
+     },
+     {
+      "n": "1.5",
+      "title": "Forces"
+     },
+     {
+      "n": "1.6",
+      "title": "Momentum"
+     },
+     {
+      "n": "1.7",
+      "title": "Energy, work and power"
+     },
+     {
+      "n": "1.8",
+      "title": "Pressure"
+     }
+    ],
+    "n": "1"
+   },
+   {
+    "name": "Thermal physics",
+    "subtopics": [
+     {
+      "n": "2.1",
+      "title": "Kinetic particle model of matter"
+     },
+     {
+      "n": "2.2",
+      "title": "Thermal properties and temperature"
+     },
+     {
+      "n": "2.3",
+      "title": "Transfer of thermal energy"
+     }
+    ],
+    "n": "2"
+   },
+   {
+    "name": "Waves",
+    "subtopics": [
+     {
+      "n": "3.1",
+      "title": "General properties of waves"
+     },
+     {
+      "n": "3.2",
+      "title": "Light"
+     },
+     {
+      "n": "3.3",
+      "title": "Electromagnetic spectrum"
+     },
+     {
+      "n": "3.4",
+      "title": "Sound"
+     }
+    ],
+    "n": "3"
+   },
+   {
+    "name": "Electricity and magnetism",
+    "subtopics": [
+     {
+      "n": "4.1",
+      "title": "Simple phenomena of magnetism"
+     },
+     {
+      "n": "4.2",
+      "title": "Electrical quantities"
+     },
+     {
+      "n": "4.3",
+      "title": "Electric circuits"
+     },
+     {
+      "n": "4.4",
+      "title": "Electrical safety"
+     },
+     {
+      "n": "4.5",
+      "title": "Electromagnetic effects"
+     }
+    ],
+    "n": "4"
+   },
+   {
+    "name": "Nuclear physics",
+    "subtopics": [
+     {
+      "n": "5.1",
+      "title": "The nuclear model of the atom"
+     },
+     {
+      "n": "5.2",
+      "title": "Radioactivity"
+     }
+    ],
+    "n": "5"
+   },
+   {
+    "name": "Space physics",
+    "subtopics": [
+     {
+      "n": "6.1",
+      "title": "The Earth and the Solar System"
+     },
+     {
+      "n": "6.2",
+      "title": "Stars and the Universe"
+     }
+    ],
+    "n": "6"
+   }
+  ],
+  "commandWords": [
+   {
+    "word": "Calculate",
+    "meaning": "work out from given facts, figures or information"
+   },
+   {
+    "word": "Comment",
+    "meaning": "give an informed opinion"
+   },
+   {
+    "word": "Compare",
+    "meaning": "identify/comment on similarities and/or differences"
+   },
+   {
+    "word": "Deduce",
+    "meaning": "conclude from available information"
+   },
+   {
+    "word": "Define",
+    "meaning": "give precise meaning"
+   },
+   {
+    "word": "Describe",
+    "meaning": "state the points of a topic / give characteristics and main features"
+   },
+   {
+    "word": "Determine",
+    "meaning": "establish an answer using the information available"
+   },
+   {
+    "word": "Explain",
+    "meaning": "set out purposes or reasons / make the relationships between things clear / say why and/or how and support with relevant evidence"
+   },
+   {
+    "word": "Give",
+    "meaning": "produce an answer from a given source or recall/memory"
+   },
+   {
+    "word": "Identify",
+    "meaning": "name/select/recognise"
+   },
+   {
+    "word": "Justify",
+    "meaning": "support a case with evidence/argument"
+   },
+   {
+    "word": "Predict",
+    "meaning": "suggest what may happen based on available information"
+   },
+   {
+    "word": "Sketch",
+    "meaning": "make a simple freehand drawing showing the key features, taking care over proportions"
+   },
+   {
+    "word": "State",
+    "meaning": "express in clear terms"
+   },
+   {
+    "word": "Suggest",
+    "meaning": "apply knowledge and understanding to situations where there are a range of valid responses in order to make proposals / put forward considerations"
+   }
+  ]
+ },
+ "0620": {
+  "code": "0620",
+  "name": "Chemistry",
+  "stage": "igcse",
+  "qualification": "Cambridge IGCSE",
+  "years": "2026, 2027 and 2028",
+  "tiered": true,
+  "papers": [
+   "Paper 1: Multiple Choice (Core)",
+   "Paper 2: Multiple Choice (Extended)",
+   "Paper 3: Theory (Core)",
+   "Paper 4: Theory (Extended)",
+   "Paper 5: Practical Test",
+   "Paper 6: Alternative to Practical"
+  ],
+  "practical": "Paper 6: Alternative to Practical (or Paper 5: Practical Test)",
+  "grades": "A*–G",
+  "topics": [
+   {
+    "name": "States of matter",
+    "subtopics": [
+     {
+      "n": "1.1",
+      "title": "Solids, liquids and gases"
+     },
+     {
+      "n": "1.2",
+      "title": "Diffusion"
+     }
+    ],
+    "n": "1"
+   },
+   {
+    "name": "Atoms, elements and compounds",
+    "subtopics": [
+     {
+      "n": "2.1",
+      "title": "Elements, compounds and mixtures"
+     },
+     {
+      "n": "2.2",
+      "title": "Atomic structure and the Periodic Table"
+     },
+     {
+      "n": "2.3",
+      "title": "Isotopes"
+     },
+     {
+      "n": "2.4",
+      "title": "Ions and ionic bonds"
+     },
+     {
+      "n": "2.5",
+      "title": "Simple molecules and covalent bonds"
+     },
+     {
+      "n": "2.6",
+      "title": "Giant covalent structures"
+     },
+     {
+      "n": "2.7",
+      "title": "Metallic bonding"
+     }
+    ],
+    "n": "2"
+   },
+   {
+    "name": "Stoichiometry",
+    "subtopics": [
+     {
+      "n": "3.1",
+      "title": "Formulae"
+     },
+     {
+      "n": "3.2",
+      "title": "Relative masses of atoms and molecules"
+     },
+     {
+      "n": "3.3",
+      "title": "The mole and the Avogadro constant"
+     }
+    ],
+    "n": "3"
+   },
+   {
+    "name": "Electrochemistry",
+    "subtopics": [
+     {
+      "n": "4.1",
+      "title": "Electrolysis"
+     },
+     {
+      "n": "4.2",
+      "title": "Hydrogen–oxygen fuel cells"
+     }
+    ],
+    "n": "4"
+   },
+   {
+    "name": "Chemical energetics",
+    "subtopics": [
+     {
+      "n": "5.1",
+      "title": "Exothermic and endothermic reactions"
+     }
+    ],
+    "n": "5"
+   },
+   {
+    "name": "Chemical reactions",
+    "subtopics": [
+     {
+      "n": "6.1",
+      "title": "Physical and chemical changes"
+     },
+     {
+      "n": "6.2",
+      "title": "Rate of reaction"
+     },
+     {
+      "n": "6.3",
+      "title": "Reversible reactions and equilibrium"
+     },
+     {
+      "n": "6.4",
+      "title": "Redox"
+     }
+    ],
+    "n": "6"
+   },
+   {
+    "name": "Acids, bases and salts",
+    "subtopics": [
+     {
+      "n": "7.1",
+      "title": "The characteristic properties of acids and bases"
+     },
+     {
+      "n": "7.2",
+      "title": "Oxides"
+     },
+     {
+      "n": "7.3",
+      "title": "Preparation of salts"
+     }
+    ],
+    "n": "7"
+   },
+   {
+    "name": "The Periodic Table",
+    "subtopics": [
+     {
+      "n": "8.1",
+      "title": "Arrangement of elements"
+     },
+     {
+      "n": "8.2",
+      "title": "Group I properties"
+     },
+     {
+      "n": "8.3",
+      "title": "Group VII properties"
+     },
+     {
+      "n": "8.4",
+      "title": "Transition elements"
+     },
+     {
+      "n": "8.5",
+      "title": "Noble gases"
+     }
+    ],
+    "n": "8"
+   },
+   {
+    "name": "Metals",
+    "subtopics": [
+     {
+      "n": "9.1",
+      "title": "Properties of metals"
+     },
+     {
+      "n": "9.2",
+      "title": "Uses of metals"
+     },
+     {
+      "n": "9.3",
+      "title": "Alloys and their properties"
+     },
+     {
+      "n": "9.4",
+      "title": "Reactivity series"
+     },
+     {
+      "n": "9.5",
+      "title": "Corrosion of metals"
+     },
+     {
+      "n": "9.6",
+      "title": "Extraction of metals"
+     }
+    ],
+    "n": "9"
+   },
+   {
+    "name": "Chemistry of the environment",
+    "subtopics": [
+     {
+      "n": "10.1",
+      "title": "Water"
+     },
+     {
+      "n": "10.2",
+      "title": "Fertilisers"
+     },
+     {
+      "n": "10.3",
+      "title": "Air quality and climate"
+     }
+    ],
+    "n": "10"
+   },
+   {
+    "name": "Organic chemistry",
+    "subtopics": [
+     {
+      "n": "11.1",
+      "title": "Formulae, functional groups and terminology"
+     },
+     {
+      "n": "11.2",
+      "title": "Naming organic compounds"
+     },
+     {
+      "n": "11.3",
+      "title": "Fuels"
+     },
+     {
+      "n": "11.4",
+      "title": "Alkanes"
+     },
+     {
+      "n": "11.5",
+      "title": "Alkenes"
+     },
+     {
+      "n": "11.6",
+      "title": "Alcohols"
+     },
+     {
+      "n": "11.7",
+      "title": "Carboxylic acids"
+     },
+     {
+      "n": "11.8",
+      "title": "Polymers"
+     }
+    ],
+    "n": "11"
+   },
+   {
+    "name": "Experimental techniques and chemical analysis",
+    "subtopics": [
+     {
+      "n": "12.1",
+      "title": "Experimental design"
+     },
+     {
+      "n": "12.2",
+      "title": "Acid–base titrations"
+     },
+     {
+      "n": "12.3",
+      "title": "Chromatography"
+     },
+     {
+      "n": "12.4",
+      "title": "Separation and purification"
+     },
+     {
+      "n": "12.5",
+      "title": "Identification of ions and gases"
+     }
+    ],
+    "n": "12"
+   }
+  ],
+  "commandWords": [
+   {
+    "word": "Analyse",
+    "meaning": "examine in detail to show meaning, identify elements and the relationship between them"
+   },
+   {
+    "word": "Calculate",
+    "meaning": "work out from given facts, figures or information"
+   },
+   {
+    "word": "Compare",
+    "meaning": "identify / comment on similarities and/or differences"
+   },
+   {
+    "word": "Consider",
+    "meaning": "review and respond to given information"
+   },
+   {
+    "word": "Contrast",
+    "meaning": "identify / comment on differences"
+   },
+   {
+    "word": "Deduce",
+    "meaning": "conclude from available information"
+   },
+   {
+    "word": "Define",
+    "meaning": "give precise meaning"
+   },
+   {
+    "word": "Demonstrate",
+    "meaning": "show how or give an example"
+   },
+   {
+    "word": "Describe",
+    "meaning": "state the points of a topic / give characteristics and main features"
+   },
+   {
+    "word": "Determine",
+    "meaning": "establish an answer using the information available"
+   },
+   {
+    "word": "Discuss",
+    "meaning": "write about issue(s) or topic(s) in depth in a structured way"
+   },
+   {
+    "word": "Evaluate",
+    "meaning": "judge or calculate the quality, importance, amount, or value of something"
+   },
+   {
+    "word": "Examine",
+    "meaning": "investigate closely, in detail"
+   },
+   {
+    "word": "Explain",
+    "meaning": "set out purposes or reasons / make the relationships between things clear / say why and/or how and support with relevant evidence"
+   },
+   {
+    "word": "Give",
+    "meaning": "produce an answer from a given source or recall / memory"
+   },
+   {
+    "word": "Identify",
+    "meaning": "name / select / recognise"
+   },
+   {
+    "word": "Justify",
+    "meaning": "support a case with evidence/argument"
+   },
+   {
+    "word": "Predict",
+    "meaning": "suggest what may happen based on available information"
+   },
+   {
+    "word": "Show (that)",
+    "meaning": "provide structured evidence that leads to a given result"
+   },
+   {
+    "word": "Sketch",
+    "meaning": "make a simple freehand drawing showing the key features, taking care over proportions"
+   },
+   {
+    "word": "State",
+    "meaning": "express in clear terms"
+   },
+   {
+    "word": "Suggest",
+    "meaning": "apply knowledge and understanding to situations where there are a range of valid responses in order to make proposals / put forward considerations"
+   }
+  ]
+ },
+ "0610": {
+  "code": "0610",
+  "name": "Biology",
+  "stage": "igcse",
+  "qualification": "Cambridge IGCSE",
+  "years": "2026, 2027 and 2028",
+  "tiered": true,
+  "papers": [
+   "Paper 1: Multiple Choice (Core)",
+   "Paper 2: Multiple Choice (Extended)",
+   "Paper 3: Theory (Core)",
+   "Paper 4: Theory (Extended)",
+   "Paper 5: Practical Test",
+   "Paper 6: Alternative to Practical"
+  ],
+  "practical": "Paper 6: Alternative to Practical (or Paper 5: Practical Test)",
+  "grades": "A*–G",
+  "topics": [
+   {
+    "name": "Characteristics and classification of living organisms",
+    "subtopics": [
+     {
+      "n": "1.1",
+      "title": "Characteristics of living organisms"
+     },
+     {
+      "n": "1.2",
+      "title": "Concept and uses of classification systems"
+     },
+     {
+      "n": "1.3",
+      "title": "Features of organisms"
+     }
+    ],
+    "n": "1"
+   },
+   {
+    "name": "Organisation of the organism",
+    "subtopics": [
+     {
+      "n": "2.1",
+      "title": "Cell structure"
+     },
+     {
+      "n": "2.2",
+      "title": "Size of specimens"
+     }
+    ],
+    "n": "2"
+   },
+   {
+    "name": "Movement into and out of cells",
+    "subtopics": [
+     {
+      "n": "3.1",
+      "title": "Diffusion"
+     },
+     {
+      "n": "3.2",
+      "title": "Osmosis"
+     },
+     {
+      "n": "3.3",
+      "title": "Active transport"
+     }
+    ],
+    "n": "3"
+   },
+   {
+    "name": "Biological molecules",
+    "subtopics": [
+     {
+      "n": "4.1",
+      "title": "Biological molecules"
+     }
+    ],
+    "n": "4"
+   },
+   {
+    "name": "Enzymes",
+    "subtopics": [
+     {
+      "n": "5.1",
+      "title": "Enzymes"
+     }
+    ],
+    "n": "5"
+   },
+   {
+    "name": "Plant nutrition",
+    "subtopics": [
+     {
+      "n": "6.1",
+      "title": "Photosynthesis"
+     },
+     {
+      "n": "6.2",
+      "title": "Leaf structure"
+     }
+    ],
+    "n": "6"
+   },
+   {
+    "name": "Human nutrition",
+    "subtopics": [
+     {
+      "n": "7.1",
+      "title": "Diet"
+     },
+     {
+      "n": "7.2",
+      "title": "Digestive system"
+     },
+     {
+      "n": "7.3",
+      "title": "Physical digestion"
+     },
+     {
+      "n": "7.4",
+      "title": "Chemical digestion"
+     },
+     {
+      "n": "7.5",
+      "title": "Absorption"
+     }
+    ],
+    "n": "7"
+   },
+   {
+    "name": "Transport in plants",
+    "subtopics": [
+     {
+      "n": "8.1",
+      "title": "Xylem and phloem"
+     },
+     {
+      "n": "8.2",
+      "title": "Water uptake"
+     },
+     {
+      "n": "8.3",
+      "title": "Transpiration"
+     },
+     {
+      "n": "8.4",
+      "title": "Translocation"
+     }
+    ],
+    "n": "8"
+   },
+   {
+    "name": "Transport in animals",
+    "subtopics": [
+     {
+      "n": "9.1",
+      "title": "Circulatory systems"
+     },
+     {
+      "n": "9.2",
+      "title": "Heart"
+     },
+     {
+      "n": "9.3",
+      "title": "Blood vessels"
+     },
+     {
+      "n": "9.4",
+      "title": "Blood"
+     }
+    ],
+    "n": "9"
+   },
+   {
+    "name": "Diseases and immunity",
+    "subtopics": [
+     {
+      "n": "10.1",
+      "title": "Diseases and immunity"
+     }
+    ],
+    "n": "10"
+   },
+   {
+    "name": "Gas exchange in humans",
+    "subtopics": [
+     {
+      "n": "11.1",
+      "title": "Gas exchange in humans"
+     }
+    ],
+    "n": "11"
+   },
+   {
+    "name": "Respiration",
+    "subtopics": [
+     {
+      "n": "12.1",
+      "title": "Respiration"
+     },
+     {
+      "n": "12.2",
+      "title": "Aerobic respiration"
+     },
+     {
+      "n": "12.3",
+      "title": "Anaerobic respiration"
+     }
+    ],
+    "n": "12"
+   },
+   {
+    "name": "Excretion in humans",
+    "subtopics": [
+     {
+      "n": "13.1",
+      "title": "Excretion in humans"
+     }
+    ],
+    "n": "13"
+   },
+   {
+    "name": "Coordination and response",
+    "subtopics": [
+     {
+      "n": "14.1",
+      "title": "Coordination and response"
+     },
+     {
+      "n": "14.2",
+      "title": "Sense organs"
+     },
+     {
+      "n": "14.3",
+      "title": "Hormones"
+     },
+     {
+      "n": "14.4",
+      "title": "Homeostasis"
+     },
+     {
+      "n": "14.5",
+      "title": "Tropic responses"
+     }
+    ],
+    "n": "14"
+   },
+   {
+    "name": "Drugs",
+    "subtopics": [
+     {
+      "n": "15.1",
+      "title": "Drugs"
+     }
+    ],
+    "n": "15"
+   },
+   {
+    "name": "Reproduction",
+    "subtopics": [
+     {
+      "n": "16.1",
+      "title": "Asexual reproduction"
+     },
+     {
+      "n": "16.2",
+      "title": "Sexual reproduction"
+     },
+     {
+      "n": "16.3",
+      "title": "Sexual reproduction in plants"
+     },
+     {
+      "n": "16.4",
+      "title": "Sexual reproduction in humans"
+     },
+     {
+      "n": "16.5",
+      "title": "Sex hormones in humans"
+     },
+     {
+      "n": "16.6",
+      "title": "Sexually transmitted infections"
+     }
+    ],
+    "n": "16"
+   },
+   {
+    "name": "Inheritance",
+    "subtopics": [
+     {
+      "n": "17.1",
+      "title": "Chromosomes, genes and proteins"
+     },
+     {
+      "n": "17.2",
+      "title": "Mitosis"
+     },
+     {
+      "n": "17.3",
+      "title": "Meiosis"
+     },
+     {
+      "n": "17.4",
+      "title": "Monohybrid inheritance"
+     }
+    ],
+    "n": "17"
+   },
+   {
+    "name": "Variation and selection",
+    "subtopics": [
+     {
+      "n": "18.1",
+      "title": "Variation"
+     },
+     {
+      "n": "18.2",
+      "title": "Adaptive features"
+     },
+     {
+      "n": "18.3",
+      "title": "Selection"
+     }
+    ],
+    "n": "18"
+   },
+   {
+    "name": "Organisms and their environment",
+    "subtopics": [
+     {
+      "n": "19.1",
+      "title": "Energy flow"
+     },
+     {
+      "n": "19.2",
+      "title": "Food chains and food webs"
+     },
+     {
+      "n": "19.3",
+      "title": "Nutrient cycles"
+     },
+     {
+      "n": "19.4",
+      "title": "Populations"
+     }
+    ],
+    "n": "19"
+   },
+   {
+    "name": "Human influences on ecosystems",
+    "subtopics": [
+     {
+      "n": "20.1",
+      "title": "Food supply"
+     },
+     {
+      "n": "20.2",
+      "title": "Habitat destruction"
+     },
+     {
+      "n": "20.3",
+      "title": "Pollution"
+     },
+     {
+      "n": "20.4",
+      "title": "Conservation"
+     }
+    ],
+    "n": "20"
+   },
+   {
+    "name": "Biotechnology and genetic modification",
+    "subtopics": [
+     {
+      "n": "21.1",
+      "title": "Biotechnology and genetic modification"
+     },
+     {
+      "n": "21.2",
+      "title": "Biotechnology"
+     },
+     {
+      "n": "21.3",
+      "title": "Genetic modification"
+     }
+    ],
+    "n": "21"
+   }
+  ],
+  "commandWords": [
+   {
+    "word": "Calculate",
+    "meaning": "work out from given facts, figures or information"
+   },
+   {
+    "word": "Compare",
+    "meaning": "identify/comment on similarities and/or differences"
+   },
+   {
+    "word": "Define",
+    "meaning": "give precise meaning"
+   },
+   {
+    "word": "Describe",
+    "meaning": "state the points of a topic / give characteristics and main features"
+   },
+   {
+    "word": "Determine",
+    "meaning": "establish an answer using the information available"
+   },
+   {
+    "word": "Evaluate",
+    "meaning": "judge or calculate the quality, importance, amount, or value of something"
+   },
+   {
+    "word": "Explain",
+    "meaning": "set out purposes or reasons / make the relationships between things clear / say why and/or how and support with relevant evidence"
+   },
+   {
+    "word": "Give",
+    "meaning": "produce an answer from a given source or recall/memory"
+   },
+   {
+    "word": "Identify",
+    "meaning": "name/select/recognise"
+   },
+   {
+    "word": "Outline",
+    "meaning": "set out the main points"
+   },
+   {
+    "word": "Predict",
+    "meaning": "suggest what may happen based on available information"
+   },
+   {
+    "word": "Sketch",
+    "meaning": "make a simple freehand drawing showing the key features, taking care over proportions"
+   },
+   {
+    "word": "State",
+    "meaning": "express in clear terms"
+   },
+   {
+    "word": "Suggest",
+    "meaning": "apply knowledge and understanding to situations where there are a range of valid responses in order to make proposals / put forward considerations"
+   }
+  ]
+ },
+ "0580": {
+  "code": "0580",
+  "name": "Mathematics",
+  "stage": "igcse",
+  "qualification": "Cambridge IGCSE",
+  "years": "2025, 2026 and 2027",
+  "tiered": true,
+  "papers": [
+   "Paper 1: Non-calculator (Core)",
+   "Paper 2: Non-calculator (Extended)",
+   "Paper 3: Calculator (Core)",
+   "Paper 4: Calculator (Extended)"
+  ],
+  "practical": null,
+  "grades": "A*–G",
+  "topics": [
+   {
+    "name": "Number",
+    "subtopics": [
+     {
+      "n": "1.1",
+      "title": "Types of number",
+      "core": true,
+      "extended": true
+     },
+     {
+      "n": "1.2",
+      "title": "Sets",
+      "core": true,
+      "extended": true
+     },
+     {
+      "n": "1.3",
+      "title": "Powers and roots",
+      "core": true,
+      "extended": true
+     },
+     {
+      "n": "1.4",
+      "title": "Fractions, decimals and percentages",
+      "core": true,
+      "extended": true
+     },
+     {
+      "n": "1.5",
+      "title": "Ordering",
+      "core": true,
+      "extended": true
+     },
+     {
+      "n": "1.6",
+      "title": "The four operations",
+      "core": true,
+      "extended": true
+     },
+     {
+      "n": "1.7",
+      "title": "Indices I",
+      "core": true,
+      "extended": true
+     },
+     {
+      "n": "1.8",
+      "title": "Standard form",
+      "core": true,
+      "extended": true
+     },
+     {
+      "n": "1.9",
+      "title": "Estimation",
+      "core": true,
+      "extended": true
+     },
+     {
+      "n": "1.10",
+      "title": "Limits of accuracy",
+      "core": true,
+      "extended": true
+     },
+     {
+      "n": "1.11",
+      "title": "Ratio and proportion",
+      "core": true,
+      "extended": true
+     },
+     {
+      "n": "1.12",
+      "title": "Rates",
+      "core": true,
+      "extended": true
+     },
+     {
+      "n": "1.13",
+      "title": "Percentages",
+      "core": true,
+      "extended": true
+     },
+     {
+      "n": "1.14",
+      "title": "Using a calculator",
+      "core": true,
+      "extended": true
+     },
+     {
+      "n": "1.15",
+      "title": "Time",
+      "core": true,
+      "extended": true
+     },
+     {
+      "n": "1.16",
+      "title": "Money",
+      "core": true,
+      "extended": true
+     },
+     {
+      "n": "1.17",
+      "title": "Exponential growth and decay",
+      "core": false,
+      "extended": true
+     },
+     {
+      "n": "1.18",
+      "title": "Surds",
+      "core": false,
+      "extended": true
+     }
+    ],
+    "n": "1"
+   },
+   {
+    "name": "Algebra and graphs",
+    "subtopics": [
+     {
+      "n": "2.1",
+      "title": "Introduction to algebra",
+      "core": true,
+      "extended": true
+     },
+     {
+      "n": "2.2",
+      "title": "Algebraic manipulation",
+      "core": true,
+      "extended": true
+     },
+     {
+      "n": "2.3",
+      "title": "Algebraic fractions",
+      "core": false,
+      "extended": true
+     },
+     {
+      "n": "2.4",
+      "title": "Indices II",
+      "core": true,
+      "extended": true
+     },
+     {
+      "n": "2.5",
+      "title": "Equations",
+      "core": true,
+      "extended": true
+     },
+     {
+      "n": "2.6",
+      "title": "Inequalities",
+      "core": true,
+      "extended": true
+     },
+     {
+      "n": "2.7",
+      "title": "Sequences",
+      "core": true,
+      "extended": true
+     },
+     {
+      "n": "2.8",
+      "title": "Proportion",
+      "core": false,
+      "extended": true
+     },
+     {
+      "n": "2.9",
+      "title": "Graphs in practical situations",
+      "core": true,
+      "extended": true
+     },
+     {
+      "n": "2.10",
+      "title": "Graphs of functions",
+      "core": true,
+      "extended": true
+     },
+     {
+      "n": "2.11",
+      "title": "Sketching curves",
+      "core": true,
+      "extended": true
+     },
+     {
+      "n": "2.12",
+      "title": "Differentiation",
+      "core": false,
+      "extended": true
+     },
+     {
+      "n": "2.13",
+      "title": "Functions",
+      "core": false,
+      "extended": true
+     }
+    ],
+    "n": "2"
+   },
+   {
+    "name": "Coordinate geometry",
+    "subtopics": [
+     {
+      "n": "3.1",
+      "title": "Coordinates",
+      "core": true,
+      "extended": true
+     },
+     {
+      "n": "3.2",
+      "title": "Drawing linear graphs",
+      "core": true,
+      "extended": true
+     },
+     {
+      "n": "3.3",
+      "title": "Gradient of linear graphs",
+      "core": true,
+      "extended": true
+     },
+     {
+      "n": "3.4",
+      "title": "Length and midpoint",
+      "core": false,
+      "extended": true
+     },
+     {
+      "n": "3.5",
+      "title": "Equations of linear graphs",
+      "core": true,
+      "extended": true
+     },
+     {
+      "n": "3.6",
+      "title": "Parallel lines",
+      "core": true,
+      "extended": true
+     },
+     {
+      "n": "3.7",
+      "title": "Perpendicular lines",
+      "core": false,
+      "extended": true
+     }
+    ],
+    "n": "3"
+   },
+   {
+    "name": "Geometry",
+    "subtopics": [
+     {
+      "n": "4.1",
+      "title": "Geometrical terms",
+      "core": true,
+      "extended": true
+     },
+     {
+      "n": "4.2",
+      "title": "Geometrical constructions",
+      "core": true,
+      "extended": true
+     },
+     {
+      "n": "4.3",
+      "title": "Scale drawings",
+      "core": true,
+      "extended": true
+     },
+     {
+      "n": "4.4",
+      "title": "Similarity",
+      "core": true,
+      "extended": true
+     },
+     {
+      "n": "4.5",
+      "title": "Symmetry",
+      "core": true,
+      "extended": true
+     },
+     {
+      "n": "4.6",
+      "title": "Angles",
+      "core": true,
+      "extended": true
+     },
+     {
+      "n": "4.7",
+      "title": "Circle theorems I",
+      "core": true,
+      "extended": true
+     },
+     {
+      "n": "4.8",
+      "title": "Circle theorems II",
+      "core": false,
+      "extended": true
+     }
+    ],
+    "n": "4"
+   },
+   {
+    "name": "Mensuration",
+    "subtopics": [
+     {
+      "n": "5.1",
+      "title": "Units of measure",
+      "core": true,
+      "extended": true
+     },
+     {
+      "n": "5.2",
+      "title": "Area and perimeter",
+      "core": true,
+      "extended": true
+     },
+     {
+      "n": "5.3",
+      "title": "Circles, arcs and sectors",
+      "core": true,
+      "extended": true
+     },
+     {
+      "n": "5.4",
+      "title": "Surface area and volume",
+      "core": true,
+      "extended": true
+     },
+     {
+      "n": "5.5",
+      "title": "Compound shapes and parts of shapes",
+      "core": true,
+      "extended": true
+     }
+    ],
+    "n": "5"
+   },
+   {
+    "name": "Trigonometry",
+    "subtopics": [
+     {
+      "n": "6.1",
+      "title": "Pythagoras’ theorem",
+      "core": true,
+      "extended": true
+     },
+     {
+      "n": "6.2",
+      "title": "Right-angled triangles",
+      "core": true,
+      "extended": true
+     },
+     {
+      "n": "6.3",
+      "title": "Exact trigonometric values",
+      "core": false,
+      "extended": true
+     },
+     {
+      "n": "6.4",
+      "title": "Trigonometric functions",
+      "core": false,
+      "extended": true
+     },
+     {
+      "n": "6.5",
+      "title": "Non-right-angled triangles",
+      "core": false,
+      "extended": true
+     }
+    ],
+    "n": "6"
+   },
+   {
+    "name": "Transformations and vectors",
+    "subtopics": [
+     {
+      "n": "7.1",
+      "title": "Transformations",
+      "core": true,
+      "extended": true
+     },
+     {
+      "n": "7.2",
+      "title": "Vectors in two dimensions",
+      "core": false,
+      "extended": true
+     },
+     {
+      "n": "7.3",
+      "title": "Magnitude of a vector",
+      "core": false,
+      "extended": true
+     },
+     {
+      "n": "7.4",
+      "title": "Vector geometry",
+      "core": false,
+      "extended": true
+     }
+    ],
+    "n": "7"
+   },
+   {
+    "name": "Probability",
+    "subtopics": [
+     {
+      "n": "8.1",
+      "title": "Introduction to probability",
+      "core": true,
+      "extended": true
+     },
+     {
+      "n": "8.2",
+      "title": "Relative and expected frequencies",
+      "core": true,
+      "extended": true
+     },
+     {
+      "n": "8.3",
+      "title": "Probability of combined events",
+      "core": true,
+      "extended": true
+     },
+     {
+      "n": "8.4",
+      "title": "Conditional probability",
+      "core": false,
+      "extended": true
+     }
+    ],
+    "n": "8"
+   },
+   {
+    "name": "Statistics",
+    "subtopics": [
+     {
+      "n": "9.1",
+      "title": "Classifying statistical data",
+      "core": true,
+      "extended": true
+     },
+     {
+      "n": "9.2",
+      "title": "Interpreting statistical data",
+      "core": true,
+      "extended": true
+     },
+     {
+      "n": "9.3",
+      "title": "Averages and measures of spread",
+      "core": true,
+      "extended": true
+     },
+     {
+      "n": "9.4",
+      "title": "Statistical charts and diagrams",
+      "core": true,
+      "extended": true
+     },
+     {
+      "n": "9.5",
+      "title": "Scatter diagrams",
+      "core": true,
+      "extended": true
+     },
+     {
+      "n": "9.6",
+      "title": "Cumulative frequency diagrams",
+      "core": false,
+      "extended": true
+     },
+     {
+      "n": "9.7",
+      "title": "Histograms",
+      "core": false,
+      "extended": true
+     }
+    ],
+    "n": "9"
+   }
+  ],
+  "commandWords": [
+   {
+    "word": "Calculate",
+    "meaning": "work out from given facts, figures or information"
+   },
+   {
+    "word": "Construct",
+    "meaning": "make an accurate drawing"
+   },
+   {
+    "word": "Determine",
+    "meaning": "establish with certainty"
+   },
+   {
+    "word": "Describe",
+    "meaning": "state the points of a topic / give characteristics and main features"
+   },
+   {
+    "word": "Explain",
+    "meaning": "set out purposes or reasons / make the relationships between things clear / say why and/or how and support with relevant evidence"
+   },
+   {
+    "word": "Give",
+    "meaning": "produce an answer from a given source or recall/memory"
+   },
+   {
+    "word": "Plot",
+    "meaning": "mark point(s) on a graph"
+   },
+   {
+    "word": "Show (that)",
+    "meaning": "provide structured evidence that leads to a given result"
+   },
+   {
+    "word": "Sketch",
+    "meaning": "make a simple freehand drawing showing the key features"
+   },
+   {
+    "word": "State",
+    "meaning": "express in clear terms Work out             calculate from given facts, figures or information with or without the use of a calculator"
+   },
+   {
+    "word": "Write",
+    "meaning": "give an answer in a specific form Write down           give an answer without significant working"
+   }
+  ]
+ },
+ "0606": {
+  "code": "0606",
+  "name": "Additional Mathematics",
+  "stage": "igcse",
+  "qualification": "Cambridge IGCSE",
+  "years": "2025, 2026 and 2027",
+  "tiered": false,
+  "papers": [
+   "Paper 1: Non-calculator",
+   "Paper 2: Calculator"
+  ],
+  "practical": null,
+  "grades": "A*–E",
+  "topics": [
+   {
+    "name": "Functions",
+    "subtopics": [],
+    "n": "1"
+   },
+   {
+    "name": "Quadratic functions",
+    "subtopics": [],
+    "n": "2"
+   },
+   {
+    "name": "Factors of polynomials",
+    "subtopics": [],
+    "n": "3"
+   },
+   {
+    "name": "Equations, inequalities and graphs",
+    "subtopics": [],
+    "n": "4"
+   },
+   {
+    "name": "Simultaneous equations",
+    "subtopics": [],
+    "n": "5"
+   },
+   {
+    "name": "Logarithmic and exponential functions",
+    "subtopics": [],
+    "n": "6"
+   },
+   {
+    "name": "Straight-line graphs",
+    "subtopics": [],
+    "n": "7"
+   },
+   {
+    "name": "Coordinate geometry of the circle",
+    "subtopics": [],
+    "n": "8"
+   },
+   {
+    "name": "Circular measure",
+    "subtopics": [],
+    "n": "9"
+   },
+   {
+    "name": "Trigonometry",
+    "subtopics": [],
+    "n": "10"
+   },
+   {
+    "name": "Permutations and combinations",
+    "subtopics": [],
+    "n": "11"
+   },
+   {
+    "name": "Series",
+    "subtopics": [],
+    "n": "12"
+   },
+   {
+    "name": "Vectors in two dimensions",
+    "subtopics": [],
+    "n": "13"
+   },
+   {
+    "name": "Calculus",
+    "subtopics": [],
+    "n": "14"
+   }
+  ],
+  "commandWords": [
+   {
+    "word": "Calculate",
+    "meaning": "work out from given facts, figures or information"
+   },
+   {
+    "word": "Describe",
+    "meaning": "state the points of a topic / give characteristics and main features"
+   },
+   {
+    "word": "Determine",
+    "meaning": "establish with certainty"
+   },
+   {
+    "word": "Explain",
+    "meaning": "set out purposes or reasons / make the relationships between things clear / say why and/or how and support with relevant evidence"
+   },
+   {
+    "word": "Give",
+    "meaning": "produce an answer from a given source or recall/memory"
+   },
+   {
+    "word": "Plot",
+    "meaning": "mark point(s) on a graph"
+   },
+   {
+    "word": "Show (that)",
+    "meaning": "provide structured evidence that leads to a given result"
+   },
+   {
+    "word": "Sketch",
+    "meaning": "make a simple freehand drawing showing the key features"
+   },
+   {
+    "word": "State",
+    "meaning": "express in clear terms"
+   },
+   {
+    "word": "Verify",
+    "meaning": "confirm a given statement/result is true Work out             calculate from given facts, figures or information with or without the use of a calculator"
+   },
+   {
+    "word": "Write",
+    "meaning": "give an answer in a specific form Write down           give an answer without significant working"
+   }
+  ]
+ },
+ "0455": {
+  "code": "0455",
+  "name": "Economics",
+  "stage": "igcse",
+  "qualification": "Cambridge IGCSE",
+  "years": "2027, 2028 and 2029",
+  "tiered": false,
+  "papers": [
+   "Paper 1: Multiple Choice",
+   "Paper 2: Structured Questions"
+  ],
+  "practical": null,
+  "grades": "A*–G",
+  "topics": [
+   {
+    "name": "The basic economic problem",
+    "subtopics": [
+     {
+      "n": "1.1",
+      "title": "The nature of the basic economic problem"
+     },
+     {
+      "n": "1.2",
+      "title": "Factors of production"
+     },
+     {
+      "n": "1.3",
+      "title": "Opportunity cost"
+     },
+     {
+      "n": "1.4",
+      "title": "Production possibility curve (PPC) diagrams"
+     }
+    ],
+    "n": "1"
+   },
+   {
+    "name": "The allocation of resources",
+    "subtopics": [
+     {
+      "n": "2.1",
+      "title": "The role of markets in allocating resources"
+     },
+     {
+      "n": "2.2",
+      "title": "Demand"
+     },
+     {
+      "n": "2.3",
+      "title": "Supply"
+     },
+     {
+      "n": "2.4",
+      "title": "Price determination"
+     },
+     {
+      "n": "2.5",
+      "title": "Price changes"
+     },
+     {
+      "n": "2.6",
+      "title": "Price elasticity of demand (PED)"
+     },
+     {
+      "n": "2.7",
+      "title": "Price elasticity of supply (PES)"
+     },
+     {
+      "n": "2.8",
+      "title": "Market economic system"
+     },
+     {
+      "n": "2.9",
+      "title": "Market failure"
+     },
+     {
+      "n": "2.10",
+      "title": "Mixed economic system"
+     }
+    ],
+    "n": "2"
+   },
+   {
+    "name": "Microeconomic decision-makers",
+    "subtopics": [
+     {
+      "n": "3.1",
+      "title": "Money and banking"
+     },
+     {
+      "n": "3.2",
+      "title": "Households"
+     },
+     {
+      "n": "3.3",
+      "title": "Workers"
+     },
+     {
+      "n": "3.4",
+      "title": "Firms"
+     },
+     {
+      "n": "3.5",
+      "title": "Firms and production"
+     },
+     {
+      "n": "3.6",
+      "title": "Firms’ costs, revenue and objectives"
+     },
+     {
+      "n": "3.7",
+      "title": "Types of markets"
+     }
+    ],
+    "n": "3"
+   },
+   {
+    "name": "Government and the macroeconomy",
+    "subtopics": [
+     {
+      "n": "4.1",
+      "title": "Government macroeconomic intervention"
+     },
+     {
+      "n": "4.2",
+      "title": "Fiscal policy"
+     },
+     {
+      "n": "4.3",
+      "title": "Monetary policy"
+     },
+     {
+      "n": "4.4",
+      "title": "Supply-side policy"
+     },
+     {
+      "n": "4.5",
+      "title": "Economic growth"
+     },
+     {
+      "n": "4.6",
+      "title": "Employment and unemployment"
+     },
+     {
+      "n": "4.7",
+      "title": "Inflation"
+     }
+    ],
+    "n": "4"
+   },
+   {
+    "name": "Economic development",
+    "subtopics": [
+     {
+      "n": "5.1",
+      "title": "Living standards"
+     },
+     {
+      "n": "5.2",
+      "title": "Poverty"
+     },
+     {
+      "n": "5.3",
+      "title": "Population"
+     },
+     {
+      "n": "5.4",
+      "title": "Differences in economic development between countries"
+     }
+    ],
+    "n": "5"
+   },
+   {
+    "name": "International trade and globalisation",
+    "subtopics": [
+     {
+      "n": "6.1",
+      "title": "Specialisation and free trade"
+     },
+     {
+      "n": "6.2",
+      "title": "Globalisation and trade restrictions"
+     },
+     {
+      "n": "6.3",
+      "title": "Foreign exchange rates"
+     },
+     {
+      "n": "6.4",
+      "title": "Current account of the balance of payments"
+     }
+    ],
+    "n": "6"
+   }
+  ],
+  "commandWords": [
+   {
+    "word": "Analyse",
+    "meaning": "examine in detail to show meaning, identify elements and the relationship between them"
+   },
+   {
+    "word": "Calculate",
+    "meaning": "work out from given facts, figures or information"
+   },
+   {
+    "word": "Define",
+    "meaning": "give precise meaning"
+   },
+   {
+    "word": "Describe",
+    "meaning": "state the points of a topic / give characteristics and main features"
+   },
+   {
+    "word": "Discuss",
+    "meaning": "write about issue(s) or topic(s) in depth in a structured way"
+   },
+   {
+    "word": "Explain",
+    "meaning": "set out purposes or reasons / make the relationships between things clear / say why and/or how and support with relevant evidence"
+   },
+   {
+    "word": "Give",
+    "meaning": "produce an answer from a given source or recall/memory"
+   },
+   {
+    "word": "Identify",
+    "meaning": "name/select/recognise"
+   },
+   {
+    "word": "State",
+    "meaning": "express in clear terms"
+   }
+  ]
+ },
+ "0450": {
+  "code": "0450",
+  "name": "Business Studies",
+  "stage": "igcse",
+  "qualification": "Cambridge IGCSE",
+  "years": "2026",
+  "tiered": false,
+  "papers": [
+   "Paper 1: Short Answer and Data Response",
+   "Paper 2: Case Study"
+  ],
+  "practical": null,
+  "grades": "A*–G",
+  "topics": [
+   {
+    "name": "Understanding business activity",
+    "subtopics": [
+     {
+      "n": "1.1",
+      "title": "Business activity"
+     },
+     {
+      "n": "1.2",
+      "title": "Classification of businesses"
+     },
+     {
+      "n": "1.3",
+      "title": "Enterprise, business growth and size"
+     },
+     {
+      "n": "1.4",
+      "title": "Types of business organisation"
+     },
+     {
+      "n": "1.5",
+      "title": "Business objectives and stakeholder objectives"
+     }
+    ],
+    "n": "1"
+   },
+   {
+    "name": "People in business",
+    "subtopics": [
+     {
+      "n": "2.1",
+      "title": "Motivating employees"
+     },
+     {
+      "n": "2.2",
+      "title": "Organisation and management"
+     },
+     {
+      "n": "2.3",
+      "title": "Recruitment, selection and training of employees"
+     },
+     {
+      "n": "2.4",
+      "title": "Internal and external communication"
+     }
+    ],
+    "n": "2"
+   },
+   {
+    "name": "Marketing",
+    "subtopics": [
+     {
+      "n": "3.1",
+      "title": "Marketing, competition and the customer"
+     },
+     {
+      "n": "3.2",
+      "title": "Market research"
+     },
+     {
+      "n": "3.3",
+      "title": "Marketing mix"
+     },
+     {
+      "n": "3.4",
+      "title": "Marketing strategy"
+     }
+    ],
+    "n": "3"
+   },
+   {
+    "name": "Operations management",
+    "subtopics": [
+     {
+      "n": "4.1",
+      "title": "Production of goods and services"
+     },
+     {
+      "n": "4.2",
+      "title": "Costs, scale of production and break-even analysis"
+     },
+     {
+      "n": "4.3",
+      "title": "Achieving quality production"
+     },
+     {
+      "n": "4.4",
+      "title": "Location decisions"
+     }
+    ],
+    "n": "4"
+   },
+   {
+    "name": "Financial information and decisions",
+    "subtopics": [
+     {
+      "n": "5.1",
+      "title": "Business finance: needs and sources"
+     },
+     {
+      "n": "5.2",
+      "title": "Cash-flow forecasting and working capital"
+     },
+     {
+      "n": "5.3",
+      "title": "Income statements"
+     },
+     {
+      "n": "5.4",
+      "title": "Statement of financial position"
+     },
+     {
+      "n": "5.5",
+      "title": "Analysis of accounts"
+     }
+    ],
+    "n": "5"
+   },
+   {
+    "name": "External influences on business activity",
+    "subtopics": [
+     {
+      "n": "6.1",
+      "title": "Economic issues"
+     },
+     {
+      "n": "6.2",
+      "title": "Environmental and ethical issues"
+     },
+     {
+      "n": "6.3",
+      "title": "Business and the international economy"
+     }
+    ],
+    "n": "6"
+   }
+  ],
+  "commandWords": [
+   {
+    "word": "Calculate",
+    "meaning": "work out from given facts, figures or information"
+   },
+   {
+    "word": "Consider",
+    "meaning": "review and respond to given information"
+   },
+   {
+    "word": "Define",
+    "meaning": "give precise meaning"
+   },
+   {
+    "word": "Explain",
+    "meaning": "set out purposes or reasons / make the relationships between things clear / say why and/or how and support with relevant evidence"
+   },
+   {
+    "word": "Identify",
+    "meaning": "name/select/recognise"
+   },
+   {
+    "word": "Justify",
+    "meaning": "support a case with evidence/argument"
+   },
+   {
+    "word": "Outline",
+    "meaning": "set out the main points"
+   },
+   {
+    "word": "State",
+    "meaning": "express in clear terms"
+   }
+  ]
+ },
+ "0460": {
+  "code": "0460",
+  "name": "Geography",
+  "stage": "igcse",
+  "qualification": "Cambridge IGCSE",
+  "years": "2027, 2028 and 2029",
+  "tiered": false,
+  "papers": [
+   "Paper 1: Physical Geography",
+   "Paper 2: Human Geography",
+   "Paper 3: Geographical Skills and Fieldwork"
+  ],
+  "practical": null,
+  "grades": "A*–G",
+  "topics": [
+   {
+    "name": "Changing river environments",
+    "subtopics": [
+     {
+      "n": "1.1",
+      "title": "The main hydrological characteristics and processes which operate in rivers and drainage basins"
+     },
+     {
+      "n": "1.2",
+      "title": "The main landforms associated with these processes"
+     },
+     {
+      "n": "1.3",
+      "title": "Rivers present opportunities and hazards for people"
+     }
+    ],
+    "n": "1"
+   },
+   {
+    "name": "Changing coastal environments",
+    "subtopics": [
+     {
+      "n": "2.1",
+      "title": "Physical processes that shape the coast"
+     },
+     {
+      "n": "2.2",
+      "title": "The main landforms associated with these processes"
+     },
+     {
+      "n": "2.3",
+      "title": "Coasts present opportunities and hazards for people"
+     }
+    ],
+    "n": "2"
+   },
+   {
+    "name": "Changing ecosystems",
+    "subtopics": [
+     {
+      "n": "3.1",
+      "title": "Characteristics of the Antarctic ecosystem"
+     },
+     {
+      "n": "3.2",
+      "title": "Threats to the Antarctic ecosystem and how they can be managed"
+     },
+     {
+      "n": "3.3",
+      "title": "Characteristics of the tropical rainforest ecosystem"
+     },
+     {
+      "n": "3.4",
+      "title": "Threats to tropical rainforest ecosystems and how they can be managed"
+     }
+    ],
+    "n": "3"
+   },
+   {
+    "name": "Tectonic hazards",
+    "subtopics": [
+     {
+      "n": "4.1",
+      "title": "The structure of the Earth and distribution of earthquakes and volcanoes"
+     },
+     {
+      "n": "4.2",
+      "title": "The processes and features associated with earthquakes and volcanoes"
+     },
+     {
+      "n": "4.3",
+      "title": "The impacts of tectonic hazards"
+     },
+     {
+      "n": "4.4",
+      "title": "Managing the impacts of tectonic hazards"
+     }
+    ],
+    "n": "4"
+   },
+   {
+    "name": "Climate change",
+    "subtopics": [
+     {
+      "n": "5.1",
+      "title": "The natural and human causes of climate change"
+     },
+     {
+      "n": "5.2",
+      "title": "The impacts of climate change at a range of geographic scales"
+     },
+     {
+      "n": "5.3",
+      "title": "Responses to climate change"
+     }
+    ],
+    "n": "5"
+   },
+   {
+    "name": "Changing populations",
+    "subtopics": [
+     {
+      "n": "6.1",
+      "title": "Populations grow and decline"
+     },
+     {
+      "n": "6.2",
+      "title": "Population structures change over time"
+     },
+     {
+      "n": "6.3",
+      "title": "The causes and impacts of international migration"
+     }
+    ],
+    "n": "6"
+   },
+   {
+    "name": "Changing towns and cities",
+    "subtopics": [
+     {
+      "n": "7.1",
+      "title": "Where people live"
+     },
+     {
+      "n": "7.2",
+      "title": "Opportunities and challenges of urbanisation"
+     },
+     {
+      "n": "7.3",
+      "title": "The management of urban growth"
+     }
+    ],
+    "n": "7"
+   },
+   {
+    "name": "Development",
+    "subtopics": [
+     {
+      "n": "8.1",
+      "title": "Measuring development"
+     },
+     {
+      "n": "8.2",
+      "title": "The world is developing unevenly"
+     },
+     {
+      "n": "8.3",
+      "title": "Achieving sustainable development"
+     }
+    ],
+    "n": "8"
+   },
+   {
+    "name": "Changing economies",
+    "subtopics": [
+     {
+      "n": "9.1",
+      "title": "Changing employment structures"
+     },
+     {
+      "n": "9.2",
+      "title": "The impact of globalisation and the role of transnational corporations"
+     },
+     {
+      "n": "9.3",
+      "title": "Tourism is a growing industry"
+     }
+    ],
+    "n": "9"
+   },
+   {
+    "name": "Resource provision",
+    "subtopics": [
+     {
+      "n": "10.1",
+      "title": "How food is produced"
+     },
+     {
+      "n": "10.2",
+      "title": "The global patterns of food supply and demand"
+     },
+     {
+      "n": "10.3",
+      "title": "The challenges of food supply"
+     },
+     {
+      "n": "10.4",
+      "title": "How our energy is produced"
+     },
+     {
+      "n": "10.5",
+      "title": "The global patterns of energy supply and demand"
+     },
+     {
+      "n": "10.6",
+      "title": "The impacts of energy production"
+     }
+    ],
+    "n": "10"
+   }
+  ],
+  "commandWords": [
+   {
+    "word": "Assess",
+    "meaning": "make an informed judgement"
+   },
+   {
+    "word": "Calculate",
+    "meaning": "work out from given facts, figures or information"
+   },
+   {
+    "word": "Compare",
+    "meaning": "identify/comment on similarities and/or differences"
+   },
+   {
+    "word": "Define",
+    "meaning": "give precise meaning"
+   },
+   {
+    "word": "Describe",
+    "meaning": "state the points of a topic / give characteristics and main features"
+   },
+   {
+    "word": "Devise",
+    "meaning": "create a questionnaire to present other information according to specific requirements"
+   },
+   {
+    "word": "Discuss",
+    "meaning": "write about issue(s) or topic(s) in depth in a structured way"
+   },
+   {
+    "word": "Estimate",
+    "meaning": "use judgement to give a unit value to a distance or area"
+   },
+   {
+    "word": "Evaluate",
+    "meaning": "judge or calculate the quality, importance, amount, or value of something"
+   },
+   {
+    "word": "Explain",
+    "meaning": "set out purposes or reasons / make the relationships between things clear / say why and/or how and support with relevant evidence"
+   },
+   {
+    "word": "Give",
+    "meaning": "produce an answer from a given source or recall/memory"
+   },
+   {
+    "word": "Identify",
+    "meaning": "name/select/recognise"
+   },
+   {
+    "word": "Justify",
+    "meaning": "support a case with evidence/argument"
+   },
+   {
+    "word": "Locate",
+    "meaning": "indicate the position of a place, feature or entity from/in a resource"
+   },
+   {
+    "word": "Plan",
+    "meaning": "create a method to obtain or present certain information (such as a questionnaire) according to specific requirements"
+   },
+   {
+    "word": "Plot",
+    "meaning": "mark point(s) on a graph/diagram/map"
+   },
+   {
+    "word": "Predict",
+    "meaning": "suggest what may happen based on available information"
+   },
+   {
+    "word": "Sketch",
+    "meaning": "make a simple freehand drawing showing the key features, taking care over proportions"
+   },
+   {
+    "word": "State",
+    "meaning": "express in clear terms"
+   },
+   {
+    "word": "Suggest",
+    "meaning": "apply knowledge and understanding to situations where there are a range of valid responses in order to make proposals / put forward considerations Phrases such as ‘How far do you agree ...?’ and ‘To what extent ...?’ may also be seen in the assessment of this syllabus."
+   }
+  ]
+ },
+ "0478": {
+  "code": "0478",
+  "name": "Computer Science",
+  "stage": "igcse",
+  "qualification": "Cambridge IGCSE",
+  "years": "2026, 2027 and 2028",
+  "tiered": false,
+  "papers": [
+   "Paper 1: Computer Systems",
+   "Paper 2: Algorithms, Programming and Logic"
+  ],
+  "practical": null,
+  "grades": "A*–G",
+  "topics": [
+   {
+    "name": "Data representation",
+    "subtopics": [
+     {
+      "n": "1.1",
+      "title": "Number systems"
+     },
+     {
+      "n": "1.2",
+      "title": "Text, sound and images"
+     },
+     {
+      "n": "1.3",
+      "title": "Data storage and compression"
+     }
+    ],
+    "n": "1"
+   },
+   {
+    "name": "Data transmission",
+    "subtopics": [
+     {
+      "n": "2.1",
+      "title": "Types and methods of data transmission"
+     },
+     {
+      "n": "2.2",
+      "title": "Methods of error detection"
+     },
+     {
+      "n": "2.3",
+      "title": "Encryption"
+     }
+    ],
+    "n": "2"
+   },
+   {
+    "name": "Hardware",
+    "subtopics": [
+     {
+      "n": "3.1",
+      "title": "Computer architecture"
+     },
+     {
+      "n": "3.2",
+      "title": "Input and output devices"
+     },
+     {
+      "n": "3.3",
+      "title": "Data storage"
+     },
+     {
+      "n": "3.4",
+      "title": "Network hardware"
+     }
+    ],
+    "n": "3"
+   },
+   {
+    "name": "Software",
+    "subtopics": [
+     {
+      "n": "4.1",
+      "title": "Types of software and interrupts"
+     }
+    ],
+    "n": "4"
+   },
+   {
+    "name": "The internet and its uses",
+    "subtopics": [],
+    "n": "5"
+   },
+   {
+    "name": "Automated and emerging technologies",
+    "subtopics": [],
+    "n": "6"
+   },
+   {
+    "name": "Algorithm design and problem-solving",
+    "subtopics": [],
+    "n": "7"
+   },
+   {
+    "name": "Programming",
+    "subtopics": [
+     {
+      "n": "8.3",
+      "title": "File handling"
+     }
+    ],
+    "n": "8"
+   },
+   {
+    "name": "Databases",
+    "subtopics": [],
+    "n": "9"
+   },
+   {
+    "name": "Boolean logic",
+    "subtopics": [],
+    "n": "10"
+   }
+  ],
+  "commandWords": [
+   {
+    "word": "Calculate",
+    "meaning": "work out from given facts, figures or information"
+   },
+   {
+    "word": "Compare",
+    "meaning": "identify/comment on similarities and/or differences"
+   },
+   {
+    "word": "Define",
+    "meaning": "give precise meaning"
+   },
+   {
+    "word": "Demonstrate",
+    "meaning": "show how or give an example"
+   },
+   {
+    "word": "Describe",
+    "meaning": "state the points of a topic / give characteristics and main features"
+   },
+   {
+    "word": "Evaluate",
+    "meaning": "judge or calculate the quality, importance, amount, or value of something"
+   },
+   {
+    "word": "Explain",
+    "meaning": "set out purposes or reasons / make the relationships between things clear / say why and/or how and support with relevant evidence"
+   },
+   {
+    "word": "Give",
+    "meaning": "produce an answer from a given source or recall/memory"
+   },
+   {
+    "word": "Identify",
+    "meaning": "name/select/recognise"
+   },
+   {
+    "word": "Outline",
+    "meaning": "set out the main points"
+   },
+   {
+    "word": "Show (that)",
+    "meaning": "provide structured evidence that leads to a given result"
+   },
+   {
+    "word": "State",
+    "meaning": "express in clear terms"
+   },
+   {
+    "word": "Suggest",
+    "meaning": "apply knowledge and understanding to situations where there are a range of valid responses in order to make proposals / put forward considerations"
+   }
+  ]
+ },
+ "0500": {
+  "code": "0500",
+  "name": "First Language English",
+  "stage": "igcse",
+  "qualification": "Cambridge IGCSE",
+  "years": "2027, 2028 and 2029",
+  "tiered": false,
+  "papers": [
+   "Paper 1: Reading",
+   "Paper 2: Directed Writing and Composition",
+   "Component 3: Coursework Portfolio",
+   "Component 4: Speaking and Listening (optional, separately endorsed)"
+  ],
+  "practical": null,
+  "grades": "A*–G",
+  "topics": [
+   {
+    "n": "1",
+    "name": "Reading",
+    "subtopics": []
+   },
+   {
+    "n": "2",
+    "name": "Directed writing",
+    "subtopics": []
+   },
+   {
+    "n": "3",
+    "name": "Composition (descriptive and narrative writing)",
+    "subtopics": []
+   },
+   {
+    "n": "4",
+    "name": "Coursework",
+    "subtopics": []
+   },
+   {
+    "n": "5",
+    "name": "Speaking and listening",
+    "subtopics": []
+   }
+  ],
+  "commandWords": [
+   {
+    "word": "Analyse",
+    "meaning": "examine in detail to show meaning, identify elements and the relationship between them"
+   },
+   {
+    "word": "Assess",
+    "meaning": "make an informed judgement"
+   },
+   {
+    "word": "Consider",
+    "meaning": "review and respond to given information"
+   },
+   {
+    "word": "Describe",
+    "meaning": "state the points of a topic / give characteristics and main features"
+   },
+   {
+    "word": "Evaluate",
+    "meaning": "judge or calculate the quality, importance, amount or value of something"
+   },
+   {
+    "word": "Explain",
+    "meaning": "set out purposes or reasons / make the relationships between things clear / say why and/or how and support with relevant evidence"
+   },
+   {
+    "word": "Give",
+    "meaning": "produce an answer from a given source or recall/memory"
+   },
+   {
+    "word": "Identify",
+    "meaning": "name/select/recognise"
+   },
+   {
+    "word": "Justify",
+    "meaning": "support a case with evidence/argument"
+   },
+   {
+    "word": "Outline",
+    "meaning": "set out the main points"
+   },
+   {
+    "word": "Suggest",
+    "meaning": "apply knowledge and understanding to situations where there are a range of valid responses in order to make proposals / put forward considerations"
+   }
+  ]
+ },
+ "9702": {
+  "code": "9702",
+  "name": "Physics",
+  "stage": "alevel",
+  "qualification": "Cambridge International AS & A Level",
+  "years": "2025, 2026 and 2027",
+  "tiered": false,
+  "papers": [
+   "Paper 1: Multiple Choice",
+   "Paper 2: AS Level Structured Questions",
+   "Paper 3: Advanced Practical Skills",
+   "Paper 4: A Level Structured Questions",
+   "Paper 5: Planning, Analysis and Evaluation"
+  ],
+  "practical": [
+   "Paper 3: Advanced Practical Skills (AS Level)",
+   "Paper 5: Planning, Analysis and Evaluation (A Level)"
+  ],
+  "topics": [
+   {
+    "name": "Physical quantities and units",
+    "level": "AS",
+    "subtopics": [
+     {
+      "n": "1.1",
+      "title": "Physical quantities"
+     },
+     {
+      "n": "1.2",
+      "title": "SI units"
+     },
+     {
+      "n": "1.3",
+      "title": "Errors and uncertainties"
+     },
+     {
+      "n": "1.4",
+      "title": "Scalars and vectors"
+     }
+    ],
+    "n": "1"
+   },
+   {
+    "name": "Kinematics",
+    "level": "AS",
+    "subtopics": [
+     {
+      "n": "2.1",
+      "title": "Equations of motion"
+     }
+    ],
+    "n": "2"
+   },
+   {
+    "name": "Dynamics",
+    "level": "AS",
+    "subtopics": [
+     {
+      "n": "3.1",
+      "title": "Momentum and Newton’s laws of motion"
+     },
+     {
+      "n": "3.2",
+      "title": "Non-uniform motion"
+     },
+     {
+      "n": "3.3",
+      "title": "Linear momentum and its conservation"
+     }
+    ],
+    "n": "3"
+   },
+   {
+    "name": "Forces, density and pressure",
+    "level": "AS",
+    "subtopics": [
+     {
+      "n": "4.1",
+      "title": "Turning effects of forces"
+     },
+     {
+      "n": "4.2",
+      "title": "Equilibrium of forces"
+     },
+     {
+      "n": "4.3",
+      "title": "Density and pressure"
+     }
+    ],
+    "n": "4"
+   },
+   {
+    "name": "Work, energy and power",
+    "level": "AS",
+    "subtopics": [
+     {
+      "n": "5.1",
+      "title": "Energy conservation"
+     },
+     {
+      "n": "5.2",
+      "title": "Gravitational potential energy and kinetic energy"
+     }
+    ],
+    "n": "5"
+   },
+   {
+    "name": "Deformation of solids",
+    "level": "AS",
+    "subtopics": [
+     {
+      "n": "6.1",
+      "title": "Stress and strain"
+     },
+     {
+      "n": "6.2",
+      "title": "Elastic and plastic behaviour"
+     }
+    ],
+    "n": "6"
+   },
+   {
+    "name": "Waves",
+    "level": "AS",
+    "subtopics": [
+     {
+      "n": "7.1",
+      "title": "Progressive waves"
+     },
+     {
+      "n": "7.2",
+      "title": "Transverse and longitudinal waves"
+     },
+     {
+      "n": "7.3",
+      "title": "Doppler effect for sound waves"
+     },
+     {
+      "n": "7.4",
+      "title": "Electromagnetic spectrum"
+     },
+     {
+      "n": "7.5",
+      "title": "Polarisation"
+     }
+    ],
+    "n": "7"
+   },
+   {
+    "name": "Superposition",
+    "level": "AS",
+    "subtopics": [
+     {
+      "n": "8.1",
+      "title": "Stationary waves"
+     },
+     {
+      "n": "8.2",
+      "title": "Diffraction"
+     },
+     {
+      "n": "8.3",
+      "title": "Interference"
+     },
+     {
+      "n": "8.4",
+      "title": "The diffraction grating"
+     }
+    ],
+    "n": "8"
+   },
+   {
+    "name": "Electricity",
+    "level": "AS",
+    "subtopics": [
+     {
+      "n": "9.1",
+      "title": "Electric current"
+     },
+     {
+      "n": "9.2",
+      "title": "Potential difference and power"
+     },
+     {
+      "n": "9.3",
+      "title": "Resistance and resistivity"
+     }
+    ],
+    "n": "9"
+   },
+   {
+    "name": "D.C. circuits",
+    "level": "AS",
+    "subtopics": [
+     {
+      "n": "10.1",
+      "title": "Practical circuits"
+     },
+     {
+      "n": "10.2",
+      "title": "Kirchhoff’s laws"
+     },
+     {
+      "n": "10.3",
+      "title": "Potential dividers"
+     }
+    ],
+    "n": "10"
+   },
+   {
+    "name": "Particle physics",
+    "level": "AS",
+    "subtopics": [
+     {
+      "n": "11.1",
+      "title": "Atoms, nuclei and radiation"
+     },
+     {
+      "n": "11.2",
+      "title": "Fundamental particles"
+     }
+    ],
+    "n": "11"
+   },
+   {
+    "name": "Motion in a circle",
+    "level": "A2",
+    "subtopics": [
+     {
+      "n": "12.1",
+      "title": "Kinematics of uniform circular motion"
+     },
+     {
+      "n": "12.2",
+      "title": "Centripetal acceleration"
+     }
+    ],
+    "n": "12"
+   },
+   {
+    "name": "Gravitational fields",
+    "level": "A2",
+    "subtopics": [
+     {
+      "n": "13.1",
+      "title": "Gravitational field"
+     },
+     {
+      "n": "13.2",
+      "title": "Gravitational force between point masses"
+     },
+     {
+      "n": "13.3",
+      "title": "Gravitational field of a point mass"
+     },
+     {
+      "n": "13.4",
+      "title": "Gravitational potential"
+     }
+    ],
+    "n": "13"
+   },
+   {
+    "name": "Temperature",
+    "level": "A2",
+    "subtopics": [
+     {
+      "n": "14.1",
+      "title": "Thermal equilibrium"
+     },
+     {
+      "n": "14.2",
+      "title": "Temperature scales"
+     },
+     {
+      "n": "14.3",
+      "title": "Specific heat capacity and specific latent heat"
+     }
+    ],
+    "n": "14"
+   },
+   {
+    "name": "Ideal gases",
+    "level": "A2",
+    "subtopics": [
+     {
+      "n": "15.1",
+      "title": "The mole"
+     },
+     {
+      "n": "15.2",
+      "title": "Equation of state"
+     },
+     {
+      "n": "15.3",
+      "title": "Kinetic theory of gases"
+     }
+    ],
+    "n": "15"
+   },
+   {
+    "name": "Thermodynamics",
+    "level": "A2",
+    "subtopics": [
+     {
+      "n": "16.1",
+      "title": "Internal energy"
+     },
+     {
+      "n": "16.2",
+      "title": "The first law of thermodynamics"
+     }
+    ],
+    "n": "16"
+   },
+   {
+    "name": "Oscillations",
+    "level": "A2",
+    "subtopics": [
+     {
+      "n": "17.1",
+      "title": "Simple harmonic oscillations"
+     },
+     {
+      "n": "17.2",
+      "title": "Energy in simple harmonic motion"
+     },
+     {
+      "n": "17.3",
+      "title": "Damped and forced oscillations, resonance"
+     }
+    ],
+    "n": "17"
+   },
+   {
+    "name": "Electric fields",
+    "level": "A2",
+    "subtopics": [
+     {
+      "n": "18.1",
+      "title": "Electric fields and field lines"
+     },
+     {
+      "n": "18.2",
+      "title": "Uniform electric fields"
+     },
+     {
+      "n": "18.3",
+      "title": "Electric force between point charges"
+     },
+     {
+      "n": "18.4",
+      "title": "Electric field of a point charge"
+     },
+     {
+      "n": "18.5",
+      "title": "Electric potential"
+     }
+    ],
+    "n": "18"
+   },
+   {
+    "name": "Capacitance",
+    "level": "A2",
+    "subtopics": [
+     {
+      "n": "19.1",
+      "title": "Capacitors and capacitance"
+     },
+     {
+      "n": "19.2",
+      "title": "Energy stored in a capacitor"
+     },
+     {
+      "n": "19.3",
+      "title": "Discharging a capacitor"
+     }
+    ],
+    "n": "19"
+   },
+   {
+    "name": "Magnetic fields",
+    "level": "A2",
+    "subtopics": [
+     {
+      "n": "20.1",
+      "title": "Concept of a magnetic field"
+     },
+     {
+      "n": "20.2",
+      "title": "Force on a current-carrying conductor"
+     },
+     {
+      "n": "20.3",
+      "title": "Force on a moving charge"
+     },
+     {
+      "n": "20.4",
+      "title": "Magnetic fields due to currents"
+     },
+     {
+      "n": "20.5",
+      "title": "Electromagnetic induction"
+     }
+    ],
+    "n": "20"
+   },
+   {
+    "name": "Alternating currents",
+    "level": "A2",
+    "subtopics": [
+     {
+      "n": "21.1",
+      "title": "Characteristics of alternating currents"
+     },
+     {
+      "n": "21.2",
+      "title": "Rectification and smoothing"
+     }
+    ],
+    "n": "21"
+   },
+   {
+    "name": "Quantum physics",
+    "level": "A2",
+    "subtopics": [
+     {
+      "n": "22.1",
+      "title": "Energy and momentum of a photon"
+     },
+     {
+      "n": "22.2",
+      "title": "Photoelectric effect"
+     },
+     {
+      "n": "22.3",
+      "title": "Wave-particle duality"
+     },
+     {
+      "n": "22.4",
+      "title": "Energy levels in atoms and line spectra"
+     }
+    ],
+    "n": "22"
+   },
+   {
+    "name": "Nuclear physics",
+    "level": "A2",
+    "subtopics": [
+     {
+      "n": "23.1",
+      "title": "Mass defect and nuclear binding energy"
+     },
+     {
+      "n": "23.2",
+      "title": "Radioactive decay"
+     }
+    ],
+    "n": "23"
+   },
+   {
+    "name": "Medical physics",
+    "level": "A2",
+    "subtopics": [
+     {
+      "n": "24.1",
+      "title": "Production and use of ultrasound"
+     },
+     {
+      "n": "24.2",
+      "title": "Production and use of X-rays"
+     },
+     {
+      "n": "24.3",
+      "title": "PET scanning"
+     }
+    ],
+    "n": "24"
+   },
+   {
+    "name": "Astronomy and cosmology",
+    "level": "A2",
+    "subtopics": [
+     {
+      "n": "25.1",
+      "title": "Standard candles"
+     },
+     {
+      "n": "25.2",
+      "title": "Stellar radii"
+     },
+     {
+      "n": "25.3",
+      "title": "Hubble’s law and the Big Bang theory"
+     }
+    ],
+    "n": "25"
+   }
+  ],
+  "commandWords": [
+   {
+    "word": "Calculate",
+    "meaning": "work out from given facts, figures or information"
+   },
+   {
+    "word": "Comment",
+    "meaning": "give an informed opinion"
+   },
+   {
+    "word": "Compare",
+    "meaning": "identify/comment on similarities and/or differences"
+   },
+   {
+    "word": "Define",
+    "meaning": "give precise meaning"
+   },
+   {
+    "word": "Describe",
+    "meaning": "state the points of a topic / give characteristics and main features"
+   },
+   {
+    "word": "Determine",
+    "meaning": "establish an answer using the information available"
+   },
+   {
+    "word": "Explain",
+    "meaning": "set out purposes or reasons / make the relationships between things evident / provide why and/or how and support with relevant evidence"
+   },
+   {
+    "word": "Give",
+    "meaning": "produce an answer from a given source or recall/memory"
+   },
+   {
+    "word": "Identify",
+    "meaning": "name/select/recognise"
+   },
+   {
+    "word": "Justify",
+    "meaning": "support a case with evidence/argument"
+   },
+   {
+    "word": "Predict",
+    "meaning": "suggest what may happen based on available information"
+   },
+   {
+    "word": "Show (that)",
+    "meaning": "provide structured evidence that leads to a given result"
+   },
+   {
+    "word": "Sketch",
+    "meaning": "make a simple freehand drawing showing the key features"
+   },
+   {
+    "word": "State",
+    "meaning": "express in clear terms"
+   },
+   {
+    "word": "Suggest",
+    "meaning": "apply knowledge and understanding to situations where there are a range of valid responses in order to make proposals"
+   }
+  ]
+ },
+ "9700": {
+  "code": "9700",
+  "name": "Biology",
+  "stage": "alevel",
+  "qualification": "Cambridge International AS & A Level",
+  "years": "2025, 2026 and 2027",
+  "tiered": false,
+  "papers": [
+   "Paper 1: Multiple Choice",
+   "Paper 2: AS Level Structured Questions",
+   "Paper 3: Advanced Practical Skills",
+   "Paper 4: A Level Structured Questions",
+   "Paper 5: Planning, Analysis and Evaluation"
+  ],
+  "practical": [
+   "Paper 3: Advanced Practical Skills (AS Level)",
+   "Paper 5: Planning, Analysis and Evaluation (A Level)"
+  ],
+  "topics": [
+   {
+    "name": "Cell structure",
+    "level": "AS",
+    "subtopics": [
+     {
+      "n": "1.1",
+      "title": "The microscope in cell studies"
+     },
+     {
+      "n": "1.2",
+      "title": "Cells as the basic units of living organisms"
+     }
+    ],
+    "n": "1"
+   },
+   {
+    "name": "Biological molecules",
+    "level": "AS",
+    "subtopics": [
+     {
+      "n": "2.1",
+      "title": "Testing for biological molecules"
+     },
+     {
+      "n": "2.2",
+      "title": "Carbohydrates and lipids"
+     },
+     {
+      "n": "2.3",
+      "title": "Proteins"
+     },
+     {
+      "n": "2.4",
+      "title": "Water"
+     }
+    ],
+    "n": "2"
+   },
+   {
+    "name": "Enzymes",
+    "level": "AS",
+    "subtopics": [
+     {
+      "n": "3.1",
+      "title": "Mode of action of enzymes"
+     },
+     {
+      "n": "3.2",
+      "title": "Factors that affect enzyme action"
+     }
+    ],
+    "n": "3"
+   },
+   {
+    "name": "Cell membranes and transport",
+    "level": "AS",
+    "subtopics": [
+     {
+      "n": "4.1",
+      "title": "Fluid mosaic membranes"
+     },
+     {
+      "n": "4.2",
+      "title": "Movement into and out of cells"
+     }
+    ],
+    "n": "4"
+   },
+   {
+    "name": "The mitotic cell cycle",
+    "level": "AS",
+    "subtopics": [
+     {
+      "n": "5.1",
+      "title": "Replication and division of nuclei and cells"
+     },
+     {
+      "n": "5.2",
+      "title": "Chromosome behaviour in mitosis"
+     }
+    ],
+    "n": "5"
+   },
+   {
+    "name": "Nucleic acids and protein synthesis",
+    "level": "AS",
+    "subtopics": [
+     {
+      "n": "6.1",
+      "title": "Structure of nucleic acids and replication of DNA"
+     },
+     {
+      "n": "6.2",
+      "title": "Protein synthesis"
+     }
+    ],
+    "n": "6"
+   },
+   {
+    "name": "Transport in plants",
+    "level": "AS",
+    "subtopics": [
+     {
+      "n": "7.1",
+      "title": "Structure of transport tissues"
+     },
+     {
+      "n": "7.2",
+      "title": "Transport mechanisms"
+     }
+    ],
+    "n": "7"
+   },
+   {
+    "name": "Transport in mammals",
+    "level": "AS",
+    "subtopics": [
+     {
+      "n": "8.1",
+      "title": "The circulatory system"
+     },
+     {
+      "n": "8.2",
+      "title": "Transport of oxygen and carbon dioxide"
+     },
+     {
+      "n": "8.3",
+      "title": "The heart"
+     }
+    ],
+    "n": "8"
+   },
+   {
+    "name": "Gas exchange",
+    "level": "AS",
+    "subtopics": [
+     {
+      "n": "9.1",
+      "title": "The gas exchange system"
+     }
+    ],
+    "n": "9"
+   },
+   {
+    "name": "Infectious diseases",
+    "level": "AS",
+    "subtopics": [
+     {
+      "n": "10.1",
+      "title": "Infectious diseases"
+     },
+     {
+      "n": "10.2",
+      "title": "Antibiotics"
+     }
+    ],
+    "n": "10"
+   },
+   {
+    "name": "Immunity",
+    "level": "AS",
+    "subtopics": [
+     {
+      "n": "11.1",
+      "title": "The immune system"
+     },
+     {
+      "n": "11.2",
+      "title": "Antibodies and vaccination"
+     }
+    ],
+    "n": "11"
+   },
+   {
+    "name": "Energy and respiration",
+    "level": "A2",
+    "subtopics": [
+     {
+      "n": "12.1",
+      "title": "Energy"
+     },
+     {
+      "n": "12.2",
+      "title": "Respiration"
+     }
+    ],
+    "n": "12"
+   },
+   {
+    "name": "Photosynthesis",
+    "level": "A2",
+    "subtopics": [
+     {
+      "n": "13.1",
+      "title": "Photosynthesis as an energy transfer process"
+     },
+     {
+      "n": "13.2",
+      "title": "Investigation of limiting factors"
+     }
+    ],
+    "n": "13"
+   },
+   {
+    "name": "Homeostasis",
+    "level": "A2",
+    "subtopics": [
+     {
+      "n": "14.1",
+      "title": "Homeostasis in mammals"
+     },
+     {
+      "n": "14.2",
+      "title": "Homeostasis in plants"
+     }
+    ],
+    "n": "14"
+   },
+   {
+    "name": "Control and coordination",
+    "level": "A2",
+    "subtopics": [
+     {
+      "n": "15.1",
+      "title": "Control and coordination in mammals"
+     },
+     {
+      "n": "15.2",
+      "title": "Control and coordination in plants"
+     }
+    ],
+    "n": "15"
+   },
+   {
+    "name": "Inheritance",
+    "level": "A2",
+    "subtopics": [
+     {
+      "n": "16.1",
+      "title": "Passage of information from parents to offspring"
+     },
+     {
+      "n": "16.2",
+      "title": "The roles of genes in determining the phenotype"
+     },
+     {
+      "n": "16.3",
+      "title": "Gene control"
+     }
+    ],
+    "n": "16"
+   },
+   {
+    "name": "Selection and evolution",
+    "level": "A2",
+    "subtopics": [
+     {
+      "n": "17.1",
+      "title": "Variation"
+     },
+     {
+      "n": "17.2",
+      "title": "Natural and artificial selection"
+     },
+     {
+      "n": "17.3",
+      "title": "Evolution"
+     }
+    ],
+    "n": "17"
+   },
+   {
+    "name": "Classification, biodiversity and conservation",
+    "level": "A2",
+    "subtopics": [
+     {
+      "n": "18.1",
+      "title": "Classification"
+     },
+     {
+      "n": "18.2",
+      "title": "Biodiversity"
+     },
+     {
+      "n": "18.3",
+      "title": "Conservation"
+     }
+    ],
+    "n": "18"
+   },
+   {
+    "name": "Genetic technology",
+    "level": "A2",
+    "subtopics": [
+     {
+      "n": "19.1",
+      "title": "Principles of genetic technology"
+     },
+     {
+      "n": "19.2",
+      "title": "Genetic technology applied to medicine"
+     },
+     {
+      "n": "19.3",
+      "title": "Genetically modified organisms in agriculture"
+     }
+    ],
+    "n": "19"
+   }
+  ],
+  "commandWords": [
+   {
+    "word": "Assess",
+    "meaning": "make an informed judgement"
+   },
+   {
+    "word": "Calculate",
+    "meaning": "work out from given facts, figures or information"
+   },
+   {
+    "word": "Comment",
+    "meaning": "give an informed opinion"
+   },
+   {
+    "word": "Compare",
+    "meaning": "identify/comment on similarities and/or differences"
+   },
+   {
+    "word": "Contrast",
+    "meaning": "identify/comment on differences"
+   },
+   {
+    "word": "Define",
+    "meaning": "give precise meaning"
+   },
+   {
+    "word": "Describe",
+    "meaning": "state the points of a topic / give characteristics and main features"
+   },
+   {
+    "word": "Determine",
+    "meaning": "establish an answer using the information available"
+   },
+   {
+    "word": "Discuss",
+    "meaning": "write about issue(s) or topic(s) in depth in a structured way"
+   },
+   {
+    "word": "Explain",
+    "meaning": "set out purposes or reasons / make the relationships between things evident / provide why and/or how and support with relevant evidence"
+   },
+   {
+    "word": "Give",
+    "meaning": "produce an answer from a given source or recall/memory"
+   },
+   {
+    "word": "Identify",
+    "meaning": "name/select/recognise"
+   },
+   {
+    "word": "Outline",
+    "meaning": "set out main points"
+   },
+   {
+    "word": "Predict",
+    "meaning": "suggest what may happen based on available information"
+   },
+   {
+    "word": "Sketch",
+    "meaning": "make a simple drawing showing the key features"
+   },
+   {
+    "word": "State",
+    "meaning": "express in clear terms"
+   },
+   {
+    "word": "Suggest",
+    "meaning": "apply knowledge and understanding to situations where there are a range of valid responses in order to make proposals / put forward considerations"
+   }
+  ]
+ },
+ "9701": {
+  "code": "9701",
+  "name": "Chemistry",
+  "stage": "alevel",
+  "qualification": "Cambridge International AS & A Level",
+  "years": "2025, 2026 and 2027",
+  "tiered": false,
+  "papers": [
+   "Paper 1: Multiple Choice",
+   "Paper 2: AS Level Structured Questions",
+   "Paper 3: Advanced Practical Skills",
+   "Paper 4: A Level Structured Questions",
+   "Paper 5: Planning, Analysis and Evaluation"
+  ],
+  "practical": [
+   "Paper 3: Advanced Practical Skills (AS Level)",
+   "Paper 5: Planning, Analysis and Evaluation (A Level)"
+  ],
+  "topics": [
+   {
+    "name": "Atomic structure",
+    "level": "AS",
+    "subtopics": [
+     {
+      "n": "1.1",
+      "title": "Particles in the atom and atomic radius"
+     },
+     {
+      "n": "1.2",
+      "title": "Isotopes"
+     },
+     {
+      "n": "1.3",
+      "title": "Electrons, energy levels and atomic orbitals"
+     },
+     {
+      "n": "1.4",
+      "title": "Ionisation energy"
+     }
+    ],
+    "n": "1"
+   },
+   {
+    "name": "Atoms, molecules and stoichiometry",
+    "level": "AS",
+    "subtopics": [
+     {
+      "n": "2.1",
+      "title": "Relative masses of atoms and molecules"
+     },
+     {
+      "n": "2.2",
+      "title": "The mole and the Avogadro constant"
+     },
+     {
+      "n": "2.3",
+      "title": "Formulas"
+     },
+     {
+      "n": "2.4",
+      "title": "Reacting masses and volumes (of solutions and gases)"
+     }
+    ],
+    "n": "2"
+   },
+   {
+    "name": "Chemical bonding",
+    "level": "AS",
+    "subtopics": [
+     {
+      "n": "3.1",
+      "title": "Electronegativity and bonding"
+     },
+     {
+      "n": "3.2",
+      "title": "Ionic bonding"
+     },
+     {
+      "n": "3.3",
+      "title": "Metallic bonding"
+     },
+     {
+      "n": "3.4",
+      "title": "Covalent bonding and coordinate (dative covalent) bonding"
+     },
+     {
+      "n": "3.5",
+      "title": "Shapes of molecules"
+     },
+     {
+      "n": "3.6",
+      "title": "Intermolecular forces, electronegativity and bond properties"
+     },
+     {
+      "n": "3.7",
+      "title": "Dot-and-cross diagrams"
+     }
+    ],
+    "n": "3"
+   },
+   {
+    "name": "States of matter",
+    "level": "AS",
+    "subtopics": [
+     {
+      "n": "4.2",
+      "title": "Bonding and structure"
+     }
+    ],
+    "n": "4"
+   },
+   {
+    "name": "Chemical energetics",
+    "level": "AS",
+    "subtopics": [
+     {
+      "n": "5.2",
+      "title": "Hess’s law"
+     }
+    ],
+    "n": "5"
+   },
+   {
+    "name": "Electrochemistry",
+    "level": "AS",
+    "subtopics": [
+     {
+      "n": "6.1",
+      "title": "Redox processes: electron transfer and changes in oxidation number (oxidation state)"
+     }
+    ],
+    "n": "6"
+   },
+   {
+    "name": "Equilibria",
+    "level": "AS",
+    "subtopics": [
+     {
+      "n": "7.1",
+      "title": "Chemical equilibria: reversible reactions, dynamic equilibrium"
+     }
+    ],
+    "n": "7"
+   },
+   {
+    "name": "Reaction kinetics",
+    "level": "AS",
+    "subtopics": [
+     {
+      "n": "8.1",
+      "title": "Rate of reaction"
+     },
+     {
+      "n": "8.2",
+      "title": "Effect of temperature on reaction rates and the concept of activation energy"
+     },
+     {
+      "n": "8.3",
+      "title": "Homogeneous and heterogeneous catalysts"
+     }
+    ],
+    "n": "8"
+   },
+   {
+    "name": "The Periodic Table: chemical periodicity",
+    "level": "AS",
+    "subtopics": [
+     {
+      "n": "9.1",
+      "title": "Periodicity of physical properties of the elements in Period 3"
+     },
+     {
+      "n": "9.2",
+      "title": "Periodicity of chemical properties of the elements in Period 3"
+     },
+     {
+      "n": "9.3",
+      "title": "Chemical periodicity of other elements"
+     }
+    ],
+    "n": "9"
+   },
+   {
+    "name": "Group 2",
+    "level": "AS",
+    "subtopics": [],
+    "n": "10"
+   },
+   {
+    "name": "Group 17",
+    "level": "AS",
+    "subtopics": [
+     {
+      "n": "11.2",
+      "title": "The chemical properties of the halogen elements and the hydrogen halides"
+     },
+     {
+      "n": "11.3",
+      "title": "Some reactions of the halide ions"
+     },
+     {
+      "n": "11.4",
+      "title": "The reactions of chlorine"
+     }
+    ],
+    "n": "11"
+   },
+   {
+    "name": "Nitrogen and sulfur",
+    "level": "AS",
+    "subtopics": [],
+    "n": "12"
+   },
+   {
+    "name": "An introduction to AS Level organic chemistry",
+    "level": "AS",
+    "subtopics": [
+     {
+      "n": "13.1",
+      "title": "Formulas, functional groups and the naming of organic compounds"
+     },
+     {
+      "n": "13.2",
+      "title": "Characteristic organic reactions"
+     },
+     {
+      "n": "13.4",
+      "title": "Isomerism: structural isomerism and stereoisomerism"
+     }
+    ],
+    "n": "13"
+   },
+   {
+    "name": "Hydrocarbons",
+    "level": "AS",
+    "subtopics": [
+     {
+      "n": "14.1",
+      "title": "Alkanes"
+     },
+     {
+      "n": "14.2",
+      "title": "Alkenes"
+     }
+    ],
+    "n": "14"
+   },
+   {
+    "name": "Halogen compounds",
+    "level": "AS",
+    "subtopics": [
+     {
+      "n": "15.1",
+      "title": "Halogenoalkanes"
+     }
+    ],
+    "n": "15"
+   },
+   {
+    "name": "Hydroxy compounds",
+    "level": "AS",
+    "subtopics": [
+     {
+      "n": "16.1",
+      "title": "Alcohols"
+     }
+    ],
+    "n": "16"
+   },
+   {
+    "name": "Carbonyl compounds",
+    "level": "AS",
+    "subtopics": [
+     {
+      "n": "17.1",
+      "title": "Aldehydes and ketones"
+     }
+    ],
+    "n": "17"
+   },
+   {
+    "name": "Carboxylic acids and derivatives",
+    "level": "AS",
+    "subtopics": [
+     {
+      "n": "18.1",
+      "title": "Carboxylic acids"
+     },
+     {
+      "n": "18.2",
+      "title": "Esters"
+     }
+    ],
+    "n": "18"
+   },
+   {
+    "name": "Nitrogen compounds",
+    "level": "AS",
+    "subtopics": [
+     {
+      "n": "19.1",
+      "title": "Primary amines"
+     },
+     {
+      "n": "19.2",
+      "title": "Nitriles and hydroxynitriles"
+     }
+    ],
+    "n": "19"
+   },
+   {
+    "name": "Polymerisation",
+    "level": "AS",
+    "subtopics": [
+     {
+      "n": "20.1",
+      "title": "Addition polymerisation"
+     }
+    ],
+    "n": "20"
+   },
+   {
+    "name": "Organic synthesis",
+    "level": "AS",
+    "subtopics": [
+     {
+      "n": "21.1",
+      "title": "Organic synthesis"
+     }
+    ],
+    "n": "21"
+   },
+   {
+    "name": "Analytical techniques",
+    "level": "AS",
+    "subtopics": [
+     {
+      "n": "22.1",
+      "title": "Infrared spectroscopy"
+     },
+     {
+      "n": "22.2",
+      "title": "Mass spectrometry"
+     }
+    ],
+    "n": "22"
+   },
+   {
+    "name": "Chemical energetics",
+    "level": "A2",
+    "subtopics": [
+     {
+      "n": "23.1",
+      "title": "Lattice energy and Born-Haber cycles"
+     },
+     {
+      "n": "23.2",
+      "title": "Enthalpies of solution and hydration"
+     }
+    ],
+    "n": "23"
+   },
+   {
+    "name": "Electrochemistry",
+    "level": "A2",
+    "subtopics": [
+     {
+      "n": "24.1",
+      "title": "Electrolysis"
+     }
+    ],
+    "n": "24"
+   },
+   {
+    "name": "Equilibria",
+    "level": "A2",
+    "subtopics": [
+     {
+      "n": "25.1",
+      "title": "Acids and bases"
+     },
+     {
+      "n": "25.2",
+      "title": "Partition coefficients"
+     }
+    ],
+    "n": "25"
+   },
+   {
+    "name": "Reaction kinetics",
+    "level": "A2",
+    "subtopics": [
+     {
+      "n": "26.1",
+      "title": "Simple rate equations, orders of reaction and rate constants"
+     },
+     {
+      "n": "26.2",
+      "title": "Homogeneous and heterogeneous catalysts"
+     }
+    ],
+    "n": "26"
+   },
+   {
+    "name": "Group 2",
+    "level": "A2",
+    "subtopics": [],
+    "n": "27"
+   },
+   {
+    "name": "Chemistry of transition elements",
+    "level": "A2",
+    "subtopics": [
+     {
+      "n": "28.3",
+      "title": "Colour of complexes"
+     },
+     {
+      "n": "28.4",
+      "title": "Stereoisomerism in transition element complexes"
+     },
+     {
+      "n": "28.5",
+      "title": "Stability constants, Kstab"
+     }
+    ],
+    "n": "28"
+   },
+   {
+    "name": "An introduction to A Level organic chemistry",
+    "level": "A2",
+    "subtopics": [
+     {
+      "n": "29.1",
+      "title": "Formulas, functional groups and the naming of organic compounds"
+     },
+     {
+      "n": "29.2",
+      "title": "Characteristic organic reactions"
+     },
+     {
+      "n": "29.4",
+      "title": "Isomerism: optical"
+     }
+    ],
+    "n": "29"
+   },
+   {
+    "name": "Hydrocarbons",
+    "level": "A2",
+    "subtopics": [
+     {
+      "n": "30.1",
+      "title": "Arenes"
+     }
+    ],
+    "n": "30"
+   },
+   {
+    "name": "Halogen compounds",
+    "level": "A2",
+    "subtopics": [
+     {
+      "n": "31.1",
+      "title": "Halogen compounds"
+     }
+    ],
+    "n": "31"
+   },
+   {
+    "name": "Hydroxy compounds",
+    "level": "A2",
+    "subtopics": [
+     {
+      "n": "32.1",
+      "title": "Alcohols"
+     },
+     {
+      "n": "32.2",
+      "title": "Phenol"
+     }
+    ],
+    "n": "32"
+   },
+   {
+    "name": "Carboxylic acids and derivatives",
+    "level": "A2",
+    "subtopics": [
+     {
+      "n": "33.1",
+      "title": "Carboxylic acids"
+     },
+     {
+      "n": "33.2",
+      "title": "Esters"
+     },
+     {
+      "n": "33.3",
+      "title": "Acyl chlorides"
+     }
+    ],
+    "n": "33"
+   },
+   {
+    "name": "Nitrogen compounds",
+    "level": "A2",
+    "subtopics": [
+     {
+      "n": "34.1",
+      "title": "Primary and secondary amines"
+     },
+     {
+      "n": "34.2",
+      "title": "Phenylamine and azo compounds"
+     },
+     {
+      "n": "34.3",
+      "title": "Amides"
+     },
+     {
+      "n": "34.4",
+      "title": "Amino acids"
+     }
+    ],
+    "n": "34"
+   },
+   {
+    "name": "Polymerisation",
+    "level": "A2",
+    "subtopics": [
+     {
+      "n": "35.1",
+      "title": "Condensation polymerisation"
+     },
+     {
+      "n": "35.2",
+      "title": "Predicting the type of polymerisation"
+     },
+     {
+      "n": "35.3",
+      "title": "Degradable polymers"
+     }
+    ],
+    "n": "35"
+   },
+   {
+    "name": "Organic synthesis",
+    "level": "A2",
+    "subtopics": [
+     {
+      "n": "36.1",
+      "title": "Organic synthesis"
+     }
+    ],
+    "n": "36"
+   },
+   {
+    "name": "Analytical techniques",
+    "level": "A2",
+    "subtopics": [
+     {
+      "n": "37.1",
+      "title": "Thin-layer chromatography"
+     },
+     {
+      "n": "37.2",
+      "title": "Gas / liquid chromatography"
+     },
+     {
+      "n": "37.3",
+      "title": "Carbon-13 NMR spectroscopy"
+     },
+     {
+      "n": "37.4",
+      "title": "Proton (1H) NMR spectroscopy"
+     }
+    ],
+    "n": "37"
+   }
+  ],
+  "commandWords": [
+   {
+    "word": "Analyse",
+    "meaning": "examine in detail to show meaning, identify elements and the relationship between them"
+   },
+   {
+    "word": "Calculate",
+    "meaning": "work out from given facts, figures or information"
+   },
+   {
+    "word": "Compare",
+    "meaning": "identify/comment on similarities and/or differences"
+   },
+   {
+    "word": "Consider",
+    "meaning": "review and respond to given information"
+   },
+   {
+    "word": "Contrast",
+    "meaning": "identify/comment on differences"
+   },
+   {
+    "word": "Deduce",
+    "meaning": "conclude from available information"
+   },
+   {
+    "word": "Define",
+    "meaning": "give precise meaning"
+   },
+   {
+    "word": "Demonstrate",
+    "meaning": "show how or give an example"
+   },
+   {
+    "word": "Describe",
+    "meaning": "state the points of a topic / give characteristics and main features"
+   },
+   {
+    "word": "Determine",
+    "meaning": "establish an answer using the information available"
+   },
+   {
+    "word": "Discuss",
+    "meaning": "write about issue(s) or topic(s) in depth in a structured way"
+   },
+   {
+    "word": "Evaluate",
+    "meaning": "judge or calculate the quality, importance, amount, or value of something"
+   },
+   {
+    "word": "Examine",
+    "meaning": "investigate closely, in detail"
+   },
+   {
+    "word": "Explain",
+    "meaning": "set out purposes or reasons / make the relationships between things evident / provide why and/or how and support with relevant evidence"
+   },
+   {
+    "word": "Give",
+    "meaning": "produce an answer from a given source or recall/memory"
+   },
+   {
+    "word": "Identify",
+    "meaning": "name/select/recognise"
+   },
+   {
+    "word": "Justify",
+    "meaning": "support a case with evidence/argument"
+   },
+   {
+    "word": "Predict",
+    "meaning": "suggest what may happen based on available information"
+   },
+   {
+    "word": "Show (that)",
+    "meaning": "provide structured evidence that leads to a given result"
+   },
+   {
+    "word": "Sketch",
+    "meaning": "make a simple drawing showing the key features"
+   },
+   {
+    "word": "State",
+    "meaning": "express in clear terms"
+   },
+   {
+    "word": "Suggest",
+    "meaning": "apply knowledge and understanding to situations where there are a range of valid responses in order to make proposals / put forward considerations"
+   }
+  ]
+ },
+ "9709": {
+  "code": "9709",
+  "name": "Mathematics",
+  "stage": "alevel",
+  "qualification": "Cambridge International AS & A Level",
+  "years": "2026 and 2027",
+  "tiered": false,
+  "papers": [
+   "Paper 1: Pure Mathematics 1",
+   "Paper 2: Pure Mathematics 2",
+   "Paper 3: Pure Mathematics 3",
+   "Paper 4: Mechanics",
+   "Paper 5: Probability & Statistics 1",
+   "Paper 6: Probability & Statistics 2"
+  ],
+  "practical": null,
+  "topics": [
+   {
+    "name": "Pure Mathematics 1 (Paper 1)",
+    "level": "AS",
+    "subtopics": [
+     {
+      "n": "1.1",
+      "title": "Quadratics"
+     },
+     {
+      "n": "1.2",
+      "title": "Functions"
+     },
+     {
+      "n": "1.3",
+      "title": "Coordinate geometry"
+     },
+     {
+      "n": "1.4",
+      "title": "Circular measure"
+     },
+     {
+      "n": "1.5",
+      "title": "Trigonometry"
+     },
+     {
+      "n": "1.6",
+      "title": "Series"
+     },
+     {
+      "n": "1.7",
+      "title": "Differentiation"
+     },
+     {
+      "n": "1.8",
+      "title": "Integration"
+     }
+    ],
+    "n": "1"
+   },
+   {
+    "name": "Pure Mathematics 2 (Paper 2)",
+    "level": "AS",
+    "subtopics": [
+     {
+      "n": "2.1",
+      "title": "Algebra"
+     },
+     {
+      "n": "2.2",
+      "title": "Logarithmic and exponential functions"
+     },
+     {
+      "n": "2.3",
+      "title": "Trigonometry"
+     },
+     {
+      "n": "2.4",
+      "title": "Differentiation"
+     },
+     {
+      "n": "2.5",
+      "title": "Integration"
+     },
+     {
+      "n": "2.6",
+      "title": "Numerical solution of equations"
+     }
+    ],
+    "n": "2"
+   },
+   {
+    "name": "Pure Mathematics 3 (Paper 3)",
+    "level": "A2",
+    "subtopics": [
+     {
+      "n": "3.1",
+      "title": "Algebra"
+     },
+     {
+      "n": "3.2",
+      "title": "Logarithmic and exponential functions"
+     },
+     {
+      "n": "3.3",
+      "title": "Trigonometry"
+     },
+     {
+      "n": "3.4",
+      "title": "Differentiation"
+     },
+     {
+      "n": "3.5",
+      "title": "Integration"
+     },
+     {
+      "n": "3.6",
+      "title": "Numerical solution of equations"
+     },
+     {
+      "n": "3.7",
+      "title": "Vectors"
+     },
+     {
+      "n": "3.8",
+      "title": "Differential equations"
+     },
+     {
+      "n": "3.9",
+      "title": "Complex numbers"
+     }
+    ],
+    "n": "3"
+   },
+   {
+    "name": "Mechanics (Paper 4)",
+    "level": "AS",
+    "subtopics": [
+     {
+      "n": "4.1",
+      "title": "Forces and equilibrium"
+     },
+     {
+      "n": "4.2",
+      "title": "Kinematics of motion in a straight line"
+     },
+     {
+      "n": "4.3",
+      "title": "Momentum"
+     },
+     {
+      "n": "4.4",
+      "title": "Newton’s laws of motion"
+     },
+     {
+      "n": "4.5",
+      "title": "Energy, work and power"
+     }
+    ],
+    "n": "4"
+   },
+   {
+    "name": "Probability & Statistics 1 (Paper 5)",
+    "level": "AS",
+    "subtopics": [
+     {
+      "n": "5.1",
+      "title": "Representation of data"
+     },
+     {
+      "n": "5.2",
+      "title": "Permutations and combinations"
+     },
+     {
+      "n": "5.3",
+      "title": "Probability"
+     },
+     {
+      "n": "5.4",
+      "title": "Discrete random variables"
+     },
+     {
+      "n": "5.5",
+      "title": "The normal distribution"
+     }
+    ],
+    "n": "5"
+   },
+   {
+    "name": "Probability & Statistics 2 (Paper 6)",
+    "level": "A2",
+    "subtopics": [
+     {
+      "n": "6.1",
+      "title": "The Poisson distribution"
+     },
+     {
+      "n": "6.2",
+      "title": "Linear combinations of random variables"
+     },
+     {
+      "n": "6.3",
+      "title": "Continuous random variables"
+     },
+     {
+      "n": "6.4",
+      "title": "Sampling and estimation"
+     },
+     {
+      "n": "6.5",
+      "title": "Hypothesis tests"
+     }
+    ],
+    "n": "6"
+   }
+  ],
+  "commandWords": [
+   {
+    "word": "Calculate",
+    "meaning": "work out from given facts, figures or information"
+   },
+   {
+    "word": "Describe",
+    "meaning": "state the points of a topic / give characteristics and main features"
+   },
+   {
+    "word": "Determine",
+    "meaning": "establish with certainty"
+   },
+   {
+    "word": "Evaluate",
+    "meaning": "judge or calculate the quality, importance, amount, or value of something"
+   },
+   {
+    "word": "Explain",
+    "meaning": "set out purposes or reasons / make the relationships between things clear / say why and/or how and support with relevant evidence"
+   },
+   {
+    "word": "Identify",
+    "meaning": "name/select/recognise"
+   },
+   {
+    "word": "Justify",
+    "meaning": "support a case with evidence/argument"
+   },
+   {
+    "word": "Show (that)",
+    "meaning": "provide structured evidence that leads to a given result"
+   },
+   {
+    "word": "Sketch",
+    "meaning": "make a simple freehand drawing showing the key features, taking care over proportions"
+   },
+   {
+    "word": "State",
+    "meaning": "express in clear terms"
+   },
+   {
+    "word": "Verify",
+    "meaning": "confirm a given statement/result is true"
+   }
+  ]
+ },
+ "9708": {
+  "code": "9708",
+  "name": "Economics",
+  "stage": "alevel",
+  "qualification": "Cambridge International AS & A Level",
+  "years": "2026, 2027 and 2028",
+  "tiered": false,
+  "papers": [
+   "Paper 1: AS Level Multiple Choice",
+   "Paper 2: AS Level Data Response and Essays",
+   "Paper 3: A Level Multiple Choice",
+   "Paper 4: A Level Data Response and Essays"
+  ],
+  "practical": null,
+  "topics": [
+   {
+    "name": "Basic economic ideas and resource allocation",
+    "level": "AS",
+    "subtopics": [
+     {
+      "n": "1.1",
+      "title": "Scarcity, choice and opportunity cost"
+     },
+     {
+      "n": "1.2",
+      "title": "Economic methodology"
+     },
+     {
+      "n": "1.3",
+      "title": "Factors of production"
+     },
+     {
+      "n": "1.4",
+      "title": "Resource allocation in different economic systems"
+     },
+     {
+      "n": "1.5",
+      "title": "Production possibility curves"
+     },
+     {
+      "n": "1.6",
+      "title": "Classification of goods and services"
+     }
+    ],
+    "n": "1"
+   },
+   {
+    "name": "The price system and the microeconomy",
+    "level": "AS",
+    "subtopics": [
+     {
+      "n": "2.1",
+      "title": "Demand and supply curves"
+     },
+     {
+      "n": "2.2",
+      "title": "Price elasticity, income elasticity and cross elasticity of demand"
+     },
+     {
+      "n": "2.3",
+      "title": "Price elasticity of supply"
+     },
+     {
+      "n": "2.4",
+      "title": "The interaction of demand and supply"
+     },
+     {
+      "n": "2.5",
+      "title": "Consumer and producer surplus"
+     }
+    ],
+    "n": "2"
+   },
+   {
+    "name": "Government microeconomic intervention",
+    "level": "AS",
+    "subtopics": [
+     {
+      "n": "3.1",
+      "title": "Reasons for government intervention in markets"
+     },
+     {
+      "n": "3.2",
+      "title": "Methods and effects of government intervention in markets"
+     },
+     {
+      "n": "3.3",
+      "title": "Addressing income and wealth inequality"
+     }
+    ],
+    "n": "3"
+   },
+   {
+    "name": "The macroeconomy",
+    "level": "AS",
+    "subtopics": [
+     {
+      "n": "4.1",
+      "title": "National income statistics"
+     },
+     {
+      "n": "4.2",
+      "title": "Introduction to the circular flow of income"
+     },
+     {
+      "n": "4.3",
+      "title": "Aggregate Demand and Aggregate"
+     },
+     {
+      "n": "4.4",
+      "title": "Economic growth"
+     },
+     {
+      "n": "4.5",
+      "title": "Unemployment"
+     },
+     {
+      "n": "4.6",
+      "title": "Price stability"
+     }
+    ],
+    "n": "4"
+   },
+   {
+    "name": "Government macroeconomic intervention",
+    "level": "AS",
+    "subtopics": [
+     {
+      "n": "5.1",
+      "title": "Government macroeconomic policy objectives"
+     },
+     {
+      "n": "5.2",
+      "title": "Fiscal policy"
+     },
+     {
+      "n": "5.3",
+      "title": "Monetary policy interrelatedness"
+     },
+     {
+      "n": "5.4",
+      "title": "Supply-side policy"
+     }
+    ],
+    "n": "5"
+   },
+   {
+    "name": "International economic issues",
+    "level": "AS",
+    "subtopics": [
+     {
+      "n": "6.1",
+      "title": "The reasons for international trade"
+     },
+     {
+      "n": "6.2",
+      "title": "Protectionism"
+     },
+     {
+      "n": "6.3",
+      "title": "Current account of the balance of payments"
+     },
+     {
+      "n": "6.4",
+      "title": "Exchange rates"
+     },
+     {
+      "n": "6.5",
+      "title": "Policies to correct imbalances in the current account of the balance of payments"
+     }
+    ],
+    "n": "6"
+   },
+   {
+    "name": "The price system and the microeconomy",
+    "level": "A2",
+    "subtopics": [
+     {
+      "n": "7.1",
+      "title": "Utility"
+     },
+     {
+      "n": "7.2",
+      "title": "Indifference curves and budget lines"
+     },
+     {
+      "n": "7.3",
+      "title": "Efficiency and market failure"
+     },
+     {
+      "n": "7.4",
+      "title": "Private costs and benefits, externalities and social costs and benefits"
+     },
+     {
+      "n": "7.5",
+      "title": "Types of cost, revenue and profit, short-run and long-run production"
+     },
+     {
+      "n": "7.6",
+      "title": "Different market structures"
+     },
+     {
+      "n": "7.7",
+      "title": "Growth and survival of firms"
+     },
+     {
+      "n": "7.8",
+      "title": "Differing objectives and policies of firms"
+     }
+    ],
+    "n": "7"
+   },
+   {
+    "name": "Government microeconomic intervention",
+    "level": "A2",
+    "subtopics": [
+     {
+      "n": "8.1",
+      "title": "Government policies to achieve efficient resource allocation and correct market failure"
+     },
+     {
+      "n": "8.2",
+      "title": "Equity and redistribution of income and wealth"
+     },
+     {
+      "n": "8.3",
+      "title": "Labour market forces and government intervention"
+     }
+    ],
+    "n": "8"
+   },
+   {
+    "name": "The macroeconomy",
+    "level": "A2",
+    "subtopics": [
+     {
+      "n": "9.1",
+      "title": "The circular flow of income"
+     },
+     {
+      "n": "9.2",
+      "title": "Economic growth and sustainability"
+     },
+     {
+      "n": "9.3",
+      "title": "Employment/unemployment"
+     },
+     {
+      "n": "9.4",
+      "title": "Money and banking"
+     }
+    ],
+    "n": "9"
+   },
+   {
+    "name": "Government macroeconomic intervention",
+    "level": "A2",
+    "subtopics": [
+     {
+      "n": "10.1",
+      "title": "Government macroeconomic policy objectives"
+     },
+     {
+      "n": "10.2",
+      "title": "Links between macroeconomic problems and their interrelatedness"
+     },
+     {
+      "n": "10.3",
+      "title": "Effectiveness of policy options to meet all macroeconomic objectives"
+     }
+    ],
+    "n": "10"
+   },
+   {
+    "name": "International economic issues",
+    "level": "A2",
+    "subtopics": [
+     {
+      "n": "11.1",
+      "title": "Policies to correct disequilibrium in the balance of payments"
+     },
+     {
+      "n": "11.2",
+      "title": "Exchange rates"
+     },
+     {
+      "n": "11.3",
+      "title": "Economic development"
+     },
+     {
+      "n": "11.4",
+      "title": "Characteristics of countries at different levels of development"
+     },
+     {
+      "n": "11.5",
+      "title": "Relationship between countries at different levels of development"
+     },
+     {
+      "n": "11.6",
+      "title": "Globalisation"
+     }
+    ],
+    "n": "11"
+   }
+  ],
+  "commandWords": [
+   {
+    "word": "Analyse",
+    "meaning": "examine in detail to show meaning, identify elements and the relationship between them"
+   },
+   {
+    "word": "Assess",
+    "meaning": "make an informed judgement"
+   },
+   {
+    "word": "Calculate",
+    "meaning": "work out from given facts, figures or information"
+   },
+   {
+    "word": "Comment",
+    "meaning": "give an informed opinion"
+   },
+   {
+    "word": "Compare",
+    "meaning": "identify/comment on similarities and/or differences"
+   },
+   {
+    "word": "Consider",
+    "meaning": "review and respond to given information"
+   },
+   {
+    "word": "Define",
+    "meaning": "give precise meaning"
+   },
+   {
+    "word": "Demonstrate",
+    "meaning": "show how or give an example"
+   },
+   {
+    "word": "Describe",
+    "meaning": "state the points of a topic / give characteristics and main features"
+   },
+   {
+    "word": "Discuss",
+    "meaning": "write about issue(s) or topic(s) in depth in a structured way"
+   },
+   {
+    "word": "Evaluate",
+    "meaning": "judge or calculate the quality, importance, amount, or value of something"
+   },
+   {
+    "word": "Explain",
+    "meaning": "set out purposes or reasons / make the relationships between things clear / say why and/or how and support with relevant evidence"
+   },
+   {
+    "word": "Give",
+    "meaning": "produce an answer from a given source or recall/memory"
+   },
+   {
+    "word": "Identify",
+    "meaning": "name/select/recognise"
+   },
+   {
+    "word": "Justify",
+    "meaning": "support a case with evidence/argument"
+   },
+   {
+    "word": "Outline",
+    "meaning": "set out the main points"
+   },
+   {
+    "word": "State",
+    "meaning": "express in clear terms"
+   }
+  ]
+ },
+ "9609": {
+  "code": "9609",
+  "name": "Business",
+  "stage": "alevel",
+  "qualification": "Cambridge International AS & A Level",
+  "years": "2026, 2027 and 2028",
+  "tiered": false,
+  "papers": [
+   "Paper 1: Business Concepts 1",
+   "Paper 2: Business Concepts 2",
+   "Paper 3: Business Decision-Making",
+   "Paper 4: Business Strategy"
+  ],
+  "practical": null,
+  "topics": [
+   {
+    "name": "Business and its environment",
+    "level": "AS",
+    "subtopics": [
+     {
+      "n": "1.1",
+      "title": "Enterprise"
+     },
+     {
+      "n": "1.2",
+      "title": "Business structure"
+     },
+     {
+      "n": "1.3",
+      "title": "Size of business"
+     },
+     {
+      "n": "1.4",
+      "title": "Business objectives"
+     },
+     {
+      "n": "1.5",
+      "title": "Stakeholders in a business"
+     }
+    ],
+    "n": "1"
+   },
+   {
+    "name": "Human resource management",
+    "level": "AS",
+    "subtopics": [
+     {
+      "n": "2.1",
+      "title": "Human resource management (HRM)"
+     },
+     {
+      "n": "2.2",
+      "title": "Motivation"
+     },
+     {
+      "n": "2.3",
+      "title": "Management"
+     }
+    ],
+    "n": "2"
+   },
+   {
+    "name": "Marketing",
+    "level": "AS",
+    "subtopics": [
+     {
+      "n": "3.1",
+      "title": "The nature of marketing"
+     },
+     {
+      "n": "3.2",
+      "title": "Market research"
+     },
+     {
+      "n": "3.3",
+      "title": "The marketing mix"
+     }
+    ],
+    "n": "3"
+   },
+   {
+    "name": "Operations management",
+    "level": "AS",
+    "subtopics": [
+     {
+      "n": "4.1",
+      "title": "The nature of operations"
+     },
+     {
+      "n": "4.2",
+      "title": "Inventory management"
+     },
+     {
+      "n": "4.3",
+      "title": "Capacity utilisation and outsourcing"
+     }
+    ],
+    "n": "4"
+   },
+   {
+    "name": "Finance and accounting",
+    "level": "AS",
+    "subtopics": [
+     {
+      "n": "5.1",
+      "title": "Business finance"
+     },
+     {
+      "n": "5.2",
+      "title": "Sources of finance"
+     },
+     {
+      "n": "5.3",
+      "title": "Forecasting and managing cash flows"
+     },
+     {
+      "n": "5.4",
+      "title": "Costs"
+     },
+     {
+      "n": "5.5",
+      "title": "Budgets"
+     }
+    ],
+    "n": "5"
+   },
+   {
+    "name": "Business and its environment",
+    "level": "A2",
+    "subtopics": [
+     {
+      "n": "6.1",
+      "title": "External influences on business activity"
+     },
+     {
+      "n": "6.2",
+      "title": "Business strategy"
+     }
+    ],
+    "n": "6"
+   },
+   {
+    "name": "Human resource management",
+    "level": "A2",
+    "subtopics": [
+     {
+      "n": "7.1",
+      "title": "Organisational structure"
+     },
+     {
+      "n": "7.2",
+      "title": "Business communication"
+     },
+     {
+      "n": "7.3",
+      "title": "Leadership"
+     },
+     {
+      "n": "7.4",
+      "title": "Human resource management (HRM) strategy"
+     }
+    ],
+    "n": "7"
+   },
+   {
+    "name": "Marketing",
+    "level": "A2",
+    "subtopics": [
+     {
+      "n": "8.1",
+      "title": "Marketing analysis"
+     },
+     {
+      "n": "8.2",
+      "title": "Marketing strategy"
+     }
+    ],
+    "n": "8"
+   },
+   {
+    "name": "Operations management",
+    "level": "A2",
+    "subtopics": [
+     {
+      "n": "9.1",
+      "title": "Location and scale"
+     },
+     {
+      "n": "9.2",
+      "title": "Quality management"
+     },
+     {
+      "n": "9.3",
+      "title": "Operations strategy"
+     }
+    ],
+    "n": "9"
+   },
+   {
+    "name": "Finance and accounting",
+    "level": "A2",
+    "subtopics": [
+     {
+      "n": "10.1",
+      "title": "Financial statements"
+     },
+     {
+      "n": "10.2",
+      "title": "Analysis of published accounts"
+     },
+     {
+      "n": "10.3",
+      "title": "Investment appraisal"
+     },
+     {
+      "n": "10.4",
+      "title": "Finance and accounting strategy"
+     }
+    ],
+    "n": "10"
+   }
+  ],
+  "commandWords": [
+   {
+    "word": "Advise",
+    "meaning": "write down a suggested course of action in a given situation"
+   },
+   {
+    "word": "Analyse",
+    "meaning": "examine in detail to show meaning, identify elements and the relationship between them"
+   },
+   {
+    "word": "Assess",
+    "meaning": "make an informed judgement"
+   },
+   {
+    "word": "Calculate",
+    "meaning": "work out from given facts, figures or information"
+   },
+   {
+    "word": "Define",
+    "meaning": "give precise meaning"
+   },
+   {
+    "word": "Evaluate",
+    "meaning": "judge or calculate the quality, importance, amount, or value of something"
+   },
+   {
+    "word": "Explain",
+    "meaning": "set out purposes or reasons / make the relationships between things clear / say why and/or how and support with relevant evidence"
+   },
+   {
+    "word": "Identify",
+    "meaning": "name/select/recognise"
+   },
+   {
+    "word": "Justify",
+    "meaning": "support a case with evidence/argument Additional guidance, e.g. phrases such as ‘To what extent …?’ may also be seen in the assessment for this syllabus."
+   }
+  ]
+ },
+ "9618": {
+  "code": "9618",
+  "name": "Computer Science",
+  "stage": "alevel",
+  "qualification": "Cambridge International AS & A Level",
+  "years": "2027, 2028 and 2029",
+  "tiered": false,
+  "papers": [
+   "Paper 1: Theory Fundamentals",
+   "Paper 2: Fundamental Problem-solving and Programming Skills",
+   "Paper 3: Advanced Theory",
+   "Paper 4: Practical"
+  ],
+  "practical": null,
+  "topics": [
+   {
+    "name": "Information representation",
+    "level": "AS",
+    "subtopics": [
+     {
+      "n": "1.1",
+      "title": "Data Representation"
+     },
+     {
+      "n": "1.2",
+      "title": "Multimedia – Graphics, Sound"
+     },
+     {
+      "n": "1.3",
+      "title": "Compression"
+     }
+    ],
+    "n": "1"
+   },
+   {
+    "name": "Communication",
+    "level": "AS",
+    "subtopics": [
+     {
+      "n": "2.1",
+      "title": "Networks including the internet"
+     }
+    ],
+    "n": "2"
+   },
+   {
+    "name": "Hardware",
+    "level": "AS",
+    "subtopics": [
+     {
+      "n": "3.1",
+      "title": "Computers and their components"
+     },
+     {
+      "n": "3.2",
+      "title": "Logic Gates and Logic Circuits"
+     }
+    ],
+    "n": "3"
+   },
+   {
+    "name": "Processor Fundamentals",
+    "level": "AS",
+    "subtopics": [
+     {
+      "n": "4.1",
+      "title": "Central Processing Unit (CPU) Architecture"
+     },
+     {
+      "n": "4.2",
+      "title": "Assembly Language"
+     },
+     {
+      "n": "4.3",
+      "title": "Bit manipulation"
+     }
+    ],
+    "n": "4"
+   },
+   {
+    "name": "System Software",
+    "level": "AS",
+    "subtopics": [
+     {
+      "n": "5.1",
+      "title": "Operating Systems"
+     },
+     {
+      "n": "5.2",
+      "title": "Language Translators"
+     }
+    ],
+    "n": "5"
+   },
+   {
+    "name": "Security, privacy and data integrity",
+    "level": "AS",
+    "subtopics": [
+     {
+      "n": "6.1",
+      "title": "Data Security"
+     },
+     {
+      "n": "6.2",
+      "title": "Data Integrity"
+     }
+    ],
+    "n": "6"
+   },
+   {
+    "name": "Ethics and Ownership",
+    "level": "AS",
+    "subtopics": [
+     {
+      "n": "7.1",
+      "title": "Ethics and Ownership"
+     }
+    ],
+    "n": "7"
+   },
+   {
+    "name": "Databases",
+    "level": "AS",
+    "subtopics": [
+     {
+      "n": "8.1",
+      "title": "Database Concepts"
+     },
+     {
+      "n": "8.2",
+      "title": "Database Management Systems (DBMS)"
+     },
+     {
+      "n": "8.3",
+      "title": "Data Definition Language (DDL) and Data Manipulation Language (DML)"
+     }
+    ],
+    "n": "8"
+   },
+   {
+    "name": "Algorithm Design and Problem-solving",
+    "level": "AS",
+    "subtopics": [
+     {
+      "n": "9.1",
+      "title": "Computational Thinking Skills"
+     },
+     {
+      "n": "9.2",
+      "title": "Algorithms"
+     }
+    ],
+    "n": "9"
+   },
+   {
+    "name": "Data Types and Structures",
+    "level": "AS",
+    "subtopics": [
+     {
+      "n": "10.1",
+      "title": "Data Types and Records"
+     },
+     {
+      "n": "10.2",
+      "title": "Arrays"
+     },
+     {
+      "n": "10.3",
+      "title": "Files"
+     },
+     {
+      "n": "10.4",
+      "title": "Introduction to Abstract Data Types (ADT)"
+     }
+    ],
+    "n": "10"
+   },
+   {
+    "name": "Programming",
+    "level": "AS",
+    "subtopics": [
+     {
+      "n": "11.1",
+      "title": "Programming Basics"
+     },
+     {
+      "n": "11.2",
+      "title": "Constructs"
+     },
+     {
+      "n": "11.3",
+      "title": "Structured Programming"
+     }
+    ],
+    "n": "11"
+   },
+   {
+    "name": "Software Development",
+    "level": "AS",
+    "subtopics": [
+     {
+      "n": "12.1",
+      "title": "Program Development Life cycle"
+     },
+     {
+      "n": "12.2",
+      "title": "Program Design"
+     },
+     {
+      "n": "12.3",
+      "title": "Program Testing and Maintenance"
+     }
+    ],
+    "n": "12"
+   },
+   {
+    "name": "Data Representation",
+    "level": "A2",
+    "subtopics": [
+     {
+      "n": "13.1",
+      "title": "User-defined data types"
+     },
+     {
+      "n": "13.2",
+      "title": "File organisation and access"
+     },
+     {
+      "n": "13.3",
+      "title": "Floating-point numbers, representation and manipulation"
+     }
+    ],
+    "n": "13"
+   },
+   {
+    "name": "Communication and internet technologies",
+    "level": "A2",
+    "subtopics": [
+     {
+      "n": "14.1",
+      "title": "Protocols"
+     },
+     {
+      "n": "14.2",
+      "title": "Circuit switching, packet switching"
+     }
+    ],
+    "n": "14"
+   },
+   {
+    "name": "Hardware and Virtual Machines",
+    "level": "A2",
+    "subtopics": [
+     {
+      "n": "15.1",
+      "title": "Processors, Parallel Processing and Virtual Machines"
+     },
+     {
+      "n": "15.2",
+      "title": "Boolean Algebra and Logic Circuits"
+     }
+    ],
+    "n": "15"
+   },
+   {
+    "name": "System Software",
+    "level": "A2",
+    "subtopics": [
+     {
+      "n": "16.1",
+      "title": "Purposes of an Operating System (OS)"
+     },
+     {
+      "n": "16.2",
+      "title": "Translation Software"
+     }
+    ],
+    "n": "16"
+   },
+   {
+    "name": "Security",
+    "level": "A2",
+    "subtopics": [
+     {
+      "n": "17.1",
+      "title": "Encryption, Encryption Protocols and Digital Certificates"
+     }
+    ],
+    "n": "17"
+   },
+   {
+    "name": "Artificial Intelligence (AI)",
+    "level": "A2",
+    "subtopics": [
+     {
+      "n": "18.1",
+      "title": "Artificial Intelligence (AI)"
+     }
+    ],
+    "n": "18"
+   },
+   {
+    "name": "Computational thinking and Problem-solving",
+    "level": "A2",
+    "subtopics": [
+     {
+      "n": "19.1",
+      "title": "Algorithms"
+     },
+     {
+      "n": "19.2",
+      "title": "Recursion"
+     }
+    ],
+    "n": "19"
+   },
+   {
+    "name": "Further Programming",
+    "level": "A2",
+    "subtopics": [
+     {
+      "n": "20.1",
+      "title": "Programming Paradigms"
+     },
+     {
+      "n": "20.2",
+      "title": "File Processing and Exception Handling"
+     }
+    ],
+    "n": "20"
+   }
+  ],
+  "commandWords": [
+   {
+    "word": "Analyse",
+    "meaning": "examine in detail to show meaning, identify elements and the relationship between them"
+   },
+   {
+    "word": "Assess",
+    "meaning": "make an informed judgement"
+   },
+   {
+    "word": "Calculate",
+    "meaning": "work out from given facts, figures or information"
+   },
+   {
+    "word": "Comment",
+    "meaning": "give an informed opinion"
+   },
+   {
+    "word": "Compare",
+    "meaning": "identify/comment on similarities and/or differences"
+   },
+   {
+    "word": "Complete",
+    "meaning": "add information to an incomplete diagram or table"
+   },
+   {
+    "word": "Consider",
+    "meaning": "review and respond to given information"
+   },
+   {
+    "word": "Contrast",
+    "meaning": "identify/comment on differences"
+   },
+   {
+    "word": "Define",
+    "meaning": "give precise meaning"
+   },
+   {
+    "word": "Demonstrate",
+    "meaning": "show how or give an example"
+   },
+   {
+    "word": "Describe",
+    "meaning": "state the points of a topic / give characteristics and main features"
+   },
+   {
+    "word": "Develop",
+    "meaning": "take forward to a more advanced stage or build upon given information"
+   },
+   {
+    "word": "Discuss",
+    "meaning": "write about issue(s) or topic(s) in depth in a structured way"
+   },
+   {
+    "word": "Draw",
+    "meaning": "draw a line to match a term with a description"
+   },
+   {
+    "word": "Evaluate",
+    "meaning": "judge or calculate the quality, importance, amount, or value of something"
+   },
+   {
+    "word": "Examine",
+    "meaning": "investigate closely, in detail"
+   },
+   {
+    "word": "Explain",
+    "meaning": "set out purposes or reasons / make the relationships between things clear / say why and/or how and support with relevant evidence"
+   },
+   {
+    "word": "Give",
+    "meaning": "produce an answer from a given source or recall/memory"
+   },
+   {
+    "word": "Identify",
+    "meaning": "name/select/recognise"
+   },
+   {
+    "word": "Justify",
+    "meaning": "support a case with evidence/argument"
+   },
+   {
+    "word": "Outline",
+    "meaning": "set out the main points"
+   },
+   {
+    "word": "Predict",
+    "meaning": "suggest what may happen based on available information"
+   },
+   {
+    "word": "Sketch",
+    "meaning": "make a simple freehand drawing showing the key features, taking care over proportions Command Word          What it means"
+   },
+   {
+    "word": "State",
+    "meaning": "express in clear terms"
+   },
+   {
+    "word": "Suggest",
+    "meaning": "apply knowledge and understanding to situations where there are a range of valid responses in order to make proposals / put forward considerations"
+   },
+   {
+    "word": "Summarise",
+    "meaning": "select and present the main points, without detail"
+   },
+   {
+    "word": "Write",
+    "meaning": "write an answer in a specific way"
+   }
+  ]
+ },
+ "0862": {
+  "code": "0862",
+  "name": "Mathematics",
+  "stage": "lower",
+  "qualification": "Cambridge Lower Secondary (Stage 9)",
+  "years": null,
+  "tiered": false,
+  "papers": [
+   "Cambridge Lower Secondary Checkpoint (end of Stage 9)"
+  ],
+  "practical": null,
+  "topics": [
+   {
+    "n": "1",
+    "name": "Number",
+    "subtopics": []
+   },
+   {
+    "n": "2",
+    "name": "Algebra",
+    "subtopics": []
+   },
+   {
+    "n": "3",
+    "name": "Geometry and Measure",
+    "subtopics": []
+   },
+   {
+    "n": "4",
+    "name": "Statistics and Probability",
+    "subtopics": []
+   }
+  ],
+  "commandWords": [
+   {
+    "word": "Calculate",
+    "meaning": "work out from given facts, figures or information"
+   },
+   {
+    "word": "Compare",
+    "meaning": "identify/comment on similarities and/or differences"
+   },
+   {
+    "word": "Define",
+    "meaning": "give precise meaning"
+   },
+   {
+    "word": "Describe",
+    "meaning": "state the points of a topic / give characteristics and main features"
+   },
+   {
+    "word": "Explain",
+    "meaning": "set out purposes or reasons / make the relationships between things clear / say why and/or how and support with relevant evidence"
+   },
+   {
+    "word": "Give",
+    "meaning": "produce an answer from a given source or recall/memory"
+   },
+   {
+    "word": "Identify",
+    "meaning": "name/select/recognise"
+   },
+   {
+    "word": "Outline",
+    "meaning": "set out the main points"
+   },
+   {
+    "word": "Predict",
+    "meaning": "suggest what may happen based on available information"
+   },
+   {
+    "word": "State",
+    "meaning": "express in clear terms"
+   },
+   {
+    "word": "Suggest",
+    "meaning": "apply knowledge and understanding to situations where there are a range of valid responses in order to make proposals / put forward considerations"
+   }
+  ]
+ },
+ "0893": {
+  "code": "0893",
+  "name": "Science",
+  "stage": "lower",
+  "qualification": "Cambridge Lower Secondary (Stage 9)",
+  "years": null,
+  "tiered": false,
+  "papers": [
+   "Cambridge Lower Secondary Checkpoint (end of Stage 9)"
+  ],
+  "practical": null,
+  "topics": [
+   {
+    "n": "1",
+    "name": "Biology",
+    "subtopics": []
+   },
+   {
+    "n": "2",
+    "name": "Chemistry",
+    "subtopics": []
+   },
+   {
+    "n": "3",
+    "name": "Physics",
+    "subtopics": []
+   },
+   {
+    "n": "4",
+    "name": "Earth and Space",
+    "subtopics": []
+   },
+   {
+    "n": "5",
+    "name": "Thinking and Working Scientifically",
+    "subtopics": []
+   },
+   {
+    "n": "6",
+    "name": "Science in Context",
+    "subtopics": []
+   }
+  ],
+  "commandWords": [
+   {
+    "word": "Calculate",
+    "meaning": "work out from given facts, figures or information"
+   },
+   {
+    "word": "Compare",
+    "meaning": "identify/comment on similarities and/or differences"
+   },
+   {
+    "word": "Define",
+    "meaning": "give precise meaning"
+   },
+   {
+    "word": "Describe",
+    "meaning": "state the points of a topic / give characteristics and main features"
+   },
+   {
+    "word": "Explain",
+    "meaning": "set out purposes or reasons / make the relationships between things clear / say why and/or how and support with relevant evidence"
+   },
+   {
+    "word": "Give",
+    "meaning": "produce an answer from a given source or recall/memory"
+   },
+   {
+    "word": "Identify",
+    "meaning": "name/select/recognise"
+   },
+   {
+    "word": "Outline",
+    "meaning": "set out the main points"
+   },
+   {
+    "word": "Predict",
+    "meaning": "suggest what may happen based on available information"
+   },
+   {
+    "word": "State",
+    "meaning": "express in clear terms"
+   },
+   {
+    "word": "Suggest",
+    "meaning": "apply knowledge and understanding to situations where there are a range of valid responses in order to make proposals / put forward considerations"
+   }
+  ]
+ },
+ "0861": {
+  "code": "0861",
+  "name": "English",
+  "stage": "lower",
+  "qualification": "Cambridge Lower Secondary (Stage 9)",
+  "years": null,
+  "tiered": false,
+  "papers": [
+   "Cambridge Lower Secondary Checkpoint (end of Stage 9)"
+  ],
+  "practical": null,
+  "topics": [
+   {
+    "n": "1",
+    "name": "Reading",
+    "subtopics": []
+   },
+   {
+    "n": "2",
+    "name": "Writing",
+    "subtopics": []
+   },
+   {
+    "n": "3",
+    "name": "Speaking and Listening",
+    "subtopics": []
+   }
+  ],
+  "commandWords": [
+   {
+    "word": "Calculate",
+    "meaning": "work out from given facts, figures or information"
+   },
+   {
+    "word": "Compare",
+    "meaning": "identify/comment on similarities and/or differences"
+   },
+   {
+    "word": "Define",
+    "meaning": "give precise meaning"
+   },
+   {
+    "word": "Describe",
+    "meaning": "state the points of a topic / give characteristics and main features"
+   },
+   {
+    "word": "Explain",
+    "meaning": "set out purposes or reasons / make the relationships between things clear / say why and/or how and support with relevant evidence"
+   },
+   {
+    "word": "Give",
+    "meaning": "produce an answer from a given source or recall/memory"
+   },
+   {
+    "word": "Identify",
+    "meaning": "name/select/recognise"
+   },
+   {
+    "word": "Outline",
+    "meaning": "set out the main points"
+   },
+   {
+    "word": "Predict",
+    "meaning": "suggest what may happen based on available information"
+   },
+   {
+    "word": "State",
+    "meaning": "express in clear terms"
+   },
+   {
+    "word": "Suggest",
+    "meaning": "apply knowledge and understanding to situations where there are a range of valid responses in order to make proposals / put forward considerations"
+   }
+  ]
+ },
+ "0876": {
+  "code": "0876",
+  "name": "English as a Second Language",
+  "stage": "lower",
+  "qualification": "Cambridge Lower Secondary (Stage 9)",
+  "years": null,
+  "tiered": false,
+  "papers": [
+   "Cambridge Lower Secondary Checkpoint (end of Stage 9)"
+  ],
+  "practical": null,
+  "topics": [
+   {
+    "n": "1",
+    "name": "Reading",
+    "subtopics": []
+   },
+   {
+    "n": "2",
+    "name": "Writing",
+    "subtopics": []
+   },
+   {
+    "n": "3",
+    "name": "Listening",
+    "subtopics": []
+   },
+   {
+    "n": "4",
+    "name": "Speaking",
+    "subtopics": []
+   },
+   {
+    "n": "5",
+    "name": "Use of English",
+    "subtopics": []
+   }
+  ],
+  "commandWords": [
+   {
+    "word": "Calculate",
+    "meaning": "work out from given facts, figures or information"
+   },
+   {
+    "word": "Compare",
+    "meaning": "identify/comment on similarities and/or differences"
+   },
+   {
+    "word": "Define",
+    "meaning": "give precise meaning"
+   },
+   {
+    "word": "Describe",
+    "meaning": "state the points of a topic / give characteristics and main features"
+   },
+   {
+    "word": "Explain",
+    "meaning": "set out purposes or reasons / make the relationships between things clear / say why and/or how and support with relevant evidence"
+   },
+   {
+    "word": "Give",
+    "meaning": "produce an answer from a given source or recall/memory"
+   },
+   {
+    "word": "Identify",
+    "meaning": "name/select/recognise"
+   },
+   {
+    "word": "Outline",
+    "meaning": "set out the main points"
+   },
+   {
+    "word": "Predict",
+    "meaning": "suggest what may happen based on available information"
+   },
+   {
+    "word": "State",
+    "meaning": "express in clear terms"
+   },
+   {
+    "word": "Suggest",
+    "meaning": "apply knowledge and understanding to situations where there are a range of valid responses in order to make proposals / put forward considerations"
+   }
+  ]
+ },
+ "0860": {
+  "code": "0860",
+  "name": "Computing",
+  "stage": "lower",
+  "qualification": "Cambridge Lower Secondary (Stage 9)",
+  "years": null,
+  "tiered": false,
+  "papers": [
+   "Cambridge Lower Secondary Checkpoint (end of Stage 9)"
+  ],
+  "practical": null,
+  "topics": [
+   {
+    "n": "1",
+    "name": "Computational Thinking",
+    "subtopics": []
+   },
+   {
+    "n": "2",
+    "name": "Programming",
+    "subtopics": []
+   },
+   {
+    "n": "3",
+    "name": "Managing Data",
+    "subtopics": []
+   },
+   {
+    "n": "4",
+    "name": "Networks and Digital Communication",
+    "subtopics": []
+   },
+   {
+    "n": "5",
+    "name": "Computer Systems",
+    "subtopics": []
+   }
+  ],
+  "commandWords": [
+   {
+    "word": "Calculate",
+    "meaning": "work out from given facts, figures or information"
+   },
+   {
+    "word": "Compare",
+    "meaning": "identify/comment on similarities and/or differences"
+   },
+   {
+    "word": "Define",
+    "meaning": "give precise meaning"
+   },
+   {
+    "word": "Describe",
+    "meaning": "state the points of a topic / give characteristics and main features"
+   },
+   {
+    "word": "Explain",
+    "meaning": "set out purposes or reasons / make the relationships between things clear / say why and/or how and support with relevant evidence"
+   },
+   {
+    "word": "Give",
+    "meaning": "produce an answer from a given source or recall/memory"
+   },
+   {
+    "word": "Identify",
+    "meaning": "name/select/recognise"
+   },
+   {
+    "word": "Outline",
+    "meaning": "set out the main points"
+   },
+   {
+    "word": "Predict",
+    "meaning": "suggest what may happen based on available information"
+   },
+   {
+    "word": "State",
+    "meaning": "express in clear terms"
+   },
+   {
+    "word": "Suggest",
+    "meaning": "apply knowledge and understanding to situations where there are a range of valid responses in order to make proposals / put forward considerations"
+   }
+  ]
+ },
+ "1129": {
+  "code": "1129",
+  "name": "Global Perspectives",
+  "stage": "lower",
+  "qualification": "Cambridge Lower Secondary (Stage 9)",
+  "years": null,
+  "tiered": false,
+  "papers": [
+   "Cambridge Lower Secondary Checkpoint (end of Stage 9)"
+  ],
+  "practical": null,
+  "topics": [
+   {
+    "n": "1",
+    "name": "Research",
+    "subtopics": []
+   },
+   {
+    "n": "2",
+    "name": "Analysis",
+    "subtopics": []
+   },
+   {
+    "n": "3",
+    "name": "Evaluation",
+    "subtopics": []
+   },
+   {
+    "n": "4",
+    "name": "Reflection",
+    "subtopics": []
+   },
+   {
+    "n": "5",
+    "name": "Collaboration",
+    "subtopics": []
+   },
+   {
+    "n": "6",
+    "name": "Communication",
+    "subtopics": []
+   }
+  ],
+  "commandWords": [
+   {
+    "word": "Calculate",
+    "meaning": "work out from given facts, figures or information"
+   },
+   {
+    "word": "Compare",
+    "meaning": "identify/comment on similarities and/or differences"
+   },
+   {
+    "word": "Define",
+    "meaning": "give precise meaning"
+   },
+   {
+    "word": "Describe",
+    "meaning": "state the points of a topic / give characteristics and main features"
+   },
+   {
+    "word": "Explain",
+    "meaning": "set out purposes or reasons / make the relationships between things clear / say why and/or how and support with relevant evidence"
+   },
+   {
+    "word": "Give",
+    "meaning": "produce an answer from a given source or recall/memory"
+   },
+   {
+    "word": "Identify",
+    "meaning": "name/select/recognise"
+   },
+   {
+    "word": "Outline",
+    "meaning": "set out the main points"
+   },
+   {
+    "word": "Predict",
+    "meaning": "suggest what may happen based on available information"
+   },
+   {
+    "word": "State",
+    "meaning": "express in clear terms"
+   },
+   {
+    "word": "Suggest",
+    "meaning": "apply knowledge and understanding to situations where there are a range of valid responses in order to make proposals / put forward considerations"
+   }
+  ]
+ }
+}

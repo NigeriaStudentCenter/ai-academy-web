@@ -6,8 +6,8 @@ import 'k12_widgets.dart';
 import 'parent_dashboard_page.dart';
 import 'skill_tree_page.dart';
 
-/// US K–12: the family's learner profiles. Children learn inside the
-/// parent's account — a profile is a nickname, a grade and a state.
+/// Curriculum Tutor: learner profiles (13+) on the US curriculum (grade and
+/// state) or Cambridge International (stage).
 class UsK12HomePage extends StatefulWidget {
   const UsK12HomePage({super.key});
 
@@ -82,7 +82,7 @@ class _UsK12HomePageState extends State<UsK12HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('US K–12 Tutor'),
+        title: const Text('Curriculum Tutor'),
         backgroundColor: k12Blue,
         foregroundColor: Colors.white,
       ),
@@ -113,13 +113,14 @@ class _UsK12HomePageState extends State<UsK12HomePage> {
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(color: k12Soft, borderRadius: BorderRadius.circular(14)),
           child: const Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text('Learning that follows your state’s standards',
+            Text('Learning mapped to your curriculum',
                 style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700, color: k12Blue)),
             SizedBox(height: 6),
             Text(
-              'Skill trees built on the Common Core (math and English), the NGSS (science) and '
-              'the C3 Framework (social studies), adjusted for your state. Every lesson and quiz '
-              'is tagged with its official standard code.',
+              'United States: Common Core, NGSS and C3 skill trees adjusted for your state (grades 8–12).\n'
+              'Cambridge International: Lower Secondary, IGCSE and AS & A Level, organised by the official '
+              'syllabus codes, with exam-style questions marked against mark schemes.\n'
+              'For learners aged 13 and over.',
               style: TextStyle(height: 1.4),
             ),
           ]),
@@ -131,12 +132,12 @@ class _UsK12HomePageState extends State<UsK12HomePage> {
             child: Column(children: [
               const Icon(Icons.family_restroom, size: 48, color: k12Blue),
               const SizedBox(height: 10),
-              const Text('Add your child to get started',
+              const Text('Add a learner to get started',
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
               const SizedBox(height: 6),
               const Text(
-                'Just a first name or nickname, their grade and your state. '
-                'Children learn inside your account — they don’t need their own.',
+                'A first name or nickname and their curriculum — US grade and state, or Cambridge stage. '
+                'Learners must be 13 or older.',
                 textAlign: TextAlign.center,
                 style: TextStyle(color: Colors.black54),
               ),
@@ -167,14 +168,14 @@ class _UsK12HomePageState extends State<UsK12HomePage> {
                     child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                       Text(l.nickname,
                           style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700)),
-                      Text('${meta.gradeLabel(l.grade)} · ${meta.stateName(l.state)}',
+                      Text(meta.learnerLine(l),
                           style: const TextStyle(color: Colors.black54)),
                     ]),
                   ),
                   PopupMenuButton<String>(
                     onSelected: (v) => v == 'edit' ? _edit(l) : _delete(l),
                     itemBuilder: (_) => const [
-                      PopupMenuItem(value: 'edit', child: Text('Edit grade or state')),
+                      PopupMenuItem(value: 'edit', child: Text('Edit learner')),
                       PopupMenuItem(value: 'delete', child: Text('Remove learner')),
                     ],
                   ),
@@ -225,16 +226,27 @@ class _LearnerForm extends StatefulWidget {
 
 class _LearnerFormState extends State<_LearnerForm> {
   late final _name = TextEditingController(text: widget.learner?.nickname ?? '');
-  late String? _grade = widget.learner?.grade;
-  late String? _state = widget.learner?.state;
+  late String _curriculum = widget.learner?.curriculum ?? 'us';
+  late String? _grade = widget.learner?.grade.isNotEmpty == true ? widget.learner!.grade : null;
+  late String? _state = widget.learner?.state.isNotEmpty == true ? widget.learner!.state : null;
+  late String? _stage = widget.learner?.stage.isNotEmpty == true ? widget.learner!.stage : null;
+  bool _over13 = false;
   bool _saving = false;
   String? _error;
+
+  bool get _isNew => widget.learner == null;
 
   @override
   void dispose() {
     _name.dispose();
     super.dispose();
   }
+
+  bool get _ready =>
+      _name.text.trim().isNotEmpty &&
+      (_curriculum == 'cambridge' ? _stage != null : _grade != null && _state != null) &&
+      (!_isNew || _over13) &&
+      !_saving;
 
   Future<void> _save() async {
     setState(() {
@@ -243,7 +255,14 @@ class _LearnerFormState extends State<_LearnerForm> {
     });
     try {
       await K12Service.saveLearner(
-          id: widget.learner?.id, nickname: _name.text.trim(), grade: _grade!, state: _state!);
+        id: widget.learner?.id,
+        nickname: _name.text.trim(),
+        curriculum: _curriculum,
+        grade: _curriculum == 'us' ? _grade! : '',
+        state: _curriculum == 'us' ? _state! : '',
+        stage: _curriculum == 'cambridge' ? _stage! : '',
+        ageConfirmed: _over13,
+      );
       if (mounted) Navigator.pop(context, true);
     } catch (e) {
       if (mounted) setState(() => _error = errorText(e));
@@ -254,57 +273,95 @@ class _LearnerFormState extends State<_LearnerForm> {
 
   @override
   Widget build(BuildContext context) {
-    final ready = _name.text.trim().isNotEmpty && _grade != null && _state != null && !_saving;
+    final meta = widget.meta;
     return Padding(
       padding: EdgeInsets.fromLTRB(20, 20, 20, 20 + MediaQuery.of(context).viewInsets.bottom),
-      child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text(widget.learner == null ? 'Add a learner' : 'Edit ${widget.learner!.nickname}',
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
-        const SizedBox(height: 16),
-        TextField(
-          controller: _name,
-          maxLength: 24,
-          textCapitalization: TextCapitalization.words,
-          onChanged: (_) => setState(() {}),
-          decoration: const InputDecoration(
-            labelText: 'First name or nickname',
-            helperText: 'No surnames, emails or phone numbers.',
-            border: OutlineInputBorder(),
+      child: SingleChildScrollView(
+        child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text(_isNew ? 'Add a learner' : 'Edit ${widget.learner!.nickname}',
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
+          const SizedBox(height: 16),
+          TextField(
+            controller: _name,
+            maxLength: 24,
+            textCapitalization: TextCapitalization.words,
+            onChanged: (_) => setState(() {}),
+            decoration: const InputDecoration(
+              labelText: 'First name or nickname',
+              helperText: 'No surnames, emails or phone numbers.',
+              border: OutlineInputBorder(),
+            ),
           ),
-        ),
-        const SizedBox(height: 12),
-        DropdownButtonFormField<String>(
-          initialValue: _grade,
-          decoration: const InputDecoration(labelText: 'Grade level', border: OutlineInputBorder()),
-          items: [
-            for (final g in widget.meta.grades) DropdownMenuItem(value: g.id, child: Text(g.label)),
-          ],
-          onChanged: (v) => setState(() => _grade = v),
-        ),
-        const SizedBox(height: 12),
-        DropdownButtonFormField<String>(
-          initialValue: _state,
-          isExpanded: true,
-          decoration: const InputDecoration(labelText: 'State', border: OutlineInputBorder()),
-          items: [
-            for (final s in widget.meta.states) DropdownMenuItem(value: s.id, child: Text(s.label)),
-          ],
-          onChanged: (v) => setState(() => _state = v),
-        ),
-        if (_error != null) ...[
-          const SizedBox(height: 10),
-          Text(_error!, style: const TextStyle(color: k12Red)),
-        ],
-        const SizedBox(height: 16),
-        SizedBox(
-          width: double.infinity,
-          child: FilledButton(
-            style: FilledButton.styleFrom(backgroundColor: k12Blue, padding: const EdgeInsets.symmetric(vertical: 14)),
-            onPressed: ready ? _save : null,
-            child: Text(_saving ? 'Saving…' : 'Save'),
+          const SizedBox(height: 12),
+          SegmentedButton<String>(
+            segments: const [
+              ButtonSegment(value: 'us', label: Text('United States'), icon: Icon(Icons.flag_outlined)),
+              ButtonSegment(value: 'cambridge', label: Text('Cambridge'), icon: Icon(Icons.public)),
+            ],
+            selected: {_curriculum},
+            onSelectionChanged: (v) => setState(() => _curriculum = v.first),
           ),
-        ),
-      ]),
+          const SizedBox(height: 12),
+          if (_curriculum == 'us') ...[
+            DropdownButtonFormField<String>(
+              initialValue: _grade,
+              decoration: const InputDecoration(labelText: 'Grade level', border: OutlineInputBorder()),
+              items: [for (final g in meta.grades) DropdownMenuItem(value: g.id, child: Text(g.label))],
+              onChanged: (v) => setState(() => _grade = v),
+            ),
+            const SizedBox(height: 12),
+            DropdownButtonFormField<String>(
+              initialValue: _state,
+              isExpanded: true,
+              decoration: const InputDecoration(labelText: 'State', border: OutlineInputBorder()),
+              items: [for (final s in meta.states) DropdownMenuItem(value: s.id, child: Text(s.label))],
+              onChanged: (v) => setState(() => _state = v),
+            ),
+          ] else
+            DropdownButtonFormField<String>(
+              initialValue: _stage,
+              isExpanded: true,
+              itemHeight: 64,
+              decoration: const InputDecoration(labelText: 'Cambridge stage', border: OutlineInputBorder()),
+              items: [
+                for (final s in meta.camStages)
+                  DropdownMenuItem(
+                    value: s.id,
+                    child: Column(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      Text(s.label),
+                      Text(s.detail, style: const TextStyle(fontSize: 12, color: Colors.black54)),
+                    ]),
+                  ),
+              ],
+              onChanged: (v) => setState(() => _stage = v),
+            ),
+          if (_isNew) ...[
+            const SizedBox(height: 8),
+            CheckboxListTile(
+              value: _over13,
+              onChanged: (v) => setState(() => _over13 = v ?? false),
+              contentPadding: EdgeInsets.zero,
+              controlAffinity: ListTileControlAffinity.leading,
+              activeColor: k12Blue,
+              title: const Text('This learner is 13 or older'),
+              subtitle: const Text('AI Academy is for learners aged 13 and over.'),
+            ),
+          ],
+          if (_error != null) ...[
+            const SizedBox(height: 10),
+            Text(_error!, style: const TextStyle(color: k12Red)),
+          ],
+          const SizedBox(height: 16),
+          SizedBox(
+            width: double.infinity,
+            child: FilledButton(
+              style: FilledButton.styleFrom(backgroundColor: k12Blue, padding: const EdgeInsets.symmetric(vertical: 14)),
+              onPressed: _ready ? _save : null,
+              child: Text(_saving ? 'Saving…' : 'Save'),
+            ),
+          ),
+        ]),
+      ),
     );
   }
 }

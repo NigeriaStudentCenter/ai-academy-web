@@ -13,49 +13,107 @@ class K12Option {
   const K12Option(this.id, this.label, [this.detail = '']);
 }
 
-/// Grades, subjects, states, explanation styles and levels.
+/// A Cambridge syllabus a learner can study at their stage.
+class K12CamSubject {
+  final String code;
+  final String name;
+  final String qualification;
+  final String years;
+  final bool tiered;
+  final bool practical;
+  const K12CamSubject(this.code, this.name, this.qualification, this.years,
+      this.tiered, this.practical);
+
+  String get label => '$code $name';
+}
+
+/// Grades, subjects, states, explanation styles and levels — US and Cambridge.
 class K12Meta {
   final List<K12Option> grades;
   final List<K12Option> subjects; // detail = framework short name
   final List<K12Option> states; // id = postal code
   final List<K12Option> styles;
   final List<K12Option> tiers;
+  final List<K12Option> camStages; // label + detail (ages / years)
+  final Map<String, List<K12CamSubject>> camSubjects; // stage → syllabi
+  final List<K12Option> camStyles; // detail = 'science' for science-only styles
+  final List<K12Option> camTiers;
 
-  const K12Meta(
-      this.grades, this.subjects, this.states, this.styles, this.tiers);
+  const K12Meta(this.grades, this.subjects, this.states, this.styles,
+      this.tiers, this.camStages, this.camSubjects, this.camStyles, this.camTiers);
 
-  factory K12Meta.fromJson(Map<String, dynamic> j) => K12Meta(
-        _maps(j['grades']).map((g) => K12Option(_s(g['id']), _s(g['label']))).toList(),
-        _maps(j['subjects'])
-            .map((s) => K12Option(_s(s['id']), _s(s['label']), _s(s['short'])))
-            .toList(),
-        _maps(j['states'])
-            .map((s) => K12Option(_s(s['code']), _s(s['name'])))
-            .toList(),
-        _maps(j['styles']).map((s) => K12Option(_s(s['id']), _s(s['label']))).toList(),
-        _maps(j['tiers'])
-            .map((t) => K12Option(_s(t['id']), _s(t['label']), _s(t['detail'])))
-            .toList(),
-      );
+  factory K12Meta.fromJson(Map<String, dynamic> j) {
+    final cam = j['cambridge'] as Map<String, dynamic>? ?? {};
+    return K12Meta(
+      _maps(j['grades']).map((g) => K12Option(_s(g['id']), _s(g['label']))).toList(),
+      _maps(j['subjects'])
+          .map((s) => K12Option(_s(s['id']), _s(s['label']), _s(s['short'])))
+          .toList(),
+      _maps(j['states']).map((s) => K12Option(_s(s['code']), _s(s['name']))).toList(),
+      _maps(j['styles']).map((s) => K12Option(_s(s['id']), _s(s['label']))).toList(),
+      _maps(j['tiers'])
+          .map((t) => K12Option(_s(t['id']), _s(t['label']), _s(t['detail'])))
+          .toList(),
+      _maps(cam['stages'])
+          .map((s) => K12Option(_s(s['id']), _s(s['label']), _s(s['detail'])))
+          .toList(),
+      (cam['subjects'] as Map<String, dynamic>? ?? {}).map((stage, list) => MapEntry(
+          stage,
+          _maps(list)
+              .map((s) => K12CamSubject(_s(s['code']), _s(s['name']), _s(s['qualification']),
+                  _s(s['years']), s['tiered'] == true, s['practical'] == true))
+              .toList())),
+      _maps(cam['styles'])
+          .map((s) => K12Option(_s(s['id']), _s(s['label']), s['sciencesOnly'] == true ? 'science' : ''))
+          .toList(),
+      _maps(cam['tiers'])
+          .map((t) => K12Option(_s(t['id']), _s(t['label']), _s(t['detail'])))
+          .toList(),
+    );
+  }
 
   String gradeLabel(String id) =>
       grades.firstWhere((g) => g.id == id, orElse: () => K12Option(id, 'Grade $id')).label;
   String stateName(String code) =>
       states.firstWhere((s) => s.id == code, orElse: () => K12Option(code, code)).label;
-  String subjectLabel(String id) =>
-      subjects.firstWhere((s) => s.id == id, orElse: () => K12Option(id, id)).label;
+  K12Option stage(String id) =>
+      camStages.firstWhere((s) => s.id == id, orElse: () => K12Option(id, id));
+
+  /// "Math", or "0625 Physics" for a Cambridge syllabus code.
+  String subjectLabel(String id) {
+    for (final list in camSubjects.values) {
+      for (final s in list) {
+        if (s.code == id) return s.label;
+      }
+    }
+    return subjects.firstWhere((s) => s.id == id, orElse: () => K12Option(id, id)).label;
+  }
+
+  /// One line describing where a learner is: "Grade 9 · Texas" or the Cambridge stage.
+  String learnerLine(K12Learner l) => l.isCambridge
+      ? '${stage(l.stage).label} · ${stage(l.stage).detail}'
+      : '${gradeLabel(l.grade)} · ${stateName(l.state)}';
 }
 
-/// A learner profile under the parent's account.
+/// A learner profile (13+): US grade and state, or a Cambridge stage.
 class K12Learner {
   final String id;
   final String nickname;
+  final String curriculum; // us | cambridge
   final String grade;
   final String state;
-  const K12Learner(this.id, this.nickname, this.grade, this.state);
+  final String stage;
+  const K12Learner(this.id, this.nickname, this.curriculum, this.grade, this.state, this.stage);
+
+  bool get isCambridge => curriculum == 'cambridge';
 
   factory K12Learner.fromJson(Map<String, dynamic> j) => K12Learner(
-      _s(j['learnerId']), _s(j['nickname']), _s(j['grade']), _s(j['state']));
+      _s(j['learnerId']),
+      _s(j['nickname']),
+      _s(j['curriculum']).isEmpty ? 'us' : _s(j['curriculum']),
+      _s(j['grade']),
+      _s(j['state']),
+      _s(j['stage']));
 }
 
 class K12Skill {
@@ -64,7 +122,10 @@ class K12Skill {
   final String name;
   final List<String> standards;
   final bool fromState;
-  const K12Skill(this.id, this.code, this.name, this.standards, this.fromState);
+  final bool? core; // Cambridge 0580: Core content? (null = not split)
+  const K12Skill(this.id, this.code, this.name, this.standards, this.fromState, [this.core]);
+
+  bool get extendedOnly => core == false;
 
   factory K12Skill.fromJson(Map<String, dynamic> j) => K12Skill(
         _s(j['id']),
@@ -72,6 +133,7 @@ class K12Skill {
         _s(j['name']),
         (j['standards'] as List? ?? []).map(_s).toList(),
         j['source'] == 'state',
+        (j['tiers'] as Map<String, dynamic>?)?['core'] as bool?,
       );
 }
 
@@ -83,8 +145,9 @@ class K12Domain {
   final String note;
   final bool fromState;
   final List<K12Skill> skills;
+  final String level; // Cambridge A Level: AS | A2
   const K12Domain(this.id, this.code, this.name, this.short, this.note,
-      this.fromState, this.skills);
+      this.fromState, this.skills, [this.level = '']);
 
   factory K12Domain.fromJson(Map<String, dynamic> j) => K12Domain(
         _s(j['id']),
@@ -94,10 +157,46 @@ class K12Domain {
         _s(j['note']),
         j['source'] == 'state',
         _maps(j['skills']).map(K12Skill.fromJson).toList(),
+        _s(j['level']),
+      );
+}
+
+class K12CommandWord {
+  final String word;
+  final String meaning;
+  const K12CommandWord(this.word, this.meaning);
+}
+
+/// The Cambridge syllabus behind a tree.
+class K12Syllabus {
+  final String code;
+  final String name;
+  final String qualification;
+  final String years;
+  final bool tiered;
+  final List<String> papers;
+  final String practical;
+  final bool hasPractical;
+  final List<K12CommandWord> commandWords;
+  const K12Syllabus(this.code, this.name, this.qualification, this.years, this.tiered,
+      this.papers, this.practical, this.hasPractical, this.commandWords);
+
+  factory K12Syllabus.fromJson(Map<String, dynamic> j) => K12Syllabus(
+        _s(j['code']),
+        _s(j['name']),
+        _s(j['qualification']),
+        _s(j['years']),
+        j['tiered'] == true,
+        (j['papers'] as List? ?? []).map(_s).toList(),
+        _s(j['practical']),
+        j['hasPractical'] == true,
+        _maps(j['commandWords']).map((w) => K12CommandWord(_s(w['word']), _s(w['meaning']))).toList(),
       );
 }
 
 class K12Tree {
+  final String curriculum; // us | cambridge
+  final K12Syllabus? syllabus;
   final String subject;
   final String subjectLabel;
   final String gradeLabel;
@@ -107,11 +206,15 @@ class K12Tree {
   final String family; // ccss | ngss | state
   final String alignmentNote;
   final List<K12Domain> domains;
-  const K12Tree(this.subject, this.subjectLabel, this.gradeLabel, this.stateName,
-      this.benchmark, this.stateFramework, this.family, this.alignmentNote,
+  const K12Tree(this.curriculum, this.syllabus, this.subject, this.subjectLabel, this.gradeLabel,
+      this.stateName, this.benchmark, this.stateFramework, this.family, this.alignmentNote,
       this.domains);
 
+  bool get isCambridge => curriculum == 'cambridge';
+
   factory K12Tree.fromJson(Map<String, dynamic> j) => K12Tree(
+        _s(j['curriculum']).isEmpty ? 'us' : _s(j['curriculum']),
+        j['syllabus'] == null ? null : K12Syllabus.fromJson(j['syllabus'] as Map<String, dynamic>),
         _s(j['subject']),
         _s(j['subjectLabel']),
         _s(j['gradeLabel']),
@@ -300,7 +403,58 @@ class K12Dashboard {
   }
 }
 
-/// US K–12 tutor — /api/k12.
+/// A Cambridge exam-style question with its mark scheme.
+class K12Exam {
+  final Map<String, dynamic> raw; // sent back for marking
+  const K12Exam(this.raw);
+
+  String get commandWord => _s(raw['commandWord']);
+  String get commandMeaning => _s(raw['commandMeaning']);
+  String get question => _s(raw['question']);
+  int get marks => (raw['marks'] as num?)?.toInt() ?? 0;
+  String get paper => _s(raw['paper']);
+  bool get anyOf => raw['anyOf'] == true;
+  String get modelAnswer => _s(raw['modelAnswer']);
+  String get examinerTip => _s(raw['examinerTip']);
+  List<({String point, List<String> keywords})> get markScheme => _maps(raw['markScheme'])
+      .map((m) => (point: _s(m['point']), keywords: (m['keywords'] as List? ?? []).map(_s).toList()))
+      .toList();
+}
+
+class K12MarkPoint {
+  final String point;
+  final List<String> keywords;
+  final bool awarded;
+  final String comment;
+  const K12MarkPoint(this.point, this.keywords, this.awarded, this.comment);
+}
+
+class K12MarkResult {
+  final int score;
+  final int total;
+  final List<K12MarkPoint> points;
+  final List<String> missingKeywords;
+  final String feedback;
+  final String improvedAnswer;
+  final String status;
+  const K12MarkResult(this.score, this.total, this.points, this.missingKeywords, this.feedback,
+      this.improvedAnswer, this.status);
+
+  factory K12MarkResult.fromJson(Map<String, dynamic> j) => K12MarkResult(
+        (j['score'] as num?)?.toInt() ?? 0,
+        (j['total'] as num?)?.toInt() ?? 0,
+        _maps(j['points'])
+            .map((p) => K12MarkPoint(_s(p['point']), (p['keywords'] as List? ?? []).map(_s).toList(),
+                p['awarded'] == true, _s(p['comment'])))
+            .toList(),
+        (j['missingKeywords'] as List? ?? []).map(_s).toList(),
+        _s(j['feedback']),
+        _s(j['improvedAnswer']),
+        _s(j['status']),
+      );
+}
+
+/// K–12 tutor (US and Cambridge International) — /api/k12.
 class K12Service {
   static const _aiTimeout = Duration(seconds: 90);
   static K12Meta? _meta;
@@ -335,13 +489,22 @@ class K12Service {
           .toList();
 
   static Future<K12Learner> saveLearner(
-          {String? id, required String nickname, required String grade, required String state}) async =>
+          {String? id,
+          required String nickname,
+          required String curriculum,
+          String grade = '',
+          String state = '',
+          String stage = '',
+          bool ageConfirmed = false}) async =>
       K12Learner.fromJson((await _post({
         'op': 'saveLearner',
         if (id != null) 'learnerId': id,
         'nickname': nickname,
+        'curriculum': curriculum,
         'grade': grade,
         'state': state,
+        'stage': stage,
+        'ageConfirmed': ageConfirmed,
       }, 'Could not save the learner.'))['learner'] as Map<String, dynamic>);
 
   static Future<void> deleteLearner(String id) =>
@@ -407,6 +570,24 @@ class K12Service {
 
   static Future<void> stuck(String learnerId, String subject, String skillId) =>
       _post({'op': 'stuck', ..._lesson(learnerId, subject, skillId)}, 'Could not save.');
+
+  /// A checked Cambridge exam-style question with its mark scheme.
+  static Future<K12Exam> exam(String learnerId, String subject, String skillId,
+          {required String micro, required String tier}) async =>
+      K12Exam((await _post({
+        'op': 'exam',
+        ..._lesson(learnerId, subject, skillId, micro: micro, tier: tier),
+      }, 'Could not write a question. Please try again.', ai: true))['exam'] as Map<String, dynamic>);
+
+  /// Marks an answer against the question's mark scheme.
+  static Future<K12MarkResult> markAnswer(String learnerId, String subject, String skillId,
+          {required String tier, required K12Exam exam, required String answer}) async =>
+      K12MarkResult.fromJson(await _post({
+        'op': 'markAnswer',
+        ..._lesson(learnerId, subject, skillId, tier: tier),
+        'exam': exam.raw,
+        'answer': answer,
+      }, 'Could not mark the answer. Please try again.', ai: true));
 
   static Future<K12Dashboard> dashboard(String learnerId) async => K12Dashboard.fromJson(
       await _get({'op': 'dashboard', 'learnerId': learnerId}, 'Could not load the dashboard.'));

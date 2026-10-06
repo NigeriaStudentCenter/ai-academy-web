@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/k12/k12_service.dart';
 import 'k12_widgets.dart';
+import 'command_words_page.dart';
 import 'skill_page.dart';
 
 /// A learner's skill tree for one subject: subject → domain → skill, with
@@ -9,16 +10,22 @@ import 'skill_page.dart';
 class SkillTreePage extends StatefulWidget {
   final K12Meta meta;
   final K12Learner learner;
-  final String initialSubject;
-  const SkillTreePage(
-      {super.key, required this.meta, required this.learner, this.initialSubject = 'math'});
+  final String? initialSubject;
+  const SkillTreePage({super.key, required this.meta, required this.learner, this.initialSubject});
 
   @override
   State<SkillTreePage> createState() => _SkillTreePageState();
 }
 
 class _SkillTreePageState extends State<SkillTreePage> {
-  late String _subject = widget.initialSubject;
+  /// (id, label, icon) for each subject the learner can pick.
+  late final List<(String, String, IconData)> _subjects = widget.learner.isCambridge
+      ? [
+          for (final s in widget.meta.camSubjects[widget.learner.stage] ?? const <K12CamSubject>[])
+            (s.code, s.label, s.practical ? Icons.science_outlined : Icons.menu_book_outlined)
+        ]
+      : [for (final s in widget.meta.subjects) (s.id, s.label, subjectIcons[s.id] ?? Icons.school_outlined)];
+  late String _subject = widget.initialSubject ?? (_subjects.isEmpty ? 'math' : _subjects.first.$1);
   K12Tree? _tree;
   Map<String, K12Progress> _progress = {};
   String? _error;
@@ -68,9 +75,20 @@ class _SkillTreePageState extends State<SkillTreePage> {
     final l = widget.learner;
     return Scaffold(
       appBar: AppBar(
-        title: Text('${l.nickname} · ${widget.meta.gradeLabel(l.grade)}'),
+        title: Text(l.isCambridge
+            ? '${l.nickname} · ${widget.meta.stage(l.stage).label.replaceFirst('Cambridge ', '')}'
+            : '${l.nickname} · ${widget.meta.gradeLabel(l.grade)}'),
         backgroundColor: k12Blue,
         foregroundColor: Colors.white,
+        actions: [
+          if (_tree?.syllabus != null)
+            IconButton(
+              tooltip: 'Command words',
+              icon: const Icon(Icons.translate),
+              onPressed: () => Navigator.push(context,
+                  MaterialPageRoute(builder: (_) => CommandWordsPage(syllabus: _tree!.syllabus!))),
+            ),
+        ],
       ),
       body: Column(children: [
         SizedBox(
@@ -79,20 +97,19 @@ class _SkillTreePageState extends State<SkillTreePage> {
             scrollDirection: Axis.horizontal,
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             children: [
-              for (final s in widget.meta.subjects)
+              for (final (id, label, icon) in _subjects)
                 Padding(
                   padding: const EdgeInsets.only(right: 8),
                   child: ChoiceChip(
-                    avatar: Icon(subjectIcons[s.id], size: 18,
-                        color: _subject == s.id ? Colors.white : k12Blue),
-                    label: Text(s.label),
-                    selected: _subject == s.id,
+                    avatar: Icon(icon, size: 18, color: _subject == id ? Colors.white : k12Blue),
+                    label: Text(label),
+                    selected: _subject == id,
                     selectedColor: k12Blue,
-                    labelStyle: TextStyle(color: _subject == s.id ? Colors.white : k12Blue),
+                    labelStyle: TextStyle(color: _subject == id ? Colors.white : k12Blue),
                     showCheckmark: false,
                     onSelected: (_) {
-                      if (_subject != s.id) {
-                        _subject = s.id;
+                      if (_subject != id) {
+                        _subject = id;
                         _load();
                       }
                     },
@@ -131,6 +148,11 @@ class _SkillTreePageState extends State<SkillTreePage> {
             ]),
             const SizedBox(height: 6),
             Text(tree.alignmentNote, style: const TextStyle(fontSize: 13, height: 1.4)),
+            if (tree.syllabus != null && tree.syllabus!.papers.isNotEmpty) ...[
+              const SizedBox(height: 8),
+              Text('Papers: ${tree.syllabus!.papers.join(' · ')}',
+                  style: const TextStyle(fontSize: 12, color: Colors.black54, height: 1.4)),
+            ],
           ]),
         ),
         const SizedBox(height: 12),
@@ -159,7 +181,8 @@ class _SkillTreePageState extends State<SkillTreePage> {
             style: const TextStyle(fontWeight: FontWeight.w700)),
         subtitle: Text(
           '${d.code} · $mastered of ${d.skills.length} mastered${flagged ? ' · needs review' : ''}'
-          '${d.fromState ? ' · state addition' : ''}',
+          '${d.fromState ? ' · state addition' : ''}'
+          '${d.level == 'AS' ? ' · AS Level' : d.level == 'A2' ? ' · A Level' : ''}',
           style: TextStyle(fontSize: 12, color: flagged ? k12Red : Colors.black54),
         ),
         childrenPadding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
@@ -195,6 +218,10 @@ class _SkillTreePageState extends State<SkillTreePage> {
               Row(children: [
                 Text(s.code, style: const TextStyle(fontSize: 11.5, color: Colors.black54, fontFamily: 'monospace')),
                 const SizedBox(width: 8),
+                if (s.extendedOnly) ...[
+                  const Text('Extended', style: TextStyle(fontSize: 11, color: k12Red, fontWeight: FontWeight.w600)),
+                  const SizedBox(width: 6),
+                ],
                 StatusChip(p?.status ?? '', dense: true),
                 if (p?.lastPct != null) ...[
                   const SizedBox(width: 6),
