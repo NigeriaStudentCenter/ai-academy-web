@@ -51,18 +51,28 @@ function publicCourse(course) {
   };
 }
 
+/**
+ * Draft lessons (`draft: true`) are new material waiting for release: admins
+ * see them for review; learners don't, and they don't count towards progress.
+ */
+function visibleLessons(user, course) {
+  if (user.isAdmin || !course.lessons.some((l) => l.draft)) return course;
+  return { ...course, lessons: course.lessons.filter((l) => !l.draft) };
+}
+
 /** The course if it exists and this learner may see it, otherwise null. */
 async function getCourseForUser(user, courseId) {
   const course = (await allCourses()).find((c) => c.courseId === courseId);
   if (!course || !canAccess(user, course)) return null;
   // Imported courses are reading material; add a "Practice with AI" partner.
-  return BUILT_IN.includes(course) ? course : withPractice(course);
+  return visibleLessons(user, BUILT_IN.includes(course) ? course : withPractice(course));
 }
 
 /** Summaries (no lesson bodies) of every course this learner may see. */
 async function listCoursesForUser(user) {
   return (await allCourses())
     .filter((c) => canAccess(user, c))
+    .map((c) => visibleLessons(user, c))
     .map((c) => ({
       courseId: c.courseId,
       title: c.title,
@@ -84,4 +94,4 @@ function categoriesFor(courses) {
   return CATEGORIES.filter((c) => used.has(c.id));
 }
 
-module.exports = { getCourseForUser, listCoursesForUser, categoriesFor, publicCourse };
+module.exports = { getCourseForUser, listCoursesForUser, categoriesFor, publicCourse, visibleLessons };
