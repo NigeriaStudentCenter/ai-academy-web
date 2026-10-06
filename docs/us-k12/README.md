@@ -82,6 +82,6 @@ The structure follows Cambridge's own hierarchy: **stage → syllabus code → t
 - **Command word decoder:** the app shows each syllabus's own command-word list.
 
 **Open for Cambridge:**
-- Ask Cambridge International whether using syllabus content in a paid app needs permission. The app uses syllabus codes and headings, and grounds the AI in the learning statements without showing them verbatim; still, check before marketing.
+- Licensing: decided by the owner (2026-10-06) that no permission from Cambridge is needed for the paid app. Syllabus statements stay out of the public repo and are not shown verbatim.
 - Add more syllabi as needed (Cambridge offers 70+ IGCSEs). Download the PDF, add its topic list in `build.py`, and re-run.
 - Refresh the data when syllabus versions change, e.g. 0580/0606 for 2028–2030 and the 2029 science syllabi.
