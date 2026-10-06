@@ -76,7 +76,7 @@ class _SkillTreePageState extends State<SkillTreePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(l.isCambridge
-            ? '${l.nickname} · ${widget.meta.stage(l.stage).label.replaceFirst('Cambridge ', '')}'
+            ? '${l.nickname} · ${const {'lower': 'Stage 9', 'igcse': 'IGCSE', 'alevel': 'AS & A Level'}[l.stage] ?? 'Cambridge'}'
             : '${l.nickname} · ${widget.meta.gradeLabel(l.grade)}'),
         backgroundColor: k12Blue,
         foregroundColor: Colors.white,

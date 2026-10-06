@@ -323,6 +323,7 @@ class _LearnerFormState extends State<_LearnerForm> {
               isExpanded: true,
               itemHeight: 64,
               decoration: const InputDecoration(labelText: 'Cambridge stage', border: OutlineInputBorder()),
+              selectedItemBuilder: (_) => [for (final s in meta.camStages) Text(s.label, overflow: TextOverflow.ellipsis)],
               items: [
                 for (final s in meta.camStages)
                   DropdownMenuItem(

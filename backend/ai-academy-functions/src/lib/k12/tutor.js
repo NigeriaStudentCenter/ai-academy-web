@@ -66,9 +66,15 @@ function tierFor(tree, tier, domain) {
 // ---- Micro-skills (the leaves of the skill tree) ------------------------
 
 function microSkillsPrompt(tree, domain, skill) {
+  if (isCambridge(tree)) {
+    return `${context(tree, domain, skill)}
+
+Break this syllabus content into 4 to 8 learning objectives, in teaching order (easiest first), that together cover EVERY learning statement listed above (Core and Supplement). Each needs a short, clear title (max 8 words, e.g. "Specific heat capacity calculations"), the ONE reference from the list above, and "extended": true if it covers only Supplement (Extended-only) statements.
+Reply with ONLY a JSON array: [{"title": "...", "code": "...", "extended": false}]. No prose.`;
+  }
   return `${context(tree, domain, skill)}
 
-Break this ${isCambridge(tree) ? "syllabus content" : "skill"} into 4 to 6 bite-sized ${isCambridge(tree) ? "learning objectives" : "micro-skills"} a learner at this level learns one at a time, in teaching order (easiest first). Each needs a short, clear title (max 8 words, e.g. ${isCambridge(tree) ? '"Specific heat capacity calculations"' : '"Adding fractions with like denominators"'}) and the ONE code from the list above that it belongs to.
+Break this skill into 4 to 6 bite-sized micro-skills a learner at this level learns one at a time, in teaching order (easiest first). Each needs a short, clear title (max 8 words, e.g. "Adding fractions with like denominators") and the ONE code from the list above that it belongs to.
 Reply with ONLY a JSON array: [{"title": "...", "code": "..."}]. No prose.`;
 }
 
@@ -92,9 +98,10 @@ function parseMicroSkills(raw, skill) {
     .map((m) => ({
       title: oneLine(m?.title).slice(0, 80),
       code: skill.standards.includes(m?.code) ? m.code : skill.standards[0],
+      ...(m?.extended === true ? { extended: true } : {}),
     }))
     .filter((m) => m.title)
-    .slice(0, 6);
+    .slice(0, 8);
 }
 
 // ---- Tutoring -----------------------------------------------------------

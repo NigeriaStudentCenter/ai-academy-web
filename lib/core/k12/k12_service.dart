@@ -246,7 +246,8 @@ class K12Progress {
 class K12MicroSkill {
   final String title;
   final String code;
-  const K12MicroSkill(this.title, this.code);
+  final bool extended; // Cambridge: Supplement (Extended-only) objective
+  const K12MicroSkill(this.title, this.code, [this.extended = false]);
 }
 
 class K12Reply {
@@ -533,7 +534,9 @@ class K12Service {
       String learnerId, String subject, String skillId) async {
     final j = await _post({'op': 'microskills', ..._lesson(learnerId, subject, skillId)},
         'Could not break this skill down.', ai: true);
-    return _maps(j['microSkills']).map((m) => K12MicroSkill(_s(m['title']), _s(m['code']))).toList();
+    return _maps(j['microSkills'])
+        .map((m) => K12MicroSkill(_s(m['title']), _s(m['code']), m['extended'] == true))
+        .toList();
   }
 
   /// The tutor's next message. [turns] excludes the hidden opening prompt.

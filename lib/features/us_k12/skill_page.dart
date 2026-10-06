@@ -152,7 +152,9 @@ class _SkillPageState extends State<SkillPage> {
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
         children: [
-          Text('${widget.tree.gradeLabel} ${widget.tree.subjectLabel} › ${widget.domain.short.isNotEmpty ? widget.domain.short : widget.domain.name}',
+          Text(_cam
+                  ? '${widget.tree.subjectLabel} › ${widget.domain.name}'
+                  : '${widget.tree.gradeLabel} ${widget.tree.subjectLabel} › ${widget.domain.short.isNotEmpty ? widget.domain.short : widget.domain.name}',
               style: const TextStyle(color: Colors.black54, fontSize: 13)),
           const SizedBox(height: 4),
           Text(s.name, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700, height: 1.25)),
@@ -306,7 +308,8 @@ class _SkillPageState extends State<SkillPage> {
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   Text(m?.title ?? (_cam ? 'All of this content' : 'The whole skill'), style: const TextStyle(fontSize: 14.5)),
                   if (m != null)
-                    Text(m.code, style: const TextStyle(fontSize: 11, color: Colors.black45, fontFamily: 'monospace')),
+                    Text(m.extended ? '${m.code} · Extended only' : m.code,
+                        style: TextStyle(fontSize: 11, color: m.extended ? k12Red : Colors.black45, fontFamily: 'monospace')),
                 ]),
               ),
               if (selected) const Icon(Icons.check_circle, color: k12Blue, size: 20),

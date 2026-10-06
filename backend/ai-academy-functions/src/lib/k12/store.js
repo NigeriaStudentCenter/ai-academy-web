@@ -248,7 +248,8 @@ async function dashboard(userId, learner) {
 
 // ---- Micro-skill cache ---------------------------------------------------
 
-const microKey = (skillId) => crypto.createHash("sha1").update(skillId).digest("hex");
+// Cambridge micro-skills are v2: built from the syllabus statements, Extended-only marked.
+const microKey = (skillId) => crypto.createHash("sha1").update(skillId.startsWith("cam|") ? `${skillId}|v2` : skillId).digest("hex");
 
 async function cachedMicroSkills(skillId) {
   const e = await getRow("K12MicroSkills", "v1", microKey(skillId));
