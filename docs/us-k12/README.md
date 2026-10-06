@@ -1,4 +1,8 @@
-# US K–12 Tutor
+# Curriculum Tutor (US and Cambridge International, 13+)
+
+**Everything in AI Academy is for learners aged 13 and over.** The US tutor offers grades 8–12 only, and Cambridge offers Lower Secondary Stage 9, IGCSE and AS & A Level. New learner profiles must be confirmed as 13+, and the Command Center offers only JSS 3–SSS 3 and Years 9–11. The K–7 standards data is kept but never shown.
+
+## US
 
 A US curriculum tutor built on the national benchmark frameworks most states use, with a state overlay. There is no "US national curriculum" in it.
 
@@ -44,6 +48,40 @@ That is 1,072 skills per state across K–12.
 
 ## Open before a US launch
 
-- Children under 13 will use this, so COPPA applies. Get legal advice on parental consent, and update the privacy policy and Terms to cover learner profiles and children's AI tutoring.
-- The App Store age rating is 13+; check how the US K–12 audience fits Apple's rules if it's marketed to children.
+- Learners are 13+ (decided 2026-10-06), so COPPA's under-13 rules don't apply. Still state the 13+ rule in the Terms and privacy policy, and keep the App Store age rating at 13+.
 - Have a US curriculum specialist review the state table.
+
+## Cambridge International
+
+The structure follows Cambridge's own hierarchy: **stage → syllabus code → topic / sub-topic → assessment tier**.
+
+| Stage | Ages | Syllabi |
+|---|---|---|
+| Lower Secondary (Stage 9) | 13–14 | Mathematics 0862, Science 0893, English 0861, English as a Second Language 0876, Computing 0860, Global Perspectives 1129 |
+| Upper Secondary (IGCSE) | 14–16 | Mathematics 0580, Additional Mathematics 0606, Physics 0625, Chemistry 0620, Biology 0610, Economics 0455, Business Studies 0450, Geography 0460, Computer Science 0478, First Language English 0500 |
+| Advanced (AS & A Level) | 16–19 | Mathematics 9709, Physics 9702, Chemistry 9701, Biology 9700, Economics 9708, Business 9609, Computer Science 9618 |
+
+- **Source:** each syllabus's published PDF on cambridgeinternational.org (the version valid for the 2027 exams). `tools/cambridge/build.py` produces `src/lib/k12/cambridge-syllabi.json`, containing:
+  - topics and sub-topics with Cambridge's own numbering;
+  - the AS / A Level split;
+  - Core / Extended per sub-topic for 0580;
+  - the papers;
+  - each syllabus's command-word table, with Cambridge's meanings.
+- **Learning statements:** `tools/cambridge/statements.py` extracts the statements under each sub-topic (Core and Supplement), totalling 0.5 MB. They're kept **out of the public repo**, in blob storage at `course-catalog/k12/cambridge-content.json`, because the repo is public and the text is Cambridge's copyright. Every prompt is grounded in them: Core learners get Core statements only, Extended learners get Core plus Supplement.
+- **Tiers:** Core/Extended for 0625, 0620, 0610 and 0580 (Extended-only content can't be studied at Core). Single tier for the other IGCSEs; AS or A Level per topic at A Level.
+- **Teaching styles:**
+  - Explanation + exam-style question;
+  - Command word decoder;
+  - Mark-scheme answers (keywords in bold);
+  - Virtual lab (Alternative to Practical, sciences only);
+  - Ask me questions.
+- **Exam-style questions:**
+  - Written fresh (never presented as real past papers), with a command word from the syllabus list, a mark scheme of one point per mark with keywords, a model answer and an examiner tip.
+  - Checked before the learner sees them: numeric answers by a blind re-solve that must match, everything else by an independent examiner check.
+  - Answers are marked point by point against the mark scheme. The score is counted by the server from the points awarded (never the AI's own total), and the result shows the missing keywords and a full-mark answer.
+- **Command word decoder:** the app shows each syllabus's own command-word list.
+
+**Open for Cambridge:**
+- Ask Cambridge International whether using syllabus content in a paid app needs permission. The app uses syllabus codes and headings, and grounds the AI in the learning statements without showing them verbatim; still, check before marketing.
+- Add more syllabi as needed (Cambridge offers 70+ IGCSEs). Download the PDF, add its topic list in `build.py`, and re-run.
+- Refresh the data when syllabus versions change, e.g. 0580/0606 for 2028–2030 and the 2029 science syllabi.
