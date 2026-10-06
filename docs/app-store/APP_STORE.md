@@ -51,7 +51,7 @@ changes, update the privacy answers here and on /privacy.html.
 
 **Keywords** (≤100 chars, comma-separated, no spaces needed)
 
-> AI,artificial intelligence,course,tutor,learning,education,prompt,ChatGPT,skills,teens,certificate
+> AI,artificial intelligence,course,tutor,learning,education,prompt,study,skills,teens,certificate
 
 (If Apple rejects third-party trademarks, drop "ChatGPT".)
 
