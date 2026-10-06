@@ -80,6 +80,8 @@ async function deleteLearnerData(userId) {
       if (err.statusCode !== 404) throw err;
     }
   }
+  // US K–12 learner profiles, their progress and activity.
+  await require("./k12/store").deleteAllForUser(userId);
 }
 
 async function deleteGuest(userId) {

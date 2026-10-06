@@ -84,6 +84,14 @@ class AppNavDrawer extends StatelessWidget {
                       routeName: '/business-hub',
                     ),
 
+                  // US K–12: CCSS / NGSS / C3 tutor with a state overlay (families).
+                  _drawerItem(
+                    context,
+                    icon: Icons.account_tree_outlined,
+                    title: 'US K–12 Tutor',
+                    routeName: '/us-k12',
+                  ),
+
                   // AI Academy for Teens: the Nigerian / British curriculum tutor.
                   if (AppAuthState.isTeens)
                     _drawerItem(

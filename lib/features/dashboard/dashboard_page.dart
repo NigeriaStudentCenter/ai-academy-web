@@ -239,6 +239,35 @@ class DashboardPage extends StatelessWidget {
                   ),
                 ],
 
+                // =========================
+                // US K–12 Tutor (families)
+                // =========================
+                const SizedBox(height: 20),
+                SizedBox(
+                  width: double.infinity,
+                  child: OutlinedButton.icon(
+                    onPressed: () => context.go('/us-k12'),
+                    icon: const Icon(Icons.account_tree_outlined),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: AppColors.nearWhite,
+                      side: const BorderSide(
+                          color: AppColors.nearWhite, width: 1.5),
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    label: const Text(
+                      "US K–12 Tutor · Common Core, NGSS & C3",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+
                 const SizedBox(height: 40),
               ],
             ),

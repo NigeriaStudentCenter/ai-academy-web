@@ -26,6 +26,7 @@ import '../../features/dashboard/dashboard_page.dart';
 import '../../features/debug/debug_routes.page.dart';
 import '../../features/home/landing_page.dart';
 import '../../features/progress/progress_dashboard.page.dart';
+import '../../features/us_k12/us_k12_home_page.dart';
 
 // ===============================
 // CORE AUTH STATE
@@ -196,6 +197,10 @@ final GoRouter goRouter = GoRouter(
     GoRoute(
       path: '/command-center',
       builder: (context, state) => const CommandCenterPage(),
+    ),
+    GoRoute(
+      path: '/us-k12',
+      builder: (context, state) => const UsK12HomePage(),
     ),
     GoRoute(
       path: '/chat',
