@@ -48,6 +48,15 @@ changes, update the privacy answers here and on /privacy.html.
 > Complete a course to earn a certificate with a unique ID that employers and schools can verify online.
 >
 > AI Academy is provided by the British School of Outdoor Education for learners with an account from a participating programme, including the AI Academy for Teens and our professional AI courses.
+>
+> SUBSCRIPTIONS
+> All Access Monthly and All Access Yearly are auto-renewable subscriptions. Payment is charged to your Apple ID at confirmation of purchase. A subscription renews automatically unless it is cancelled at least 24 hours before the end of the current period. Manage or cancel it in your App Store account settings.
+>
+> Terms of Use (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+> Privacy Policy: https://black-sky-0782ebe03.7.azurestaticapps.net/privacy.html
+
+(Required since 1.1.0: Apple rejects subscription apps whose description
+has no working Terms of Use / EULA link — rejection of 2026-10-06.)
 
 **Keywords** (≤100 chars, comma-separated, no spaces needed)
 
