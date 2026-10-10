@@ -43,6 +43,7 @@ async function saveSubscription(userId, platform, sub, { grants }) {
     storeStatus: sub.status,
     status: grants ? "active" : "inactive",
     expiresAt: sub.expiresAt,
+    purchaseToken: sub.purchaseToken || "", // Google only: needed to re-check renewals
     updatedAt: new Date().toISOString(),
   });
 }

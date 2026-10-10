@@ -39,10 +39,10 @@ class _AccountPageState extends State<AccountPage> {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Delete your account?'),
-        content: const Text(
+        content: Text(
             'This permanently deletes your AI Academy account, progress, saved work and certificates. '
-            'It cannot be undone.\n\nIf you have an App Store subscription, deleting your account does '
-            'not cancel it — cancel it in your App Store account settings.'),
+            'It cannot be undone.\n\nIf you have a ${SubscriptionService.storeName} subscription, deleting '
+            'your account does not cancel it — cancel it in your ${SubscriptionService.storeName} account settings.'),
         actions: [
           TextButton(
               onPressed: () => Navigator.pop(context, false),
@@ -65,7 +65,7 @@ class _AccountPageState extends State<AccountPage> {
         if (!mounted) return;
         messenger.showSnackBar(SnackBar(
           content: Text(json['hadSubscription'] == true
-              ? 'Your account has been deleted. Remember to cancel your subscription in the App Store.'
+              ? 'Your account has been deleted. Remember to cancel your subscription in ${SubscriptionService.storeName}.'
               : 'Your account has been deleted.'),
         ));
         context.go('/');

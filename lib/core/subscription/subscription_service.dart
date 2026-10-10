@@ -28,8 +28,9 @@ class LearnerAccess {
 }
 
 /// AI Academy All Access: one subscription (monthly or yearly) bought with
-/// Apple in-app purchase. The server confirms every purchase with Apple
-/// (/api/verifyPurchase) before anything unlocks.
+/// Apple in-app purchase on iOS or Google Play Billing on Android. The server
+/// confirms every purchase with the store (/api/verifyPurchase) before
+/// anything unlocks.
 class SubscriptionService {
   static const monthlyId = 'org.bsoedu.aiacademy.allaccess.monthly';
   static const yearlyId = 'org.bsoedu.aiacademy.allaccess.yearly';
@@ -39,7 +40,19 @@ class SubscriptionService {
       'https://black-sky-0782ebe03.7.azurestaticapps.net/terms.html';
   static const privacyUrl =
       'https://black-sky-0782ebe03.7.azurestaticapps.net/privacy.html';
-  static const manageUrl = 'https://apps.apple.com/account/subscriptions';
+  static String get manageUrl => isAndroid
+      ? 'https://play.google.com/store/account/subscriptions?package=org.bsoedu.aiacademy'
+      : 'https://apps.apple.com/account/subscriptions';
+
+  static bool get isAndroid =>
+      !kIsWeb && defaultTargetPlatform == TargetPlatform.android;
+
+  /// "Apple ID" / "Google Play account", for the subscription wording.
+  static String get storeAccount =>
+      isAndroid ? 'Google Play account' : 'Apple ID';
+
+  /// "App Store" / "Google Play", for the subscription wording.
+  static String get storeName => isAndroid ? 'Google Play' : 'App Store';
 
   static final ValueNotifier<LearnerAccess> access =
       ValueNotifier(LearnerAccess.unknown);
@@ -50,10 +63,10 @@ class SubscriptionService {
 
   static StreamSubscription<List<PurchaseDetails>>? _purchases;
 
-  /// In-app purchase is used on iOS only for now (Google Play billing comes
-  /// with the Android release).
+  /// In-app purchase: Apple on iOS, Google Play Billing on Android.
   static bool get storeSupported =>
-      !kIsWeb && defaultTargetPlatform == TargetPlatform.iOS;
+      !kIsWeb &&
+      (defaultTargetPlatform == TargetPlatform.iOS || isAndroid);
 
   static Future<LearnerAccess> refresh() async {
     try {
@@ -95,7 +108,8 @@ class SubscriptionService {
       await InAppPurchase.instance.buyNonConsumable(
         purchaseParam: PurchaseParam(
           productDetails: product,
-          // Ties the purchase to this AI Academy account (Apple appAccountToken).
+          // Ties the purchase to this AI Academy account (Apple
+          // appAccountToken / Google obfuscatedAccountId).
           applicationUserName: AppAuthState.currentUser?.id,
         ),
       );
@@ -115,7 +129,7 @@ class SubscriptionService {
     Future.delayed(const Duration(seconds: 8), () {
       if (busy.value) {
         busy.value = false;
-        message.value ??= 'No subscription to restore on this Apple ID.';
+        message.value ??= 'No subscription to restore on this $storeAccount.';
       }
     });
   }
@@ -149,7 +163,12 @@ class SubscriptionService {
     try {
       final response = await ApiClient.post(
         'verifyPurchase',
-        jsonEncode({'platform': 'apple', 'transactionId': p.purchaseID}),
+        jsonEncode(isAndroid
+            ? {
+                'platform': 'google',
+                'purchaseToken': p.verificationData.serverVerificationData,
+              }
+            : {'platform': 'apple', 'transactionId': p.purchaseID}),
       );
       final json = jsonDecode(response.body) as Map<String, dynamic>;
       if (response.statusCode == 200) {

@@ -7,7 +7,8 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../core/subscription/subscription_service.dart';
 import '../../core/theme/app_colors.dart';
 
-/// Subscribe to AI Academy All Access (Apple in-app purchase). Shows what the
+/// Subscribe to AI Academy All Access (Apple in-app purchase on iOS, Google
+/// Play Billing on Android). Shows what the
 /// subscription includes, both plans with the store's local prices, the
 /// auto-renewal terms, and links to the Terms of Use and Privacy Policy.
 class PaywallPage extends StatefulWidget {
@@ -101,7 +102,7 @@ class _PaywallPageState extends State<PaywallPage> {
                 _card(const Padding(
                   padding: EdgeInsets.all(16),
                   child: Text(
-                      'Subscriptions are available in the AI Academy app for iPhone.',
+                      'Subscriptions are available in the AI Academy app for iPhone and Android.',
                       style: TextStyle(color: AppColors.darkGreen)),
                 ))
               else
@@ -174,11 +175,12 @@ class _PaywallPageState extends State<PaywallPage> {
               ),
               const SizedBox(height: 16),
               Text(
-                'Payment is charged to your Apple ID when you confirm the purchase. '
+                'Payment is charged to your ${SubscriptionService.storeAccount} '
+                'when you confirm the purchase. '
                 'Your subscription renews automatically at the same price each '
                 'month or year unless you cancel at least 24 hours before the end '
                 'of the current period. You can manage or cancel it in your '
-                'App Store account settings.',
+                '${SubscriptionService.storeName} account settings.',
                 style: TextStyle(
                     color: AppColors.nearWhite.withValues(alpha: 0.85),
                     fontSize: 13,

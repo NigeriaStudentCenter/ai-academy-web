@@ -82,9 +82,31 @@ async function accessFor(user, { loadSubscription = getSubscription } = {}) {
   if (!isTestAccount(user) && listSetting("ORG_ACCESS_DOMAINS", DEFAULT_ORG_DOMAINS).includes(domain)) {
     return { full: true, reason: "organisation", paywall: true };
   }
-  const sub = await loadSubscription(user.userId);
+  const sub = await refreshExpired(user.userId, await loadSubscription(user.userId));
   if (isActive(sub)) return { full: true, reason: "subscription", paywall: true, expiresAt: sub.expiresAt };
   return { full: false, reason: "none", paywall: true };
+}
+
+/**
+ * Google renewals: without a notification the stored expiry passes at each
+ * renewal, so an expired Google subscription is re-read from Google (at most
+ * hourly). Apple renewals arrive as App Store Server Notifications instead.
+ */
+async function refreshExpired(userId, sub, { lookup, save, now = Date.now() } = {}) {
+  if (!sub || isActive(sub, now) || sub.platform !== "google" || !sub.purchaseToken) return sub;
+  if (now - new Date(sub.updatedAt || 0).getTime() < 60 * 60 * 1000) return sub;
+  const googlePlay = require("./googlePlay");
+  lookup ??= googlePlay.lookupSubscription;
+  save ??= require("./storeSubscriptions").saveSubscription;
+  try {
+    const fresh = await lookup(sub.purchaseToken);
+    if (!fresh) return sub;
+    const grants = googlePlay.grantsAccess(fresh, now);
+    await save(userId, "google", fresh, { grants });
+    return { ...sub, status: grants ? "active" : "inactive", expiresAt: fresh.expiresAt };
+  } catch {
+    return sub; // Google unreachable: keep what we have
+  }
 }
 
 /** How much of a course the learner gets: "full" | "free" | "preview" | "locked". */
@@ -140,6 +162,7 @@ const SUBSCRIPTION_REQUIRED = {
 
 module.exports = {
   paywallEnabled,
+  refreshExpired,
   isTestAccount,
   sandboxAllowed,
   isFreeCourse,
