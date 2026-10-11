@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI Academy — Payment</title>
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="stylesheet" href="legal.css">
+</head>
+<body>
+<header><img src="icons/Icon-192.png" alt="" width="48" height="48"><span>AI Academy</span></header>
+<main>
+  <h1 id="title">Confirming your payment…</h1>
+  <div id="body"><p>This takes a few seconds.</p></div>
+</main>
+<script>
+  const API = "https://ai-academy-progress-api-bucjc4gtcsenhuhs.swedencentral-01.azurewebsites.net/api";
+  const params = new URLSearchParams(location.search);
+  const reference = params.get("reference") || params.get("trxref");
+  const title = document.getElementById("title");
+  const body = document.getElementById("body");
+  const set = (t, html) => { title.textContent = t; body.innerHTML = html; };
+  const esc = (s) => String(s || "").replace(/[&<>"']/g, (c) => "&#" + c.charCodeAt(0) + ";");
+  const signInSteps = (email) =>
+    "<ol><li>If you're new to AI Academy, look for an email from <strong>Microsoft on behalf of AI Academy</strong>" +
+    (email ? " at <strong>" + esc(email) + "</strong>" : "") +
+    " and accept the invitation (check spam too).</li>" +
+    "<li>Open the AI Academy app, tap <strong>Sign in with Microsoft</strong> and use that same email.</li></ol>";
+
+  async function check(attempt) {
+    if (!reference) return set("No payment found", "<p>We couldn't find a payment reference. If you were charged, email <a href='mailto:john@bsoedu.org'>john@bsoedu.org</a>.</p>");
+    try {
+      const res = await fetch(API + "/paystackVerify?reference=" + encodeURIComponent(reference));
+      const j = await res.json().catch(() => ({}));
+      if (res.ok && j.paid && j.active) {
+        const renews = j.renews ? new Date(j.renews).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }) : null;
+        return set("You're subscribed 🎉", "<p>Thank you! Your AI Academy All Access" + (j.plan ? " (" + esc(j.plan) + ")" : "") + " is active" + (renews ? " until at least " + esc(renews) : "") + ".</p>" + signInSteps(j.email) +
+          "<p class='small'>Your subscription renews automatically. To cancel, use the link in Paystack's subscription email or contact <a href='support.html'>support</a>.</p>");
+      }
+      if (res.ok && j.paid && attempt < 6) return setTimeout(() => check(attempt + 1), 3000);
+      if (res.ok && j.paid) return set("Payment received", "<p>Your payment went through and we're finishing setting up your access — this can take a few minutes.</p>" + signInSteps(j.email));
+      if (res.ok && j.paid === false) return set("Payment not completed", "<p>Your payment wasn't completed (" + esc(j.status) + "). You haven't been charged. <a href='subscribe.html'>Try again</a>.</p>");
+      set("We couldn't confirm the payment", "<p>" + esc(j.error || "Please refresh this page in a moment.") + "</p>");
+    } catch {
+      if (attempt < 3) return setTimeout(() => check(attempt + 1), 3000);
+      set("We couldn't confirm the payment", "<p>Please refresh this page in a moment. If you were charged and this keeps happening, email <a href='mailto:john@bsoedu.org'>john@bsoedu.org</a> with reference <code>" + esc(reference) + "</code>.</p>");
+    }
+  }
+  check(0);
+</script>
+</body>
+</html>

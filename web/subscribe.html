@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI Academy — Subscribe</title>
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="stylesheet" href="legal.css">
+  <style>
+    .plans { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin: 16px 0; }
+    .plan { display: block; border: 2px solid var(--line); border-radius: 14px; padding: 16px; background: #fff; cursor: pointer; }
+    .plan input { position: absolute; opacity: 0; }
+    .plan:has(input:checked) { border-color: var(--green); box-shadow: 0 0 0 3px rgba(11, 61, 46, .12); }
+    .plan .name { font-weight: 700; color: var(--green); }
+    .plan .price { font-size: 26px; font-weight: 800; margin: 4px 0; }
+    .plan .note { color: var(--muted); font-size: 14px; }
+    .badge { display: inline-block; background: var(--gold); color: var(--green); font-size: 12px; font-weight: 700; border-radius: 99px; padding: 1px 8px; margin-left: 6px; }
+    form label.field { display: block; font-weight: 600; margin: 14px 0 4px; }
+    form input[type=text], form input[type=email] { width: 100%; padding: 12px; border: 1px solid var(--line); border-radius: 10px; font: inherit; background: #fff; }
+    button { margin-top: 18px; width: 100%; padding: 14px; border: 0; border-radius: 12px; background: var(--green); color: #fff; font: inherit; font-weight: 700; cursor: pointer; }
+    button:disabled { opacity: .6; cursor: wait; }
+    .msg { margin-top: 14px; padding: 12px; border-radius: 10px; display: none; }
+    .msg.error { display: block; background: #fdecea; color: #8a1c12; }
+    .small { color: var(--muted); font-size: 14px; }
+    ol.steps li { margin-bottom: 6px; }
+  </style>
+</head>
+<body>
+<header><img src="icons/Icon-192.png" alt="" width="48" height="48"><span>AI Academy</span></header>
+<main>
+  <h1>AI Academy All Access</h1>
+  <p>Every AI Academy course, the AI tutors and Practice with AI, Cambridge and US curriculum practice, progress tracking and certificates — on your phone and the web. For learners aged 13 and over.</p>
+
+  <form id="form" novalidate>
+    <div class="plans" id="plans">
+      <label class="plan"><input type="radio" name="plan" value="monthly" checked>
+        <div class="name">Monthly</div>
+        <div class="price" id="price-monthly">…</div>
+        <div class="note">Billed every month. Cancel anytime.</div>
+      </label>
+      <label class="plan"><input type="radio" name="plan" value="yearly">
+        <div class="name">Yearly <span class="badge" id="saving" hidden></span></div>
+        <div class="price" id="price-yearly">…</div>
+        <div class="note">Billed once a year. Cancel anytime.</div>
+      </label>
+    </div>
+
+    <label class="field" for="name">Your name</label>
+    <input type="text" id="name" autocomplete="name" maxlength="80">
+
+    <label class="field" for="email">Email address</label>
+    <input type="email" id="email" autocomplete="email" required>
+    <p class="small">Use the email you'll sign in to the AI Academy app with. If you don't have an AI Academy account yet, we'll create one for this email.</p>
+
+    <button type="submit" id="pay">Continue to secure payment</button>
+    <div class="msg" id="msg" role="alert"></div>
+    <p class="small">Payments are processed securely by Paystack in Nigerian naira (card, bank transfer or USSD). Your subscription renews automatically at the same price until you cancel. By subscribing you agree to our <a href="terms.html">Terms of Use</a> and <a href="privacy.html">Privacy Policy</a>.</p>
+  </form>
+
+  <h2>How it works</h2>
+  <ol class="steps">
+    <li>Choose a plan and pay securely with Paystack.</li>
+    <li>New to AI Academy? Check your email for an invitation from Microsoft on behalf of AI Academy and accept it — that creates your account.</li>
+    <li>Open the AI Academy app (or this website), tap <strong>Sign in with Microsoft</strong> and use the same email. Everything is unlocked.</li>
+  </ol>
+  <p class="small">Already signed in through your school or organisation (for example an @teenskills.co.uk or @bsoedu.org address)? Your account already includes full access — there's nothing to buy. Questions? <a href="support.html">Support</a>.</p>
+</main>
+<script>
+  const API = "https://ai-academy-progress-api-bucjc4gtcsenhuhs.swedencentral-01.azurewebsites.net/api";
+  const naira = (kobo) => "₦" + (kobo / 100).toLocaleString("en-NG", { maximumFractionDigits: 0 });
+  const msg = document.getElementById("msg");
+  const show = (text) => { msg.textContent = text; msg.className = "msg error"; };
+
+  fetch(API + "/paystackPlans").then((r) => r.ok ? r.json() : Promise.reject(r)).then((p) => {
+    document.getElementById("price-monthly").textContent = naira(p.monthly.amountKobo) + " / month";
+    document.getElementById("price-yearly").textContent = naira(p.yearly.amountKobo) + " / year";
+    const saving = Math.round(100 - (p.yearly.amountKobo / (p.monthly.amountKobo * 12)) * 100);
+    if (saving >= 5) { const b = document.getElementById("saving"); b.textContent = "Save " + saving + "%"; b.hidden = false; }
+  }).catch(() => {
+    document.getElementById("price-monthly").textContent = document.getElementById("price-yearly").textContent = "—";
+    show("Online payment isn't available right now. Please try again later.");
+    document.getElementById("pay").disabled = true;
+  });
+
+  document.getElementById("form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const email = document.getElementById("email").value.trim();
+    if (!/^\S+@\S+\.\S+$/.test(email)) return show("Enter a valid email address.");
+    const btn = document.getElementById("pay");
+    btn.disabled = true; btn.textContent = "Setting up your payment…"; msg.className = "msg";
+    try {
+      const res = await fetch(API + "/paystackCheckout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email,
+          name: document.getElementById("name").value.trim(),
+          plan: document.querySelector("input[name=plan]:checked").value,
+        }),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (res.ok && json.url) { window.location.href = json.url; return; }
+      show(json.error || "Something went wrong. Please try again.");
+    } catch {
+      show("We couldn't connect. Check your internet and try again.");
+    }
+    btn.disabled = false; btn.textContent = "Continue to secure payment";
+  });
+</script>
+</body>
+</html>

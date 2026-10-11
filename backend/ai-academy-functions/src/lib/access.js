@@ -88,24 +88,36 @@ async function accessFor(user, { loadSubscription = getSubscription } = {}) {
 }
 
 /**
- * Google renewals: without a notification the stored expiry passes at each
- * renewal, so an expired Google subscription is re-read from Google (at most
- * hourly). Apple renewals arrive as App Store Server Notifications instead.
+ * Google and Paystack renewals: if a notification is missed the stored expiry
+ * passes at each renewal, so a lapsed Google or Paystack subscription is
+ * re-read from the store (at most hourly). Apple renewals arrive as App Store
+ * Server Notifications.
  */
+const REFRESHERS = {
+  google: () => {
+    const g = require("./googlePlay");
+    return { lookup: g.lookupSubscription, grants: (fresh, now) => g.grantsAccess(fresh, now) };
+  },
+  paystack: () => {
+    const p = require("./paystack");
+    return { lookup: (customerCode) => p.customerSubscription(customerCode), grants: (fresh) => fresh.grants };
+  },
+};
+
 async function refreshExpired(userId, sub, { lookup, save, now = Date.now() } = {}) {
-  if (!sub || isActive(sub, now) || sub.platform !== "google" || !sub.purchaseToken) return sub;
+  if (!sub || isActive(sub, now) || !REFRESHERS[sub.platform] || !sub.purchaseToken) return sub;
   if (now - new Date(sub.updatedAt || 0).getTime() < 60 * 60 * 1000) return sub;
-  const googlePlay = require("./googlePlay");
-  lookup ??= googlePlay.lookupSubscription;
+  const store = REFRESHERS[sub.platform]();
+  lookup ??= store.lookup;
   save ??= require("./storeSubscriptions").saveSubscription;
   try {
     const fresh = await lookup(sub.purchaseToken);
     if (!fresh) return sub;
-    const grants = googlePlay.grantsAccess(fresh, now);
-    await save(userId, "google", fresh, { grants });
+    const grants = store.grants(fresh, now);
+    await save(userId, sub.platform, fresh, { grants });
     return { ...sub, status: grants ? "active" : "inactive", expiresAt: fresh.expiresAt };
   } catch {
-    return sub; // Google unreachable: keep what we have
+    return sub; // store unreachable: keep what we have
   }
 }
 

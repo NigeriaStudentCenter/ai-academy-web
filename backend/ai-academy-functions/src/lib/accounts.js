@@ -84,8 +84,24 @@ async function deleteLearnerData(userId) {
   await require("./k12/store").deleteAllForUser(userId);
 }
 
+/**
+ * The account id (Entra object id, the "oid" the app signs in with) for an
+ * email: an existing account in our tenant, or a new guest account created by
+ * sending the Microsoft invitation. { userId, invited }.
+ */
+async function findOrInviteLearner(email, name) {
+  const quoted = email.replace(/'/g, "''");
+  const found = await graph(
+    "GET",
+    `/users?$select=id,mail,userPrincipalName&$filter=${encodeURIComponent(`mail eq '${quoted}' or userPrincipalName eq '${quoted}'`)}`
+  );
+  if (found?.value?.length) return { userId: found.value[0].id, invited: false };
+  const invitation = await inviteLearner(email, name);
+  return { userId: invitation.invitedUser.id, invited: true };
+}
+
 async function deleteGuest(userId) {
   await graph("DELETE", `/users/${encodeURIComponent(userId)}`);
 }
 
-module.exports = { normaliseEmail, cleanName, isOrganisationEmail, inviteLearner, isDeletableGuest, deleteLearnerData, deleteGuest };
+module.exports = { normaliseEmail, cleanName, isOrganisationEmail, inviteLearner, findOrInviteLearner, isDeletableGuest, deleteLearnerData, deleteGuest };
