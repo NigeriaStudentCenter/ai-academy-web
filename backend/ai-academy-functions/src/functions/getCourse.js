@@ -1,5 +1,5 @@
 const { app } = require("@azure/functions");
-const { requireUser } = require("../lib/auth");
+const { optionalUser } = require("../lib/auth");
 const { getCourseForUser, publicCourse } = require("../lib/courses");
 const { withMediaUrls } = require("../lib/sharepointCourses");
 const access = require("../lib/access");
@@ -7,7 +7,7 @@ const access = require("../lib/access");
 app.http("getCourse", {
   methods: ["GET"],
   authLevel: "anonymous",
-  handler: requireUser(async (request, context, user) => {
+  handler: optionalUser(async (request, context, user) => {
     const courseId = request.query.get("courseId") || "";
     const course = await getCourseForUser(user, courseId);
 

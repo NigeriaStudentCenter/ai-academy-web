@@ -6,9 +6,9 @@ import 'package:go_router/go_router.dart';
 // ===============================
 import '../../features/account/account_page.dart';
 import '../../features/admin/admin_dashboard.page.dart';
-import '../../features/auth/create_account_page.dart';
 import '../../features/subscription/paywall_page.dart';
 import '../../features/auth/login_page.dart';
+import '../../features/auth/welcome_track_page.dart';
 import '../../features/auth/oauth_callback_page.dart';
 import '../../features/certificates/certificate_verification_page.dart';
 import '../../features/certificates/subject_certificate.page.dart';
@@ -44,11 +44,16 @@ final GoRouter goRouter = GoRouter(
     final isLoggedIn = AppAuthState.isLoggedIn;
     final isLoggingIn = location == '/login';
 
-    // ✅ Everything needs a signed-in learner except these public pages
+    // ✅ Everything needs a signed-in learner except these public pages.
+    // Visitors can browse the course list and course outlines; opening a
+    // lesson or subscribing asks them to sign in first.
+    final isCourseOutline =
+        location == '/courses' || RegExp(r'^/course/[^/]+$').hasMatch(location);
     final isPublic = location == '/' ||
         isLoggingIn ||
         location == '/oauth/callback' ||
         location == '/create-account' ||
+        isCourseOutline ||
         location.startsWith('/verify/');
     final requiresAuth = !isPublic;
 
@@ -101,9 +106,15 @@ final GoRouter goRouter = GoRouter(
     // -------------------------------
     // Create account (public) · Account · Subscribe
     // -------------------------------
+    // Accounts are created on the sign-in page now (Google, Apple, email).
     GoRoute(
       path: '/create-account',
-      builder: (context, state) => const CreateAccountPage(),
+      redirect: (context, state) => '/login',
+    ),
+    GoRoute(
+      path: '/welcome-track',
+      builder: (context, state) =>
+          WelcomeTrackPage(redirectTo: state.uri.queryParameters['from']),
     ),
     GoRoute(
       path: '/account',

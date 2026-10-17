@@ -1,13 +1,13 @@
 const { app } = require("@azure/functions");
 const { TableClient } = require("@azure/data-tables");
 const access = require("../lib/access");
-const accounts = require("../lib/accounts");
+const accounts = require("../lib/accounts"); // email validation only
 const paystack = require("../lib/paystack");
 const store = require("../lib/storeSubscriptions");
 
 // AI Academy All Access bought on the website with Paystack (web only — the
 // app never shows or links to this). Flow: subscribe page → POST
-// /api/paystackCheckout (finds or creates the learner's account by email) →
+// /api/paystackCheckout (the subscription is keyed to the email address) →
 // Paystack's payment page → back to subscribe-done.html → GET
 // /api/paystackVerify. Renewals, cancellations and failed payments arrive at
 // POST /api/paystackWebhook. Every change is re-read from Paystack before it
@@ -104,23 +104,20 @@ app.http("paystackCheckout", {
     if (limited(`ip:${ip}`, 10, 3600e3) || limited(`email:${email}`, 5, 3600e3)) {
       return { status: 429, jsonBody: { error: "Too many attempts. Please try again later." } };
     }
-    let learner;
-    try {
-      learner = await accounts.findOrInviteLearner(email, accounts.cleanName(body.name));
-    } catch (err) {
-      context.error("paystackCheckout: account lookup/invite failed", err);
-      return { status: 502, jsonBody: { error: "We couldn't set up your account just now. Please try again." } };
-    }
-    const current = await access.getSubscription(learner.userId);
+    // Website subscriptions belong to the email address: they unlock when the
+    // learner signs in to the app with that (verified) email — Google, Apple,
+    // email + password or Microsoft. No account is created here.
+    const owner = access.emailOwner(email);
+    const current = await access.getSubscription(owner);
     if (access.isActive(current)) {
       return {
         status: 409,
-        jsonBody: { error: "This account already has an active AI Academy subscription. Sign in to the app with this email.", code: "already_subscribed" },
+        jsonBody: { error: "This email already has an active AI Academy subscription. Sign in to the app with this email.", code: "already_subscribed" },
       };
     }
     try {
-      const checkout = await paystack.startCheckout({ email, userId: learner.userId, plan: body.plan });
-      return { status: 200, jsonBody: { url: checkout.url, invited: learner.invited } };
+      const checkout = await paystack.startCheckout({ email, userId: owner, plan: body.plan });
+      return { status: 200, jsonBody: { url: checkout.url } };
     } catch (err) {
       context.error("paystackCheckout: initialize failed", err);
       return { status: 502, jsonBody: { error: "We couldn't reach Paystack. Please try again." } };

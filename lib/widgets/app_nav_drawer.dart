@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart'; // ✅ REQUIRED FOR GoRouter
 import 'package:package_info_plus/package_info_plus.dart';
 
 import '../core/auth/app_auth_state.dart';
-import '../core/auth/entra_auth_service.dart';
 import '../core/theme/app_colors.dart';
 
 class AppNavDrawer extends StatelessWidget {
@@ -132,15 +131,25 @@ class AppNavDrawer extends StatelessWidget {
                       routeName: '/debug',
                     ),
 
-                  ListTile(
-                    leading: const Icon(Icons.logout),
-                    title: const Text('Sign out'),
-                    onTap: () async {
-                      Navigator.pop(context);
-                      await EntraAuthService.signOut();
-                      if (context.mounted) context.go('/');
-                    },
-                  ),
+                  if (AppAuthState.isLoggedIn)
+                    ListTile(
+                      leading: const Icon(Icons.logout),
+                      title: const Text('Sign out'),
+                      onTap: () async {
+                        Navigator.pop(context);
+                        await AppAuthState.signOut();
+                        if (context.mounted) context.go('/');
+                      },
+                    )
+                  else
+                    ListTile(
+                      leading: const Icon(Icons.login),
+                      title: const Text('Sign in or create an account'),
+                      onTap: () {
+                        Navigator.pop(context);
+                        context.go('/login');
+                      },
+                    ),
                 ],
               ),
             ),

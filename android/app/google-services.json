@@ -1,0 +1,70 @@
+{
+  "project_info": {
+    "project_number": "328809455816",
+    "project_id": "ai-academy-bsoe",
+    "storage_bucket": "ai-academy-bsoe.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:328809455816:android:be082fe0a65dfc39cf45fd",
+        "android_client_info": {
+          "package_name": "org.bsoedu.aiacademy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "328809455816-a2m6nv8ccdrarjdnuhgonir8r1cg6t6r.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "org.bsoedu.aiacademy",
+            "certificate_hash": "02320c035713db59d9861812932a54720d3447b9"
+          }
+        },
+        {
+          "client_id": "328809455816-d75uiqqr5gpnj4lanu0rla4d2n76v9ts.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "org.bsoedu.aiacademy",
+            "certificate_hash": "0cbf5f75c0ea90f951a5e5d45161b40e9346aa00"
+          }
+        },
+        {
+          "client_id": "328809455816-uc8upuckqa96n6kfdhcu6frqurlb8tg7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "org.bsoedu.aiacademy",
+            "certificate_hash": "69845603df651427c373c8d908a32e8cdf32cae9"
+          }
+        },
+        {
+          "client_id": "328809455816-6tcd8romhs5nif16fhnku3cs2h3arco5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB8J3a3Ihl82YIrmGsxvPBpsWn1YBrQEbc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "328809455816-6tcd8romhs5nif16fhnku3cs2h3arco5.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "328809455816-ffv4lpa4gnl6sp4j3tkbhulklnq573vl.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "org.bsoedu.aiacademy"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

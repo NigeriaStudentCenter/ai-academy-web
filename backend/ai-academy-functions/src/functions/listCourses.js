@@ -1,12 +1,12 @@
 const { app } = require("@azure/functions");
-const { requireUser } = require("../lib/auth");
+const { optionalUser } = require("../lib/auth");
 const { listCoursesForUser, categoriesFor } = require("../lib/courses");
 const access = require("../lib/access");
 
 app.http("listCourses", {
   methods: ["GET"],
   authLevel: "anonymous",
-  handler: requireUser(async (request, context, user) => {
+  handler: optionalUser(async (request, context, user) => {
     const learnerAccess = await access.accessFor(user);
     const courses = (await listCoursesForUser(user)).map((c) => ({
       ...c,

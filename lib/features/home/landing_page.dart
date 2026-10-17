@@ -36,9 +36,7 @@ class LandingPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 32),
                 ElevatedButton(
-                  onPressed: () {
-                    context.go('/login');
-                  },
+                  onPressed: () => context.go('/courses'),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.nearWhite,
                     foregroundColor: AppColors.darkGreen,
@@ -47,15 +45,20 @@ class LandingPage extends StatelessWidget {
                       vertical: 16,
                     ),
                   ),
-                  child: const Text("Sign in"),
+                  child: const Text("Explore courses"),
                 ),
                 const SizedBox(height: 12),
-                TextButton(
-                  onPressed: () => context.go('/create-account'),
-                  child: Text(
-                    "New here? Create an account",
-                    style: TextStyle(color: AppColors.nearWhite, fontSize: 16),
+                OutlinedButton(
+                  onPressed: () => context.go('/login'),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: AppColors.nearWhite,
+                    side: const BorderSide(color: AppColors.nearWhite),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 32,
+                      vertical: 16,
+                    ),
                   ),
+                  child: const Text("Sign in or create an account"),
                 ),
               ],
             ),

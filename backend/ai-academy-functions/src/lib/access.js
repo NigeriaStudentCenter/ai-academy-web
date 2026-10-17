@@ -75,14 +75,27 @@ function isActive(sub, now = Date.now()) {
  * reason: "paywall-off" | "admin" | "organisation" | "subscription" | "none"
  */
 async function accessFor(user, { loadSubscription = getSubscription } = {}) {
+  // Visitors browsing without an account see outlines only.
+  if (user.anonymous) return { full: false, reason: "anonymous", paywall: true };
   if (!paywallEnabled()) return { full: true, reason: "paywall-off", paywall: false };
   if (user.isAdmin) return { full: true, reason: "admin", paywall: true };
   const username = (user.username || "").toLowerCase();
   const domain = username.split("@")[1] || "";
-  if (!isTestAccount(user) && listSetting("ORG_ACCESS_DOMAINS", DEFAULT_ORG_DOMAINS).includes(domain)) {
+  // Organisation access only for Microsoft (Entra) accounts: anyone can type
+  // an @teenskills.co.uk address into an email sign-up, so a Firebase account
+  // never gets it by domain.
+  const orgAccount = user.provider !== "firebase";
+  if (orgAccount && !isTestAccount(user) && listSetting("ORG_ACCESS_DOMAINS", DEFAULT_ORG_DOMAINS).includes(domain)) {
     return { full: true, reason: "organisation", paywall: true };
   }
-  const sub = await refreshExpired(user.userId, await loadSubscription(user.userId));
+  let sub = await refreshExpired(user.userId, await loadSubscription(user.userId));
+  // Website (Paystack) subscriptions are keyed to the email address and count
+  // for whoever signs in with that verified email.
+  if (!isActive(sub) && user.emailVerified && user.username) {
+    const owner = emailOwner(user.username);
+    const byEmail = await refreshExpired(owner, await loadSubscription(owner));
+    if (isActive(byEmail)) sub = byEmail;
+  }
   if (isActive(sub)) return { full: true, reason: "subscription", paywall: true, expiresAt: sub.expiresAt };
   return { full: false, reason: "none", paywall: true };
 }
@@ -119,6 +132,11 @@ async function refreshExpired(userId, sub, { lookup, save, now = Date.now() } = 
   } catch {
     return sub; // store unreachable: keep what we have
   }
+}
+
+/** Subscriptions table key for a subscription bought with an email address (website). */
+function emailOwner(email) {
+  return `email:${String(email).trim().toLowerCase()}`;
 }
 
 /** How much of a course the learner gets: "full" | "free" | "preview" | "locked". */
@@ -175,6 +193,7 @@ const SUBSCRIPTION_REQUIRED = {
 module.exports = {
   paywallEnabled,
   refreshExpired,
+  emailOwner,
   isTestAccount,
   sandboxAllowed,
   isFreeCourse,

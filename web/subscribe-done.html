@@ -22,10 +22,10 @@
   const set = (t, html) => { title.textContent = t; body.innerHTML = html; };
   const esc = (s) => String(s || "").replace(/[&<>"']/g, (c) => "&#" + c.charCodeAt(0) + ";");
   const signInSteps = (email) =>
-    "<ol><li>If you're new to AI Academy, look for an email from <strong>Microsoft on behalf of AI Academy</strong>" +
-    (email ? " at <strong>" + esc(email) + "</strong>" : "") +
-    " and accept the invitation (check spam too).</li>" +
-    "<li>Open the AI Academy app, tap <strong>Sign in with Microsoft</strong> and use that same email.</li></ol>";
+    "<ol><li>Open the AI Academy app and sign in with the same email" +
+    (email ? " (<strong>" + esc(email) + "</strong>)" : "") +
+    ": <strong>Continue with Google</strong>, <strong>Continue with Apple</strong> or <strong>Continue with email</strong>.</li>" +
+    "<li>Your subscription is unlocked automatically.</li></ol>";
 
   async function check(attempt) {
     if (!reference) return set("No payment found", "<p>We couldn't find a payment reference. If you were charged, email <a href='mailto:john@bsoedu.org'>john@bsoedu.org</a>.</p>");

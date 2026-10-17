@@ -6,7 +6,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/api/api_client.dart';
 import '../../core/auth/app_auth_state.dart';
-import '../../core/auth/entra_auth_service.dart';
+import '../../core/auth/public_auth_service.dart';
 import '../../core/subscription/subscription_service.dart';
 import '../../core/theme/app_colors.dart';
 import '../../widgets/app_nav_drawer.dart';
@@ -61,7 +61,14 @@ class _AccountPageState extends State<AccountPage> {
       final response = await ApiClient.post('deleteAccount', '{}');
       final json = jsonDecode(response.body) as Map<String, dynamic>;
       if (response.statusCode == 200) {
-        await EntraAuthService.signOut();
+        // Google / Apple / email accounts: also delete the sign-in itself.
+        if (json['deleteSignIn'] == true &&
+            !await PublicAuthService.deleteSignIn()) {
+          messenger.showSnackBar(const SnackBar(
+              content: Text(
+                  'Your data has been deleted. To finish removing your sign-in, please sign in again and repeat Delete account.')));
+        }
+        await AppAuthState.signOut();
         if (!mounted) return;
         messenger.showSnackBar(SnackBar(
           content: Text(json['hadSubscription'] == true
@@ -146,6 +153,16 @@ class _AccountPageState extends State<AccountPage> {
                   ]));
                 },
               ),
+              if (AppAuthState.provider == SignInKind.firebase)
+                _card(ListTile(
+                  leading: const Icon(Icons.school, color: AppColors.darkGreen),
+                  title: const Text('Your courses'),
+                  subtitle: Text(AppAuthState.track == 'teens'
+                      ? 'Student aged 13–17 (Teens)'
+                      : 'Adult learner / professional'),
+                  trailing: const Text('Change'),
+                  onTap: () => context.push('/welcome-track?from=/account'),
+                )),
               _card(Column(children: [
                 ListTile(
                   leading: const Icon(Icons.description,

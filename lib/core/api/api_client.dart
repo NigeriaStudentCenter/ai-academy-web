@@ -1,6 +1,6 @@
 import 'package:http/http.dart' as http;
 
-import '../auth/entra_auth_service.dart';
+import '../auth/app_auth_state.dart';
 
 /// Signed-in calls to the AI Academy backend (Azure Functions).
 class ApiClient {
@@ -14,8 +14,11 @@ class ApiClient {
   // Generous: the Flex Consumption backend can take ~30s to cold start.
   static const Duration _timeout = Duration(seconds: 45);
 
+  /// Signed-in requests carry the learner's token; visitors browsing
+  /// without an account send none (the course list and outlines are public).
   static Future<Map<String, String>> _headers() async => {
-        'Authorization': 'Bearer ${await EntraAuthService.getAccessToken()}',
+        if (AppAuthState.isLoggedIn)
+          'Authorization': 'Bearer ${await AppAuthState.getAccessToken()}',
         'Content-Type': 'application/json',
       };
 
@@ -41,7 +44,7 @@ class ApiClient {
       throw const SubscriptionRequiredException();
     }
     if (response.statusCode == 401) {
-      await EntraAuthService.signOut();
+      await AppAuthState.signOut();
       throw Exception('Your session has expired. Please sign in again.');
     }
     return response;

@@ -64,6 +64,18 @@ app.http("deleteAccount", {
   methods: ["POST"],
   authLevel: "anonymous",
   handler: requireUser(async (request, context, user) => {
+    // Firebase (Google / Apple / email) accounts: we delete their data here
+    // and the app deletes the Firebase sign-in itself.
+    if (user.provider === "firebase") {
+      const learnerAccess = await access.accessFor(user);
+      try {
+        await accounts.deleteLearnerData(user.userId);
+      } catch (err) {
+        context.error("deleteAccount (firebase) failed", err);
+        return { status: 502, jsonBody: { error: "We couldn't delete your account just now. Please try again." } };
+      }
+      return { status: 200, jsonBody: { deleted: true, deleteSignIn: true, hadSubscription: learnerAccess.reason === "subscription" } };
+    }
     let guest;
     try {
       guest = await accounts.isDeletableGuest(user.userId);
