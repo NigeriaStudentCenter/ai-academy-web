@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 
 import '../api/api_client.dart';
+import '../auth/app_auth_state.dart';
 import 'course_data.dart';
 
 /// Courses and lesson progress from the AI Academy backend. The backend only
@@ -61,6 +62,8 @@ class CourseApiService {
 
   /// Lesson ids this learner has completed in [courseId].
   static Future<Set<String>> completedLessons(String courseId) async {
+    // Visitors browsing without an account have no progress.
+    if (!AppAuthState.isLoggedIn) return {};
     await (_progressLoad ??= _loadProgress());
     return _progressCache[courseId] ??= {};
   }

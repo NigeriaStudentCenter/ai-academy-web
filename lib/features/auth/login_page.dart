@@ -100,7 +100,7 @@ class _LoginPageState extends State<LoginPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Image.asset('assets/brand/app_icon.png', height: 72),
+                  ClipRRect(borderRadius: BorderRadius.circular(16), child: Image.asset('assets/images/app_logo.png', height: 72)),
                   const SizedBox(height: 16),
                   const Text('Welcome to AI Academy',
                       textAlign: TextAlign.center,
