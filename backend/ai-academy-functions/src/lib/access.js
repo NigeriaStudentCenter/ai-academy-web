@@ -111,6 +111,10 @@ const REFRESHERS = {
     const g = require("./googlePlay");
     return { lookup: g.lookupSubscription, grants: (fresh, now) => g.grantsAccess(fresh, now) };
   },
+  stripe: () => {
+    const st = require("./stripe");
+    return { lookup: (id) => st.lookupSubscription(id), grants: (fresh) => fresh.grants };
+  },
   paystack: () => {
     const p = require("./paystack");
     return { lookup: (customerCode) => p.customerSubscription(customerCode), grants: (fresh) => fresh.grants };

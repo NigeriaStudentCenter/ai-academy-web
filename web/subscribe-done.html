@@ -17,6 +17,7 @@
   const API = "https://ai-academy-progress-api-bucjc4gtcsenhuhs.swedencentral-01.azurewebsites.net/api";
   const params = new URLSearchParams(location.search);
   const reference = params.get("reference") || params.get("trxref");
+  const stripeSession = params.get("stripe_session");
   const title = document.getElementById("title");
   const body = document.getElementById("body");
   const set = (t, html) => { title.textContent = t; body.innerHTML = html; };
@@ -28,14 +29,16 @@
     "<li>Your subscription is unlocked automatically.</li></ol>";
 
   async function check(attempt) {
-    if (!reference) return set("No payment found", "<p>We couldn't find a payment reference. If you were charged, email <a href='mailto:john@bsoedu.org'>john@bsoedu.org</a>.</p>");
+    if (!reference && !stripeSession) return set("No payment found", "<p>We couldn't find a payment reference. If you were charged, email <a href='mailto:john@bsoedu.org'>john@bsoedu.org</a>.</p>");
     try {
-      const res = await fetch(API + "/paystackVerify?reference=" + encodeURIComponent(reference));
+      const res = await fetch(stripeSession
+        ? API + "/stripeVerify?session=" + encodeURIComponent(stripeSession)
+        : API + "/paystackVerify?reference=" + encodeURIComponent(reference));
       const j = await res.json().catch(() => ({}));
       if (res.ok && j.paid && j.active) {
         const renews = j.renews ? new Date(j.renews).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }) : null;
         return set("You're subscribed 🎉", "<p>Thank you! Your AI Academy All Access" + (j.plan ? " (" + esc(j.plan) + ")" : "") + " is active" + (renews ? " until at least " + esc(renews) : "") + ".</p>" + signInSteps(j.email) +
-          "<p class='small'>Your subscription renews automatically. To cancel, use the link in Paystack's subscription email or contact <a href='support.html'>support</a>.</p>");
+          "<p class='small'>Your subscription renews automatically. To manage or cancel it, see <a href='support.html'>Support</a>.</p>");
       }
       if (res.ok && j.paid && attempt < 6) return setTimeout(() => check(attempt + 1), 3000);
       if (res.ok && j.paid) return set("Payment received", "<p>Your payment went through and we're finishing setting up your access — this can take a few minutes.</p>" + signInSteps(j.email));

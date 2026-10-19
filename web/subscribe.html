@@ -24,6 +24,10 @@
     .msg.error { display: block; background: #fdecea; color: #8a1c12; }
     .small { color: var(--muted); font-size: 14px; }
     ol.steps li { margin-bottom: 6px; }
+    .region { display: flex; gap: 8px; margin: 18px 0 4px; flex-wrap: wrap; }
+    .region label { flex: 1; min-width: 150px; border: 2px solid var(--line); border-radius: 12px; padding: 10px 12px; background: #fff; cursor: pointer; font-weight: 600; text-align: center; }
+    .region input { position: absolute; opacity: 0; }
+    .region label:has(input:checked) { border-color: var(--green); color: var(--green); box-shadow: 0 0 0 3px rgba(11, 61, 46, .12); }
   </style>
 </head>
 <body>
@@ -33,6 +37,10 @@
   <p>Every AI Academy course, the AI tutors and Practice with AI, Cambridge and US curriculum practice, progress tracking and certificates — on your phone and the web. For learners aged 13 and over.</p>
 
   <form id="form" novalidate>
+    <div class="region" role="radiogroup" aria-label="Where are you paying from?">
+      <label><input type="radio" name="region" value="ng"> 🇳🇬 Nigeria (₦)</label>
+      <label><input type="radio" name="region" value="intl"> 🌍 Rest of the world (£)</label>
+    </div>
     <div class="plans" id="plans">
       <label class="plan"><input type="radio" name="plan" value="monthly" checked>
         <div class="name">Monthly</div>
@@ -55,12 +63,13 @@
 
     <button type="submit" id="pay">Continue to secure payment</button>
     <div class="msg" id="msg" role="alert"></div>
-    <p class="small">Payments are processed securely by Paystack in Nigerian naira (card, bank transfer or USSD). Your subscription renews automatically at the same price until you cancel. By subscribing you agree to our <a href="terms.html">Terms of Use</a> and <a href="privacy.html">Privacy Policy</a>.</p>
+    <p class="small" id="gateway-note"></p>
+    <p class="small">Your subscription renews automatically at the same price until you cancel. By subscribing you agree to our <a href="terms.html">Terms of Use</a> and <a href="privacy.html">Privacy Policy</a>.</p>
   </form>
 
   <h2>How it works</h2>
   <ol class="steps">
-    <li>Choose a plan and pay securely with Paystack.</li>
+    <li>Choose a plan and pay securely — Paystack in Nigeria, Stripe everywhere else.</li>
     <li>Open the AI Academy app and sign in with the <strong>same email</strong>: <strong>Continue with Google</strong>, <strong>Continue with Apple</strong> or <strong>Continue with email</strong>.</li>
     <li>Everything is unlocked — no extra steps.</li>
   </ol>
@@ -68,29 +77,50 @@
 </main>
 <script>
   const API = "https://ai-academy-progress-api-bucjc4gtcsenhuhs.swedencentral-01.azurewebsites.net/api";
-  const naira = (kobo) => "₦" + (kobo / 100).toLocaleString("en-NG", { maximumFractionDigits: 0 });
+  const GATEWAYS = {
+    ng: { plans: "/paystackPlans", checkout: "/paystackCheckout", note: "Payments are processed securely by Paystack in Nigerian naira (card, bank transfer or USSD).",
+          fmt: (p, k) => "₦" + (p[k].amountKobo / 100).toLocaleString("en-NG", { maximumFractionDigits: 0 }), amount: (p, k) => p[k].amountKobo },
+    intl: { plans: "/stripePlans", checkout: "/stripeCheckout", note: "Payments are processed securely by Stripe in pounds sterling (cards, Apple Pay and Google Pay). Your bank may convert the amount to your currency.",
+          fmt: (p, k) => new Intl.NumberFormat("en-GB", { style: "currency", currency: p[k].currency.toUpperCase() }).format(p[k].amount / 100), amount: (p, k) => p[k].amount },
+  };
   const msg = document.getElementById("msg");
+  const btn = document.getElementById("pay");
   const show = (text) => { msg.textContent = text; msg.className = "msg error"; };
+  const cache = {};
 
-  fetch(API + "/paystackPlans").then((r) => r.ok ? r.json() : Promise.reject(r)).then((p) => {
-    document.getElementById("price-monthly").textContent = naira(p.monthly.amountKobo) + " / month";
-    document.getElementById("price-yearly").textContent = naira(p.yearly.amountKobo) + " / year";
-    const saving = Math.round(100 - (p.yearly.amountKobo / (p.monthly.amountKobo * 12)) * 100);
-    if (saving >= 5) { const b = document.getElementById("saving"); b.textContent = "Save " + saving + "%"; b.hidden = false; }
-  }).catch(() => {
-    document.getElementById("price-monthly").textContent = document.getElementById("price-yearly").textContent = "—";
-    show("Online payment isn't available right now. Please try again later.");
-    document.getElementById("pay").disabled = true;
-  });
+  // Default: Nigeria for visitors in Nigeria (time zone / language), otherwise international.
+  const inNigeria = (Intl.DateTimeFormat().resolvedOptions().timeZone || "") === "Africa/Lagos" || /-NG$/i.test(navigator.language || "");
+  const region = () => document.querySelector("input[name=region]:checked").value;
+
+  async function loadPrices() {
+    const g = GATEWAYS[region()];
+    document.getElementById("gateway-note").textContent = g.note;
+    msg.className = "msg"; btn.disabled = false;
+    document.getElementById("price-monthly").textContent = document.getElementById("price-yearly").textContent = "…";
+    const badge = document.getElementById("saving"); badge.hidden = true;
+    try {
+      const p = cache[region()] || (cache[region()] = await fetch(API + g.plans).then((r) => r.ok ? r.json() : Promise.reject(r)));
+      document.getElementById("price-monthly").textContent = g.fmt(p, "monthly") + " / month";
+      document.getElementById("price-yearly").textContent = g.fmt(p, "yearly") + " / year";
+      const saving = Math.round(100 - (g.amount(p, "yearly") / (g.amount(p, "monthly") * 12)) * 100);
+      if (saving >= 5) { badge.textContent = "Save " + saving + "%"; badge.hidden = false; }
+    } catch {
+      document.getElementById("price-monthly").textContent = document.getElementById("price-yearly").textContent = "—";
+      show("Online payment isn't available right now. Please try again later.");
+      btn.disabled = true;
+    }
+  }
+  document.querySelector(`input[name=region][value=${inNigeria ? "ng" : "intl"}]`).checked = true;
+  document.querySelectorAll("input[name=region]").forEach((r) => r.addEventListener("change", loadPrices));
+  loadPrices();
 
   document.getElementById("form").addEventListener("submit", async (e) => {
     e.preventDefault();
     const email = document.getElementById("email").value.trim();
     if (!/^\S+@\S+\.\S+$/.test(email)) return show("Enter a valid email address.");
-    const btn = document.getElementById("pay");
     btn.disabled = true; btn.textContent = "Setting up your payment…"; msg.className = "msg";
     try {
-      const res = await fetch(API + "/paystackCheckout", {
+      const res = await fetch(API + GATEWAYS[region()].checkout, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
